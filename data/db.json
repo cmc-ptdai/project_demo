@@ -236,14 +236,30 @@
           "img": "https://i2.wp.com/thucphamtantai.com/wp-content/uploads/2019/10/hanh-la.jpg",
           "price": 50000,
           "countPay": 98,
-          "count": 7
+          "count": 1
         },
         {
           "id": 6,
           "name": "Táo xanh Mỹ",
           "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
           "price": 50000,
-          "count": 4
+          "count": 5
+        },
+        {
+          "id": 18,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 100,
+          "count": 1
+        },
+        {
+          "id": 118,
+          "name": "Táo đỏ Mỹ",
+          "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
+          "price": 125000,
+          "countPay": 98,
+          "count": 1
         }
       ],
       "order": [],

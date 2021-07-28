@@ -71,10 +71,10 @@ const MyMenu = () => {
         },
       ]
     },
-    {
-      title: 'Tin tức',
-      path: '/vegetable'
-    },
+    // {
+    //   title: 'Tin tức',
+    //   path: '/vegetable'
+    // },
     {
       title: 'Giới thiệu',
       path: '/tubers'

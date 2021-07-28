@@ -13,6 +13,11 @@ import {
   payCartNoUser as payCartNoUserAction,
   addOrder as addOrderAction,
   addOrderNoUser as addOrderNoUserAction,
+  incrementProjectNoUser as incrementProjectNoUserAction,
+  decrementProjectNoUser as decrementProjectNoUserAction,
+  numberInputProjectNoUser as numberInputProjectNoUserAction,
+  deleteItemCartNoUser as deleteItemCartNoUserAction,
+  deleteListItemCartNoUser as deleteListItemCartNoUserAction,
 } from '../../redux/actions/userAction'
 import {
   // incrementCountPayByCart as incrementCountPayByCartAction,
@@ -220,7 +225,11 @@ const Cart = () => {
     }
 
     setTimeout(() => {
-      dispatch(numberInputProjectAction(newNumber))
+      if (user.id) {
+        dispatch(dispatch(numberInputProjectAction(newNumber)))
+       } else {
+         dispatch(numberInputProjectNoUserAction(newNumber))
+       }
     }, 100);
     // dispatch(onchangeInputPayByCartAction(newNumber))
   }
@@ -233,18 +242,31 @@ const Cart = () => {
     })
     setTotalMoney(price)
   }
+
   const increment = (id) => {
-     dispatch(incrementProjectAction(id))
+     if (user.id) {
+      dispatch(incrementProjectAction(id))
+     } else {
+       dispatch(incrementProjectNoUserAction(id))
+     }
      sumOfMoney()
   }
 
   const decrement = (id) => {
-    dispatch(decrementProjectAction(id))
+    if (user.id) {
+      dispatch(decrementProjectAction(id))
+     } else {
+       dispatch(decrementProjectNoUserAction(id))
+     }
     sumOfMoney()
   }
 
   const deleteItem = (id) => {
-    dispatch(deleteItemCartAction(id))
+    if (user.id) {
+      dispatch(deleteItemCartAction(id))
+     } else {
+       dispatch(deleteItemCartNoUserAction(id))
+     }
   }
 
   const deleteListItem = () => {
@@ -254,7 +276,12 @@ const Cart = () => {
     // })
     console.log(selectedRowKeys);
     setLoading(true)
-    dispatch(deleteListItemCartAction(selectedRowKeys))
+
+    if (user.id) {
+      dispatch(deleteListItemCartAction(selectedRowKeys))
+     } else {
+       dispatch(deleteListItemCartNoUserAction(selectedRowKeys))
+     }
     // setTimeout(() => {
       setSelectedRowKeys([])
     //   setLoading(false)
@@ -352,6 +379,7 @@ const Cart = () => {
             title="Điền thông tin"
             // onOk={handleOk}
             // onCancel={handleCancel}
+            className="modalCart"
           >
             <Form
               name="basic"

@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import './style.scss'
 import { Link, useHistory } from "react-router-dom"
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col } from 'antd';
+import { Row, Col, Avatar } from 'antd'
 import { getUser as getUserAction }  from '../../redux/actions/userAction'
+import { UserOutlined } from '@ant-design/icons'
 
 const Header = () => {
   const history = useHistory();
@@ -15,10 +16,10 @@ const Header = () => {
   }
 
   const logout = () => {
+    const newCart = JSON.parse(localStorage.getItem('cart'))
     const user = {
-      cart: [],
+      cart: newCart,
     }
-    //gán các giá trị cart vào user cart băng dispatch
     localStorage.removeItem('userID')
     dispatch(getUserAction(user))
     history.push('/')
@@ -34,7 +35,17 @@ const Header = () => {
                 myStore.id ? (
                   <div className="login__imgUser">
                     {
-                      myStore.img ? <img src={myStore.img} alt="abc"/> : <i className="fas fa-user" />
+                      myStore.img ? (
+                        <div>
+                          <Avatar size={50} src={myStore.img} />
+                          <span>{ myStore.name }</span>
+                        </div>
+                      ) : (
+                        <div>
+                          <Avatar size={50} icon={<UserOutlined />} />
+                          <span>{ myStore.name }</span>
+                        </div>
+                      )
                     }
                     <div className="login__listchose">
                       <ul>

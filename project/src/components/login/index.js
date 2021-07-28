@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Modal } from 'antd';
+import { useDispatch } from 'react-redux'
 import {Link , useHistory } from "react-router-dom"
 import UserApi from '../../api/userApi'
 import './style.scss';
+import {
+  pushCartLocalInCartUser as pushCartLocalInCartUserAction
+} from '../../redux/actions/userAction'
 
 
 const tailLayout = {
@@ -12,9 +16,14 @@ const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 16 },
 };
+
 const Login = () => {
   const history = useHistory();
-  const [listUser, setListUser] = useState({})
+  const dispatch = useDispatch();
+  const [listUser, setListUser] = useState([])
+  const [user, setUser] = useState({})
+  const [visible, setVisible] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const fetchUser = async () => {
     const response = await UserApi.getUser()
@@ -26,21 +35,54 @@ const Login = () => {
   },[])
 
   const onFinish = (values) => {
-
     const user = listUser.filter(item => (item.userName === values.username && item.password === values.password))
     if (user.length > 0) {
-      const passwordBase = btoa(user[0].id)
-      localStorage.setItem('userID', passwordBase);
-      history.push('/')
+      const cartLocal = JSON.parse(localStorage.getItem('cart'))
+      if (cartLocal.length > 0) {
+        setUser(user[0]);
+        setVisible(true);
+      } else {
+        const passwordBase = btoa(user[0].id)
+        localStorage.setItem('userID', passwordBase);
+        history.push('/')
+      }
     } else {
-      alert("sai tài khoản mật khẩu")
+      alert("sai tài khoản hoặc mật khẩu")
     }
     //console.log('Success:', values);
   };
 
-  const onFinishFailed = (errorInfo) => {
-    //console.log('Failed:', errorInfo);
+  const handleCancel = () => {
+    setVisible(false);
+    setUser({});
   };
+
+  const noAddCartLocal = () => {
+    const passwordBase = btoa(user.id)
+    localStorage.setItem('userID', passwordBase);
+    setUser({});
+    setTimeout(() => {
+      history.push('/')
+    }, 500);
+    setVisible(false);
+  }
+
+  const yesAddCartLocal = () => {
+    const cartLocal = JSON.parse(localStorage.getItem('cart'));
+    const newCartLocal = []
+    const valueDispatch = {
+      user: user,
+      cartLocal: cartLocal,
+    }
+    dispatch(pushCartLocalInCartUserAction(valueDispatch))
+    localStorage.setItem('cart', JSON.stringify(newCartLocal))
+    const passwordBase = btoa(user.id)
+    localStorage.setItem('userID', passwordBase);
+    setTimeout(() => {
+      history.push('/')
+    }, 500);
+    setVisible(false);
+  }
 
   const onFinishPasswordRetrieval = (values) => {
     //console.log('Success:', values);
@@ -60,7 +102,6 @@ const Login = () => {
             {...layout}
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
           >
             <Form.Item
               label="Username"
@@ -114,6 +155,24 @@ const Login = () => {
             </Form.Item>
           </Form>
         </div>
+      </div>
+      <div className="login__modal">
+        <Modal
+          title="Thông báo"
+          visible={visible}
+          confirmLoading={confirmLoading}
+          onCancel={handleCancel}
+        >
+          <p>bạn đang có một số sản phẩm trong giỏ hàng đã thêm lúc chưa đăng nhập, bạn có muốn thêm sản phẩm đó vào giở hàng của mình không?</p>
+        <div className="group__button__modal">
+          <Button type="primary" danger onClick={noAddCartLocal}>
+            không
+          </Button>
+          <Button type="primary" onClick={yesAddCartLocal}>
+            Dồng ý
+          </Button>
+        </div>
+        </Modal>
       </div>
     </div>
   )

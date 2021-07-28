@@ -17,6 +17,12 @@ import {
   ADD_ORDER,
   ADD_CART_BY_PROFILE_NO_USER,
   ADD_ORDER_NO_USER,
+  INCREMENT_PROJECT_NO_USER,
+  DECREMENT_PROJECT_NO_USER,
+  DELETE_ITEM_CART_NO_USER,
+  DELETE_LIST_ITEM_CART_NO_USER,
+  NUMBER_INPUT_NO_USER,
+  PUSH_CART_LOCAL_IN_CART_USER,
 } from '../actionType'
 
 const initialState = {
@@ -27,7 +33,7 @@ const initialState = {
 
 const useReducer  = (state = initialState, action) => {
   const user = {...state.user}
-  const cart = user.cart
+  let cart = user.cart
   const order = user.order
   const idUser = user.id
 
@@ -41,8 +47,6 @@ const useReducer  = (state = initialState, action) => {
     // gộp các mặt hàng khi chưa đăng nhập và sau khi đăng nhập có trước ở tài khoản
     // lặp cart ko có user xem có chùng với sản phẩm nào trong tài khoản
     // có thì cộng 2 count lại còn không có thì thêm mới cart
-    //sửa sản phẩm trong giỏ hàng local
-    //xoá sản phẩm trong giỏ hàng local
 
     case ADD_CART: {
       let cartAction = user.cart
@@ -394,6 +398,104 @@ const useReducer  = (state = initialState, action) => {
       }
       orderApi.addOrder(newOder)
       return state
+    }
+
+    case INCREMENT_PROJECT_NO_USER: {
+      const index = cart.findIndex(item => item.id === action.payload)
+      if (index !== -1) {
+        const number = cart[index].count + 1;
+        if (number >= cart[index].countPay) {
+          cart[index].count = cart[index].countPay
+        } else {
+          cart[index].count = number
+        }
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+      return {
+        ...state,
+        user: user
+      }
+    }
+
+    case DECREMENT_PROJECT_NO_USER: {
+      const index = cart.findIndex(item => item.id === action.payload)
+      if (index !== -1) {
+        if (cart[index].count  - 1 === 0 ) {
+          cart[index].count = 1
+        }
+        else {
+          cart[index].count = cart[index].count  - 1
+        }
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart))
+      return {
+        ...state,
+        user: user
+      }
+    }
+
+    case DELETE_ITEM_CART_NO_USER: {
+      user.cart = user.cart.filter(item => item.id !== action.payload)
+      localStorage.setItem('cart', JSON.stringify(user.cart))
+      return {
+        ...state,
+        user: user
+      }
+    }
+
+    case DELETE_LIST_ITEM_CART_NO_USER: {
+      action.payload.forEach(elem => {
+        user.cart = user.cart.filter(item => item.id !== elem)
+      });
+      localStorage.setItem('cart', JSON.stringify(user.cart))
+      return {
+        ...state,
+        user: user
+      }
+    }
+
+    case NUMBER_INPUT_NO_USER: {
+      const index = cart.findIndex(item => item.id === action.payload.id)
+      if(isNaN(action.payload.value) || action.payload.value <= 0) {
+          cart[index].count = 1
+          localStorage.setItem('cart', JSON.stringify(cart))
+          return {
+            ...state,
+            user: user
+          }
+      } else {
+        if (Number(action.payload.value) > cart[index].countPay) {
+          cart[index].count = cart[index].countPay
+        } else {
+          cart[index].count = Number(action.payload.value)
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart))
+        return {
+          ...state,
+          user: user
+        }
+      }
+    }
+
+    case PUSH_CART_LOCAL_IN_CART_USER: {
+      let newUser = action.payload.user
+      let cartLocal = action.payload.cartLocal
+      cartLocal.forEach(item => {
+        const index = newUser.cart.findIndex(elem => elem.id === item.id)
+        if (index !== -1) {
+          const newData = {
+            ...newUser.cart[index],
+            count: newUser.cart[index].count + item.count,
+          }
+          newUser.cart.splice(index, 1 , newData)
+        } else {
+          newUser.cart.push(item)
+        }
+      })
+      userApi.addCart(newUser.id, newUser)
     }
 
     default:

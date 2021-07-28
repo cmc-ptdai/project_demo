@@ -11,19 +11,11 @@
 
       &__imgUser {
         position: relative;
-        width: 50px;
-        height: 50px;
-        line-height: 45px;
-        text-align: center;
-        background-color: #fff;
-        border-radius: 50px;
-        margin-top: 12px;
         cursor: pointer;
-
-        img {
-          width: 60px;
-          height: 60px;
-          border-radius: 53px;
+        span + span {
+          margin-left: 5px;
+          color: #000;
+          font-weight: bold;
         }
         &:hover {
           .login__listchose {
@@ -35,22 +27,16 @@
       }
       &__listchose {
         position: absolute;
-
         visibility: hidden;
         opacity: 0;
         transform: translateY(30%);
         transition: all 0.3s ease-in-out;
-
         left: -45px;
         z-index: 50;
-        margin-top: 10px;
-
         ul {
           border-radius: 15px;
           overflow: hidden;
           background-color: #fff;
-
-
           li {
             width: 150px;
             text-align: left;

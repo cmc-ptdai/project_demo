@@ -12,6 +12,12 @@ import { GET_USERS,
   ADD_ORDER,
   ADD_CART_BY_PROFILE_NO_USER,
   ADD_ORDER_NO_USER,
+  INCREMENT_PROJECT_NO_USER,
+  DECREMENT_PROJECT_NO_USER,
+  DELETE_ITEM_CART_NO_USER,
+  DELETE_LIST_ITEM_CART_NO_USER,
+  NUMBER_INPUT_NO_USER,
+  PUSH_CART_LOCAL_IN_CART_USER,
 } from '../actionType';
 
 export const getUser = (payload) => {
@@ -108,6 +114,48 @@ export const addOrder = (payload) => {
 export const addOrderNoUser = (payload) => {
   return {
     type : ADD_ORDER_NO_USER,
+    payload
+  }
+}
+
+export const incrementProjectNoUser = (payload) => {
+  return {
+    type : INCREMENT_PROJECT_NO_USER,
+    payload
+  }
+}
+
+export const decrementProjectNoUser = (payload) => {
+  return {
+    type : DECREMENT_PROJECT_NO_USER,
+    payload
+  }
+}
+
+export const deleteItemCartNoUser = (payload) => {
+  return {
+    type : DELETE_ITEM_CART_NO_USER,
+    payload
+  }
+}
+
+export const deleteListItemCartNoUser = (payload) => {
+  return {
+    type : DELETE_LIST_ITEM_CART_NO_USER,
+    payload
+  }
+}
+
+export const numberInputProjectNoUser = (payload) => {
+  return {
+    type : NUMBER_INPUT_NO_USER,
+    payload
+  }
+}
+
+export const pushCartLocalInCartUser = (payload) => {
+  return {
+    type : PUSH_CART_LOCAL_IN_CART_USER,
     payload
   }
 }
