@@ -32,7 +32,7 @@ const SingUp = () => {
         {...layout}
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        //onFinishFailed={onFinishFailed}
       >
          <Form.Item
           label="Họ Tên"
