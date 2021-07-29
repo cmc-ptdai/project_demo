@@ -1,6 +1,7 @@
 import React from 'react'
-import { Form, Input, Button, InputNumber } from 'antd';
+import { Form, Input, Button, InputNumber, Alert } from 'antd';
 import {Link} from "react-router-dom"
+import './style.scss'
 
 const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
@@ -12,13 +13,18 @@ const layout = {
   wrapperCol: { span: 16 },
 };
 const SingUp = () => {
+  const [form] = Form.useForm();
+
+
+
   const onFinish = (values) => {
     console.log('Success:', values);
+    form.resetFields();
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  // const onFinishFailed = (errorInfo) => {
+  //   console.log('Failed:', errorInfo);
+  // };
   return (
     <div className="singUp">
       <Form
@@ -31,30 +37,29 @@ const SingUp = () => {
          <Form.Item
           label="Họ Tên"
           name="hoten"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+          rules={[{ required: true, message: 'Please input your full name!' }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label="Email"
-          name="username"
+          name="email"
           rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           label="Địa chỉ"
           name="address"
-          rules={[{ required: true, message: 'Please input your email!' }]}
+          rules={[{ required: true, message: 'Please input your address!' }]}
         >
-          <Input />
+          <Input.TextArea />
         </Form.Item>
 
         <Form.Item
           label="Số điện thoại"
           name="phoneNumber"
-          rules={[{ required: true, message: 'Please input your email!' }]}
+          rules={[{ required: true, message: 'Please input your phone number!' }]}
         >
           <InputNumber />
         </Form.Item>
@@ -77,21 +82,20 @@ const SingUp = () => {
         <Form.Item
           label="Nhập lại Password"
           name="password2"
-          rules={[{ required: true, message: 'Please input your password!' }]}
+          rules={[{ required: true, message: 'Please input your confirm password!' }]}
         >
           <Input.Password />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-            <Link to="/login" >
-              <Button type="primary"  htmlType="submit">
-                đăng nhập
-              </Button>
-            </Link>
-
-            <Button type="primary" danger htmlType="submit">
-              Đăng ký
+          <Link to="/login" >
+            <Button type="primary">
+              Quay lại trang đăng nhập
             </Button>
+          </Link>
+          <Button type="primary" danger htmlType="submit">
+            Đăng ký
+          </Button>
         </Form.Item>
       </Form>
     </div>

@@ -11,16 +11,14 @@ const MyPagination = ({ listSort }) => {
 
   return (
     <>
-      <div className="col-12">
-      <JwPagination items={listSort} onChangePage={onChangePage} pageSize={3} maxPages={5} />
-      </div>
-
       {pageOfItems.map((item, index) => (
         <div className="col-4 item" key={index}>
           <CardItem item={item} />
         </div>
       ))}
-      <hr />
+      <div className="col-12 product__pagination">
+        <JwPagination items={listSort} onChangePage={onChangePage} pageSize={3} maxPages={5} />
+      </div>
     </>
   );
 };

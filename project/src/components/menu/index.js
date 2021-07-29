@@ -83,10 +83,10 @@ const MyMenu = () => {
       title: 'Liên hệ',
       path: '/fruit'
     },
-    {
-      title: 'Chỉ đường',
-      path: '/mushroom'
-    }
+    // {
+    //   title: 'Chỉ đường',
+    //   path: '/mushroom'
+    // }
   ]
   return (
     <>

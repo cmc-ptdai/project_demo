@@ -6,16 +6,16 @@ const SearchProduct = (props) => {
   const typeProduct = [
     {
       type: 'rau',
-      name: 'Rau',
+      name: 'Rau xanh',
     },{
       type: 'cu',
-      name: 'Củ',
+      name: 'Các loại củ',
     },{
       type: 'qua',
-      name: 'Quả',
+      name: 'Hoá quả tươi',
     },{
       type: 'nam',
-      name: 'Nấm',
+      name: 'Các loại nấm',
     }
   ]
   const prices = [

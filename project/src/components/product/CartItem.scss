@@ -4,8 +4,11 @@
     position: relative;
     overflow: hidden;
     text-align: center;
+    width: 280px;
+
     img {
-      width: 80%;
+      width: 180px;
+      height: 180px;
       aspect-ratio: 1/1;
       margin: auto;
       margin-top: 15px;
@@ -28,25 +31,24 @@
     }
 
     &__groupPrice {
-      height: 100px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
+      margin-bottom: 10px;
       span {
         font-weight: 600;
       }
     }
 
     &--priceSale {
-      font-size: 20px;
+      font-size: 16px;
+      margin-right: 10px;
       text-decoration: line-through;
-      margin-right: 15px;
       color: #ccc;
     }
 
     &--price {
-      font-size: 28px;
+      font-size: 20px;
     }
 
     &--seeMore {

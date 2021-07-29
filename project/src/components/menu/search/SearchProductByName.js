@@ -4,12 +4,16 @@ import Sort from './../../product/sort/Sort'
 import './../../product/products.scss'
 import CardItem from './../../product/CardItem'
 import { useSelector } from 'react-redux'
+import { Breadcrumb } from 'antd'
+import { Link } from 'react-router-dom'
+import MyPagination from '../../product/MyPagination'
 
 const SearchProductsByName = ({type}) => {
   const newArr = useSelector(store => store.searchProduct)
-  console.log(newArr);
+
   const [products, setProducts] = useState(newArr)
   const [listSort, setListSort] = useState(newArr)
+
   useEffect(() => {
     setListSort(newArr)
     setProducts(newArr)
@@ -77,27 +81,40 @@ const SearchProductsByName = ({type}) => {
 
   return (
     <div className="products">
-      <div className="col-12"><h2>link</h2></div>
+      <div className="col-12">
+        <div className="row">
+          <div className="col-9">
+            <span>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Link to="/">
+                    trang chủ
+                  </Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Link to="/products">
+                    sản phẩm
+                  </Link>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </span>
+          </div>
+          <div className="col-3 sort">
+            <Sort sortProduct={sortProduct1}/>
+          </div>
+        </div>
+      </div>
+
       <div className="row">
         <div className="col-lg-3">
           <SearchProduct
             searchByPrice={searchByPrice1}
           />
         </div>
-        <div className="col-lg-9">
-          <div className="col-12 sort">
-            <Sort sortProduct={sortProduct1}/>
-          </div>
+
+        <div className="col-lg-9 products__content">
           <div className="row">
-            {
-              listSort.map((item, index) => {
-                return (
-                  <div className="col-sm-12 col-lg-4 item"  key={index}>
-                    <CardItem item={item} />
-                  </div>
-                  )
-                })
-            }
+            <MyPagination listSort={listSort}/>
           </div>
         </div>
       </div>

@@ -26,6 +26,7 @@ const router = [
   {path: '/fruit', exact: true,type:'qua', Component: Products},
   {path: '/cart', exact: true, Component: Cart},
   {path: '/products/:id', exact: true, Component: Product},
+  //{path: '/productProfile/:id', exact: true, Component: Product},
   {path: '/products', exact: true, type: '', Component: Products},
   {path: '/searchProducts', exact: true, type: '', Component: searchProduct},
   {path: '/login', exact: true, type: '', Component: Login},

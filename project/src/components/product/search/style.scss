@@ -23,10 +23,15 @@
     padding: 10px;
     li {
       margin: 5px 0px;
+      font-size: 16px;
       transition: all 0.2s ease;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center
     }
     li:hover {
-      color: #80bb35;
+      color: #fff;
+      background-color: #80bb35;
     }
   }
 }

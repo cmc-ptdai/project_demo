@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import productApi from '../../api/productApi'
 import './ProfileProduct.scss'
+import { Breadcrumb } from 'antd'
 import {
   addCartByProfile as addCartByProfileAction,
   addCartByProfileNoUser as addCartByProfileNoUserAction
@@ -26,6 +27,7 @@ const ProfileProduct = () => {
   const dispatch = useDispatch()
 
   const user = useSelector(store => store.userReducer.user)
+  const listProduct = useSelector(store => store.productReducer)
   const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
 
   const [product, setProduct] = useState(null)
@@ -39,8 +41,8 @@ const ProfileProduct = () => {
   const fetchProduct = async () => {
     try {
       const response = await productApi.getById(param.id)
-      console.log(response);
       setProduct(response)
+      getValueEvaluate('3')
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +51,7 @@ const ProfileProduct = () => {
   useEffect(() => {
     fetchProduct()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [param])
 
   const increment = () => {
     if (number + 1 >=  product.countPay) {
@@ -120,23 +122,82 @@ const ProfileProduct = () => {
       product.evaluates.forEach((item, index) => {
         count = count + item.point
       });
-      const s = count / product.evaluates.length
+      const s = (count - (count % product.evaluates.length))  / product.evaluates.length
+      console.log(s);
       setEvaluateDefault(s)
     }
   }
+
+  let outstanding = []
+  if ( listProduct ) {
+    const newArr = [...listProduct]
+    newArr.sort((a, b) => {
+      if (a.quantityPurchased > b.quantityPurchased) {
+        return -1;
+      } else {
+        return 0
+      }
+    })
+    const listOutstanding = []
+    for (let index = 0; index < 9; index++) {
+      listOutstanding.push(newArr[index])
+    }
+    outstanding = [...listOutstanding];
+  }
+
   return (
     <>
       {
         product &&
         <div>
           <div className="row">
+            <div className="col-12 directional">
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Link to="/">
+                    trang chủ
+                  </Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Link to="/products">
+                    sản phẩm
+                  </Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <span>{ product.name }</span>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </div>
             <div className="col-lg-3">
-              <div className= "box" >
+              <div className="box" >
                 <div className="search__title">
                   <p>SẢN PHẨM NỔI BẬT</p>
                 </div>
-                <div className="search__content">
-                  <h1>danh sách sản phẩm nổi bật </h1>
+                <div className="search__content boxOutstanding">
+                  {
+                    listProduct.length > 0 && (
+                      outstanding.map((item, index) => {
+                        return (
+                          <Link to={`/products/${item.id}` } key={index}>
+                            <div className="item__outstanding">
+                              <div className="item__outstanding__img">
+                                <img src={item.img} alt="img"/>
+                              </div>
+                              <div className="item__outstanding__information">
+                                <p className="item__outstanding__information-name">
+                                  {item.name}
+                                </p>
+                                <p className="item__outstanding__information-price">
+                                  {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+                        )
+                      })
+                    )
+                  }
+
                 </div>
               </div>
             </div>
@@ -159,14 +220,20 @@ const ProfileProduct = () => {
                     )}
                   </p>
 
-                  <h2 className="price">
+                  <div className="price">
                     {
                       product.sale > 0 && (
-                        <span className="price__sale"> {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>
+                        <div className="price__sale">
+                          <span className="price__sale-text">Giá gốc:</span>
+                          <span className="price__sale-number">{product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>
+                          <span className="price__sale-numberSale">(-{product.sale}%)</span>
+                        </div>
                       )
                     }
-                    {(product.price - (product.price * product.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  VND</h2>
+                    <span className="price__real">
+                      {(product.price - (product.price * product.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
+                    </span>
+                  </div>
 
                   <div className="nutrition">
                     giá trị dinh dưỡng
@@ -184,11 +251,12 @@ const ProfileProduct = () => {
                     <button className={product.countPay > 0 ? "buy" : "disabledBuy"} onClick={buyProduct} disabled = {product.countPay > 0 ? false : true}>Mua hàng</button>
 
                   </div>
-                  <p>Địa chỉ: <span>aaaaa</span></p>
+                  <p className="address">Địa chỉ: <span>18T1 The Godel An Khánh, An Khánh, Hoài Đức, Hà Nội</span></p>
                 </div>
               </div>
             </div>
           </div>
+
           <Tabs defaultActiveKey="1" type="card" onChange={getValueEvaluate}>
             <TabPane tab="Mô tả" key="1">
               mô tả sản phẩm
@@ -200,25 +268,30 @@ const ProfileProduct = () => {
 
             <TabPane tab="Đánh giá" key="3">
               <h3>Đánh giá sản phẩm</h3>
-              <span>
-                <Rate
-                  allowHalf
-                  disabled
-                  tooltips={desc}
-                  onChange={handleChange}
-                  value={evaluateDefault}
-                />
-                {
-                  evaluateDefault ?
-                  <span className="ant-rate-text">{desc[evaluateDefault - 1]}</span>
-                  : ''
-                }
-              </span>
-              <span className={ user && (user.id === undefined ? "evaluateDisable" :  "evaluate" )}>
-
-                <button onClick={showModal} disabled={user && (user.id === undefined ? true : false)}>Đánh giá sản phẩm</button>
-                <span style={{display: user && (user.id === undefined ? 'block' : 'none')}}>( Đằng nhập để gửi đánh giá của bạn )</span>
-              </span>
+              <div className="evaluate-content">
+                <div className="evaluate-content-rate">
+                  <span>
+                    <Rate
+                      allowHalf
+                      disabled
+                      tooltips={desc}
+                      onChange={handleChange}
+                      value={evaluateDefault}
+                    />
+                    {
+                      evaluateDefault ?
+                      <span className="ant-rate-text">{desc[evaluateDefault - 1]}</span>
+                      : ''
+                    }
+                  </span>
+                </div>
+                <div className="evaluate-content-groupButton">
+                  <span className={ user && (user.id === undefined ? "evaluateDisable" :  "evaluate" )}>
+                    <button onClick={showModal} disabled={user && (user.id === undefined ? true : false)}>Đánh giá sản phẩm</button>
+                    <span style={{display: user && (user.id === undefined ? 'block' : 'none')}}>( Đăng nhập để gửi đánh giá của bạn <Link to='/login'>Đăng nhập tại đây</Link>)</span>
+                  </span>
+                </div>
+              </div>
               <div className="fromEvaluate">
                 <Modal
                   visible={isModalVisible}

@@ -58,6 +58,11 @@ $Green: #80bb35;
     animation-duration: 0.5s;
     z-index: 10;
   }
+  ul li > ul li > ul {
+    margin-left: 201px;
+    margin-top: -52px;
+    border-radius: 10px;
+  }
   .cart {
     font-size: 20px;
     font-weight: 200;

@@ -27,7 +27,7 @@
       "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/hanh-kho.jpg?v=1539588166193",
       "typeID": "cu",
       "species": "kho",
-      "quantityPurchased": 0,
+      "quantityPurchased": 12,
       "comments": [],
       "evaluates": [
         {
@@ -36,7 +36,7 @@
         },
         {
           "id": 1,
-          "point": 4
+          "point": 2
         },
         {
           "id": 5,
@@ -77,12 +77,12 @@
       "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
       "typeID": "nam",
       "species": "tuoi",
-      "quantityPurchased": 12,
+      "quantityPurchased": 13,
       "comments": [],
       "evaluates": [
         {
           "id": 4,
-          "point": 3
+          "point": 2
         }
       ],
       "country": "viet Nam"
@@ -96,12 +96,12 @@
       "img": "https://sieuthiandam.com/wp-content/uploads/2018/03/0001895-khoai-lang-600x600-600x600.jpg",
       "typeID": "cu",
       "species": "tuoi",
-      "quantityPurchased": 0,
+      "quantityPurchased": 12,
       "comments": [],
       "evaluates": [
         {
           "id": 1,
-          "point": 4
+          "point": 1
         }
       ],
       "country": "viet Nam"
@@ -120,7 +120,7 @@
       "evaluates": [
         {
           "id": 1,
-          "point": 4
+          "point": 3
         }
       ],
       "country": "viet Nam"
@@ -153,7 +153,7 @@
       "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 0,
+      "quantityPurchased": 22,
       "comments": [],
       "evaluates": [
         {
@@ -172,7 +172,7 @@
       "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 0,
+      "quantityPurchased": 11,
       "comments": [],
       "evaluates": [
         {

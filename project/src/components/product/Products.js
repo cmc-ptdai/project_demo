@@ -5,11 +5,11 @@ import Sort from './sort/Sort'
 import './products.scss'
 import { Link } from 'react-router-dom'
 import MyPagination from './MyPagination'
+import { Breadcrumb } from 'antd'
 
 const Products = ({typeID}) => {
   const [products, setProducts] = useState([])
   const [listSort, setListSort] = useState([])
-
 
   const fetchProducts = async () => {
     const params = {
@@ -94,30 +94,37 @@ const Products = ({typeID}) => {
     <div className="products">
 
       <div className="col-12">
-        <span>
-          <Link to="/">
-            trang chủ
-          </Link>
-          <i className="fas fa-chevron-right" />
-          <Link to="/products">
-            sản phẩm
-          </Link>
-        </span>
+        <div className="row">
+          <div className="col-9">
+            <span>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Link to="/">
+                    trang chủ
+                  </Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Link to="/products">
+                    sản phẩm
+                  </Link>
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            </span>
+          </div>
+          <div className="col-3 sort">
+            <Sort sortProduct={sortProduct1}/>
+          </div>
+        </div>
       </div>
 
       <div className="row">
-
         <div className="col-lg-3">
           <SearchProduct
             searchByPrice={searchByPrice1}
           />
         </div>
-        <div className="col-lg-9">
 
-          <div className="col-12 sort">
-            <Sort sortProduct={sortProduct1}/>
-          </div>
-
+        <div className="col-lg-9 products__content">
           <div className="row">
             <MyPagination listSort={listSort}/>
           </div>

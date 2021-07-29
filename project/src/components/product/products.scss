@@ -2,6 +2,14 @@
   .sort {
     text-align: right;
   }
+  &__content {
+    margin-top: 20px;
+    padding: 0;
+  }
+  .product__pagination {
+    margin-top: 30px;
+    text-align: center;
+  }
 }
 
 @media only screen and (max-width: 739px) {
