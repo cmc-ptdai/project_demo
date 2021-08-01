@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Button, InputNumber, Alert } from 'antd';
+import { Form, Input, Button, InputNumber } from 'antd';
 import {Link} from "react-router-dom"
 import './style.scss'
 
@@ -22,9 +22,6 @@ const SingUp = () => {
     form.resetFields();
   };
 
-  // const onFinishFailed = (errorInfo) => {
-  //   console.log('Failed:', errorInfo);
-  // };
   return (
     <div className="singUp">
       <Form
@@ -32,7 +29,6 @@ const SingUp = () => {
         {...layout}
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        //onFinishFailed={onFinishFailed}
       >
          <Form.Item
           label="Họ Tên"

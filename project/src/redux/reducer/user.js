@@ -369,6 +369,8 @@ const useReducer  = (state = initialState, action) => {
         listProduct: listProduct,
         money: money,
         status: 0,
+        dateCreate: new Date(),
+        dateUpdate: new Date()
       }
       orderApi.addOrder(newOder)
       return state
@@ -395,6 +397,8 @@ const useReducer  = (state = initialState, action) => {
         username: action.payload.profile.username,
         money: money,
         status: 0,
+        dateCreate: new Date(),
+        dateUpdate: new Date()
       }
       orderApi.addOrder(newOder)
       return state
@@ -498,6 +502,7 @@ const useReducer  = (state = initialState, action) => {
       userApi.addCart(newUser.id, newUser)
     }
 
+    break
     default:
       return state
   }

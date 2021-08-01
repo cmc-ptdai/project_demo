@@ -18,13 +18,15 @@ import {getUser as getUserAction} from './redux/actions/userAction';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ScrollToTop from './ScrollToTop';
+import ListBanner from './components/product/listBanner/index'
+import Footer from './components/footer/Footer'
 
 const style = {
   height: 40,
   width: 40,
   lineHeight: '40px',
   borderRadius: 4,
-  backgroundColor: '#80bb35',
+  backgroundColor: '#fe9705',
   color: '#fff',
   textAlign: 'center',
   fontSize: 14,
@@ -59,8 +61,8 @@ const App = () => {
   return (
     <>
       <Router>
-      <ScrollToTop/>
-      <Header/>
+        <ScrollToTop/>
+        <Header/>
         <Row>
           <Col span={24} className="menu">
             <Menu/>
@@ -82,6 +84,8 @@ const App = () => {
             </Col>
           </div>
         </Row>
+        <ListBanner />
+        <Footer />
       </Router>
       <BackTop >
         <div style={style}><i className="fas fa-arrow-up"></i></div>

@@ -109,13 +109,13 @@
     {
       "id": 5,
       "name": "Hành lá",
-      "countPay": 98,
+      "countPay": 97,
       "price": 50000,
       "sale": 11,
       "img": "https://i2.wp.com/thucphamtantai.com/wp-content/uploads/2019/10/hanh-la.jpg",
       "typeID": "rau",
       "species": "tuoi",
-      "quantityPurchased": 2,
+      "quantityPurchased": 3,
       "comments": [],
       "evaluates": [
         {

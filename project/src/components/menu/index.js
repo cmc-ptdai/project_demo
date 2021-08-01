@@ -77,11 +77,11 @@ const MyMenu = () => {
     // },
     {
       title: 'Giới thiệu',
-      path: '/tubers'
+      path: '/introduce'
     },
     {
       title: 'Liên hệ',
-      path: '/fruit'
+      path: '/concat'
     },
     // {
     //   title: 'Chỉ đường',

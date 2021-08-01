@@ -23,7 +23,6 @@ const Login = () => {
   const [listUser, setListUser] = useState([])
   const [user, setUser] = useState({})
   const [visible, setVisible] = useState(false)
-  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const fetchUser = async () => {
     const response = await UserApi.getUser()
@@ -160,7 +159,6 @@ const Login = () => {
         <Modal
           title="Thông báo"
           visible={visible}
-          confirmLoading={confirmLoading}
           onCancel={handleCancel}
         >
           <p>bạn đang có một số sản phẩm trong giỏ hàng đã thêm lúc chưa đăng nhập, bạn có muốn thêm sản phẩm đó vào giở hàng của mình không?</p>

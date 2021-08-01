@@ -1,7 +1,18 @@
 .group-product {
-  width: 100%;
+  position: relative;
+  width:  97%;
   margin-top: 10px;
   margin-left: 15px;
+  &:after {
+    right: 0;
+    top: 17px;
+    z-index: 50;
+    position: absolute;
+    content: "";
+    width: 85%;
+    height: 2px;
+    background-color: #80bb35;
+  }
   &__product {
     .slick-prev:before, .slick-next:before {
       color: #ccc;
@@ -20,6 +31,7 @@
       transform: translateX(-50px);
       z-index: 2;
       transition: all .3s ease-in-out;
+      right: -70px;
     }
 
     .slick-slider {
@@ -62,10 +74,10 @@
     cursor: pointer;
 
     i {
-      animation: mymove 2s infinite;
+      animation: myMove 2s infinite;
       background-color: none;
     }
-    @keyframes mymove {
+    @keyframes myMove {
       from { color: #cae2fa; left: 0px;}
       to {left: 15px;}
     }

@@ -1,14 +1,14 @@
 .list-slide {
   .slide {
     width: 100%;
-    height: 500px;
+    height: 380px;
     .carousel-inner {
       border-radius: 20px;
       img {
         overflow: hidden;
         object-fit: cover;
         width: 100%;
-        height: 500px;
+        height: 380px;
         image-rendering: pixelated;
       }
     }

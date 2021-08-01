@@ -61,14 +61,6 @@
               background: rgba(#000, 0.2);
             }
           }
-          // li {
-          //   &:first-child {
-          //     border-radius: 8px 8px 0px 0px;
-          //   }
-          //   &:last-child {
-          //     border-radius: 8px 8px 0px 0px;
-          //   }
-          // }
         }
       }
     }
@@ -93,9 +85,9 @@
 
         span {
           position: absolute;
-          background: #fff;
+          background: rgb(250, 47, 47);
           padding: 2px 7px;
-          color: #000;
+          color: #fff;
           font-size: 20px;
           border-radius: 50px;
           top: -20%;

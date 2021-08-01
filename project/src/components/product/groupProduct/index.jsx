@@ -16,10 +16,6 @@ const settings = {
 };
 
 const GroupProduct = ({title, products, loai, species}) => {
-
-  const seeMoreProduct = () => {
-
-  }
   return (
     <div className="group-product">
       {
@@ -44,7 +40,7 @@ const GroupProduct = ({title, products, loai, species}) => {
                   }
               </Slider>
             </div>
-            <div className="group-product__seeMore" onClick={seeMoreProduct}>
+            <div className="group-product__seeMore">
               <Link to="/vegetable">xem thêm <i className="fad fa-chevron-double-right"></i></Link>
             </div>
           </>
