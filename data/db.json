@@ -52,12 +52,12 @@
     {
       "id": 2,
       "name": "Nấm hương khô",
-      "countPay": 98,
+      "countPay": 87,
       "price": 25000,
       "img": "https://cf.shopee.vn/file/8a6e7c8c8157c38da6af529fdc7b5332",
       "typeID": "nam",
       "species": "kho",
-      "quantityPurchased": 2,
+      "quantityPurchased": 13,
       "sale": 3,
       "comments": [],
       "evaluates": [
@@ -71,13 +71,13 @@
     {
       "id": 3,
       "name": "Nấm đùi gà",
-      "countPay": 88,
+      "countPay": 67,
       "price": 150000,
       "sale": 0,
       "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
       "typeID": "nam",
       "species": "tuoi",
-      "quantityPurchased": 13,
+      "quantityPurchased": 34,
       "comments": [],
       "evaluates": [
         {
@@ -109,13 +109,13 @@
     {
       "id": 5,
       "name": "Hành lá",
-      "countPay": 97,
+      "countPay": 1,
       "price": 50000,
       "sale": 11,
       "img": "https://i2.wp.com/thucphamtantai.com/wp-content/uploads/2019/10/hanh-la.jpg",
       "typeID": "rau",
       "species": "tuoi",
-      "quantityPurchased": 3,
+      "quantityPurchased": 7,
       "comments": [],
       "evaluates": [
         {
@@ -130,11 +130,11 @@
       "name": "Táo xanh Mỹ",
       "price": 50000,
       "sale": 0,
-      "countPay": 99,
+      "countPay": 84,
       "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 1,
+      "quantityPurchased": 16,
       "comments": [],
       "evaluates": [
         {
@@ -149,11 +149,11 @@
       "name": "Táo xanh Mỹ",
       "price": 50000,
       "sale": 0,
-      "countPay": 100,
+      "countPay": 82,
       "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 22,
+      "quantityPurchased": 40,
       "comments": [],
       "evaluates": [
         {
@@ -168,11 +168,11 @@
       "name": "Táo đỏ Mỹ",
       "price": 115000,
       "sale": 20,
-      "countPay": 100,
+      "countPay": 93,
       "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 11,
+      "quantityPurchased": 18,
       "comments": [],
       "evaluates": [
         {
@@ -187,11 +187,11 @@
       "name": "Táo đỏ Mỹ",
       "price": 125000,
       "sale": 0,
-      "countPay": 98,
+      "countPay": 84,
       "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
       "typeID": "qua",
       "species": "tuoi",
-      "quantityPurchased": 2,
+      "quantityPurchased": 16,
       "comments": [],
       "evaluates": [
         {
@@ -235,34 +235,16 @@
           "name": "Hành lá",
           "img": "https://i2.wp.com/thucphamtantai.com/wp-content/uploads/2019/10/hanh-la.jpg",
           "price": 50000,
-          "countPay": 98,
-          "count": 1
-        },
-        {
-          "id": 6,
-          "name": "Táo xanh Mỹ",
-          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
-          "price": 50000,
-          "count": 5
-        },
-        {
-          "id": 18,
-          "name": "Táo xanh Mỹ",
-          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
-          "price": 50000,
-          "countPay": 100,
-          "count": 1
-        },
-        {
-          "id": 118,
-          "name": "Táo đỏ Mỹ",
-          "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
-          "price": 125000,
-          "countPay": 98,
+          "countPay": 1,
           "count": 1
         }
       ],
-      "order": [],
+      "order": [
+        "84831cbb-c53a-427c-bcc1-200bcf5566dd",
+        "db04d545-347a-4992-ad6c-4a839a5838f6",
+        "d3d0f408-ae39-466a-8d41-20f54f875152",
+        "b820531d-fd25-48b9-8bbd-a8148db42e84"
+      ],
       "userName": "dai",
       "gender": "nam",
       "email": "daiphung.hd@gmail.com",
@@ -300,5 +282,172 @@
       "dateUpdate": "2021-06-15T19:38:32+07:00"
     }
   ],
-  "order": []
+  "order": [
+    {
+      "id": "4f4c5f12-0e89-47c5-ad30-1419d78a0be2",
+      "idUser": "",
+      "listProduct": [
+        {
+          "id": 18,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 93,
+          "count": 1
+        },
+        {
+          "id": 3,
+          "name": "Nấm đùi gà",
+          "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
+          "price": 150000,
+          "countPay": 81,
+          "count": 2
+        }
+      ],
+      "address": "âcscascascascascasc",
+      "email": "daiphung.hd@gmail.com",
+      "phone": "0963331033",
+      "username": "admin",
+      "money": 0,
+      "status": 0,
+      "dateCreate": "2021-08-01T19:10:01.690Z",
+      "dateUpdate": "2021-08-01T19:10:01.690Z"
+    },
+    {
+      "id": "84831cbb-c53a-427c-bcc1-200bcf5566dd",
+      "idUser": "2",
+      "listProduct": [
+        {
+          "id": 18,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 85,
+          "count": 1
+        },
+        {
+          "id": 6,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 87,
+          "count": 1
+        },
+        {
+          "id": 118,
+          "name": "Táo đỏ Mỹ",
+          "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
+          "price": 125000,
+          "countPay": 87,
+          "count": 1
+        },
+        {
+          "id": 3,
+          "name": "Nấm đùi gà",
+          "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
+          "price": 150000,
+          "countPay": 69,
+          "count": 1
+        },
+        {
+          "id": 2,
+          "name": "Nấm hương khô",
+          "img": "https://cf.shopee.vn/file/8a6e7c8c8157c38da6af529fdc7b5332",
+          "price": 25000,
+          "countPay": 88,
+          "count": 1
+        }
+      ],
+      "money": 400000,
+      "status": 0
+    },
+    {
+      "id": "db04d545-347a-4992-ad6c-4a839a5838f6",
+      "idUser": "2",
+      "listProduct": [
+        {
+          "id": 6,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 86,
+          "count": 1
+        },
+        {
+          "id": 118,
+          "name": "Táo đỏ Mỹ",
+          "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
+          "price": 125000,
+          "countPay": 86,
+          "count": 1
+        },
+        {
+          "id": 3,
+          "name": "Nấm đùi gà",
+          "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
+          "price": 150000,
+          "countPay": 68,
+          "count": 1
+        },
+        {
+          "id": 2,
+          "name": "Nấm hương khô",
+          "img": "https://cf.shopee.vn/file/8a6e7c8c8157c38da6af529fdc7b5332",
+          "price": 25000,
+          "countPay": 87,
+          "count": 1
+        }
+      ],
+      "money": 350000,
+      "status": 0
+    },
+    {
+      "id": "d3d0f408-ae39-466a-8d41-20f54f875152",
+      "idUser": "2",
+      "listProduct": [
+        {
+          "id": 3,
+          "name": "Nấm đùi gà",
+          "img": "https://organicfood.vn/image/cache/catalog/nam-dui-ga-han-quoc-king-oyster-500x500.jpg",
+          "price": 150000,
+          "countPay": 68,
+          "count": 1
+        }
+      ],
+      "money": 150000,
+      "status": 0
+    },
+    {
+      "id": "b820531d-fd25-48b9-8bbd-a8148db42e84",
+      "idUser": "2",
+      "listProduct": [
+        {
+          "id": 6,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 85,
+          "count": 1
+        },
+        {
+          "id": 18,
+          "name": "Táo xanh Mỹ",
+          "img": "https://product.hstatic.net/1000282430/product/tao_xanh_my_grande.jpg",
+          "price": 50000,
+          "countPay": 83,
+          "count": 1
+        },
+        {
+          "id": 118,
+          "name": "Táo đỏ Mỹ",
+          "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
+          "price": 125000,
+          "countPay": 85,
+          "count": 1
+        }
+      ],
+      "money": 225000,
+      "status": 0
+    }
+  ]
 }

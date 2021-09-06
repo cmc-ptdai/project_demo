@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Form, Input, Modal } from 'antd';
+import { Table, Button, Form, Input, Modal, Alert } from 'antd';
 import './cart.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -11,7 +11,6 @@ import {
   deleteListItemCart as deleteListItemCartAction,
   payCart as payCartAction,
   payCartNoUser as payCartNoUserAction,
-  addOrder as addOrderAction,
   addOrderNoUser as addOrderNoUserAction,
   incrementProjectNoUser as incrementProjectNoUserAction,
   decrementProjectNoUser as decrementProjectNoUserAction,
@@ -25,6 +24,7 @@ import {
   deleteItemByPayCart as deleteItemByPayCartAction
 } from './../../redux/actions/products'
 import userApi from '../../api/userApi'
+import ProductApi from '../../api/productApi'
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -39,8 +39,7 @@ const Cart = () => {
   const [loading, setLoading] = useState(false)
   const [visible, setVisible] = useState(false)
   const [totalMoney, setTotalMoney] = useState(0)
-
-
+  const [visibleAlert , setVisibleAlert] = useState(false)
 
   useEffect(() => {
     if(user.id) {
@@ -168,11 +167,11 @@ const Cart = () => {
       if (index !== -1) {
         buttonDelete.classList.add("overlay");
       } else {
-        buttonDelete.classList.remove("overlay");
+        if (buttonDelete != null) {
+          buttonDelete.classList.remove("overlay");
+        }
       }
     })
-
-
   };
 
   const rowSelection = {
@@ -203,7 +202,7 @@ const Cart = () => {
     //   setNumber(a)
     // }
     const [...newData] = products
-     const abc =   newData.map(item => {
+     const abc =  newData.map(item => {
       if (item.id === Number(id)) {
         return {
           ...item,
@@ -282,55 +281,86 @@ const Cart = () => {
      } else {
        dispatch(deleteListItemCartNoUserAction(selectedRowKeys))
      }
-    // setTimeout(() => {
+    setTimeout(() => {
       setSelectedRowKeys([])
-    //   setLoading(false)
-    // }, 500);
+      setLoading(false)
+     }, 500);
   };
 
+  const handleCancel = () => {
+    setVisibleAlert(false)
+  }
   //pay cart no user
-  const onFinish = values => {
+  const onFinish = async (values) => {
     if (values.username !== undefined && values.phone !== undefined && values.email !== undefined && values.address !== undefined) {
       const listPayCart = []
+      const newListKey = []
+      const newListKeyFail = []
+
+      const productApi = await ProductApi.getAll()
+
       selectedRowKeys.forEach(item => {
         products.forEach(elem => {
-          if(item === elem.id) {
-            listPayCart.push(elem)
+          if (item === elem.id) {
+            const index = productApi.findIndex(a => a.id === elem.id)
+            if (productApi[index].countPay > elem.count ) {
+              newListKey.push(item)
+              listPayCart.push(elem);
+            } else {
+              newListKeyFail.push(item)
+            }
           }
-        })
+        });
       })
       const ojb = {
-        listId : selectedRowKeys,
+        listId : listPayCart,
         profile: values
       }
       dispatch(payCartNoUserAction(ojb))
       dispatch(addOrderNoUserAction(ojb))
       dispatch(deleteItemByPayCartAction(listPayCart))
+      onSelectChange([])
       setSelectedRowKeys([])
       onReset()
+      if (newListKeyFail.length > 0) {
+        setVisibleAlert(true)
+      }
     }
   };
 
   // pay cart user
-  const PayCart = () => {
-    if (user.id) {
+  const PayCart = async () => {
+     if (user.id) {
+      const productApi = await ProductApi.getAll()
       const listPayCart = []
+      const newListKey = []
+      const newListKeyFail = []
+
       selectedRowKeys.forEach(item => {
         products.forEach(elem => {
-          if(item === elem.id) {
-            listPayCart.push(elem)
+          if (item === elem.id) {
+            const index = productApi.findIndex(a => a.id === elem.id)
+            if (productApi[index].countPay > elem.count ) {
+              newListKey.push(item)
+              listPayCart.push(elem);
+            } else {
+              newListKeyFail.push(item)
+            }
           }
-        })
+        });
       })
-
-      dispatch(payCartAction(selectedRowKeys))
-      dispatch(addOrderAction(selectedRowKeys))
-      dispatch(deleteItemByPayCartAction(listPayCart))
-      setSelectedRowKeys([])
-      setTotalMoney(0)
-      setTimeout(() => {
-        dispatch(deleteListItemCartAction(selectedRowKeys))
-      }, 500)
+        dispatch(payCartAction(listPayCart))
+        //// dispatch(addOrderAction(selectedRowKeys))
+        if (newListKeyFail.length > 0) {
+          setVisibleAlert(true)
+        }
+        dispatch(deleteItemByPayCartAction(listPayCart))
+        onSelectChange([])
+        setTotalMoney(0)
+        setTimeout(() => {
+          dispatch(deleteListItemCartAction(newListKey))
+          setSelectedRowKeys([])
+        }, 500)
     } else {
       setVisible(true)
     }
@@ -415,7 +445,7 @@ const Cart = () => {
                     validator(rule, value = "") {
                       const re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
                       if (value.length > 0 && !re.test(value)) {
-                        return Promise.reject("Minimum 10 characters");
+                        return Promise.reject("vui lòng nhập ít hơn 10 kí tự");
                       } else {
                         return Promise.resolve();
                       }
@@ -448,15 +478,15 @@ const Cart = () => {
               <Form.Item
                 name="address"
                 rules={[{ required: true, message: 'Please input your address!' },
-                  ({ getFieldValue }) => ({
-                    validator(rule, value = "") {
-                      if (value.length > 0 && value.length < 10) {
-                        return Promise.reject("Minimum 10 characters");
-                      } else {
-                        return Promise.resolve();
-                      }
-                    }
-                  })
+                  // ({ getFieldValue }) => ({
+                  //   validator(rule, value = "") {
+                  //     if (value.length > 0 && value.length < 10) {
+                  //       return Promise.reject("Minimum 10 characters");
+                  //     } else {
+                  //       return Promise.resolve();
+                  //     }
+                  //   }
+                  // })
                 ]}
               >
                 <Input />
@@ -471,6 +501,21 @@ const Cart = () => {
                 </Form.Item>
             </Form>
           </Modal>
+        </div>
+        <div className="cart__mymodel__alert">
+        <Modal
+          title="Thông báo"
+          visible={visibleAlert}
+          onCancel={handleCancel}
+        >
+          <p>Bạn đang có một vài sản phẩm vượt quá số lượng</p>
+          <p>bạn có thể giảm số lượng đi và tiếp tục mua hàng!</p>
+          <div className="cart__mymodel__alert-btn">
+            <Button type="primary" onClick={handleCancel}>
+              Dồng ý
+            </Button>
+          </div>
+        </Modal>
         </div>
       </div>
     </div>

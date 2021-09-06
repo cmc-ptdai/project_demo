@@ -17,8 +17,8 @@ const { TabPane } = Tabs;
 const openNotification = (item) => {
   notification.open({
     message: '',
-    description:`Bạn đã thêm thành công một sản phẩm ${item.name} vào giỏ hàng`,
-    icon: <i className="fad fa-alicorn" style={{fontSize: "40px", color: '#fe9705'}}></i>,
+    description:<span>Bạn đã thêm thành công một sản phẩm <b>{item.name}</b> vào giỏ hàng</span>,
+    icon: <i className="fab fa-optin-monster" style={{fontSize: "40px", color: '#fe9705'}}></i>,
   });
 };
 

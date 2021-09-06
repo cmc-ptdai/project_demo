@@ -23,10 +23,13 @@ const CardItem = ({item}) => {
       await dispatch(addCartAction(item))
       setTimeout(() => {
         openNotification(item)
-      }, 300);
+      }, 100);
 
     } else {
       dispatch(addCartNoUserAction(item))
+      setTimeout(() => {
+        openNotification(item)
+      }, 100);
     }
 
   }

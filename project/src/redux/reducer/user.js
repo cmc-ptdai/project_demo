@@ -44,45 +44,70 @@ const useReducer  = (state = initialState, action) => {
         user: action.payload
       }
     }
-    // gộp các mặt hàng khi chưa đăng nhập và sau khi đăng nhập có trước ở tài khoản
-    // lặp cart ko có user xem có chùng với sản phẩm nào trong tài khoản
-    // có thì cộng 2 count lại còn không có thì thêm mới cart
 
     case ADD_CART: {
       let cartAction = user.cart
       let newUser = {}
-      if (cartAction.length >= 0) {
-        const index = cartAction.findIndex(item => item.id === action.payload.id)
-        if (index !== -1) {
-          const newData = {
-            ...cartAction[index],
-            count: cartAction[index].count + 1,
-          }
+      // if (cartAction.length >= 0) {
+      //   const index = cartAction.findIndex(item => item.id === action.payload.id)
+      //   if (index !== -1) {
+      //     const newData = {
+      //       ...cartAction[index],
+      //       count: cartAction[index].count + 1,
+      //     }
 
-          cartAction.splice(index, 1 , newData)
-          newUser = {
-            ...user,
-            cart: cartAction
-          }
+      //     cartAction.splice(index, 1 , newData)
+      //     newUser = {
+      //       ...user,
+      //       cart: cartAction
+      //     }
 
-          userApi.addCart(user.id, newUser)
-        } else {
-          const newData = {
-            id: action.payload.id,
-            name: action.payload.name,
-            img: action.payload.img,
-            price: action.payload.price,
-            countPay: action.payload.countPay,
-            count: 1,
-          }
-          cartAction.push(newData)
-          newUser = {
-            ...user,
-            cart: cartAction
-          }
+      //     userApi.addCart(user.id, newUser)
+      //   } else {
+      //     const newData = {
+      //       id: action.payload.id,
+      //       name: action.payload.name,
+      //       img: action.payload.img,
+      //       price: action.payload.price,
+      //       count: 1,
+      //     }
+      //     cartAction.push(newData)
+      //     newUser = {
+      //       ...user,
+      //       cart: cartAction
+      //     }
 
-          userApi.addCart(user.id, newUser)
+      //     userApi.addCart(user.id, newUser)
+      //   }
+      // } else {
+      //   const newData = {
+      //     id: action.payload.id,
+      //     name: action.payload.name,
+      //     img: action.payload.img,
+      //     price: action.payload.price,
+      //     count: 1,
+      //   }
+      //   cartAction.push(newData)
+      //   newUser = {
+      //     ...user,
+      //     cart: cartAction
+      //   }
+      //   userApi.addCart(user.id, newUser)
+      // }
+      const index = cartAction.findIndex(item => item.id === action.payload.id)
+      if (index !== -1) {
+        const newData = {
+          ...cartAction[index],
+          count: cartAction[index].count + 1,
         }
+
+        cartAction.splice(index, 1 , newData)
+        newUser = {
+          ...user,
+          cart: cartAction
+        }
+
+        userApi.addCart(user.id, newUser)
       } else {
         const newData = {
           id: action.payload.id,
@@ -97,6 +122,7 @@ const useReducer  = (state = initialState, action) => {
           ...user,
           cart: cartAction
         }
+
         userApi.addCart(user.id, newUser)
       }
       return {
@@ -110,38 +136,38 @@ const useReducer  = (state = initialState, action) => {
       let cartAction = user.cart
       let newData = {}
       let newUser = {}
-        const index = cartAction.findIndex(item => item.id === action.payload.product.id)
-        if (index !== -1) {
-          newData = {
-            ...cartAction[index],
-            count: cartAction[index].count + action.payload.number,
-          }
+      const index = cartAction.findIndex(item => item.id === action.payload.product.id)
+      if (index !== -1) {
+        newData = {
+          ...cartAction[index],
+          count: cartAction[index].count + action.payload.number,
+        }
 
-          cartAction.splice(index, 1 , newData)
-          newUser = {
-            ...user,
-            cart: cartAction
-          }
-          userApi.addCart(user.id, newUser)
-        } else {
-          newData = {
-            id: action.payload.product.id,
-            name: action.payload.product.name,
-            img: action.payload.product.img,
-            price: action.payload.product.price,
-            count: action.payload.number,
-          }
-          cartAction.push(newData)
-          newUser = {
-            ...user,
-            cart: cartAction
-          }
-          userApi.addCart(user.id, newUser)
+        cartAction.splice(index, 1 , newData)
+        newUser = {
+          ...user,
+          cart: cartAction
         }
-        return {
-          ...state,
-          user: newUser
+        userApi.addCart(user.id, newUser)
+      } else {
+        newData = {
+          id: action.payload.product.id,
+          name: action.payload.product.name,
+          img: action.payload.product.img,
+          count: action.payload.number,
+          countPay: action.payload.countPay
         }
+        cartAction.push(newData)
+        newUser = {
+          ...user,
+          cart: cartAction
+        }
+        userApi.addCart(user.id, newUser)
+      }
+      return {
+        ...state,
+        user: newUser
+      }
     }
 
     case INCREMENT_PROJECT:{
@@ -231,8 +257,7 @@ const useReducer  = (state = initialState, action) => {
       let money = 0
       action.payload.forEach(item => {
         cart.forEach(elem => {
-          //xét trương hợp hết hàng
-          if (item === elem.id) {
+          if (item.id === elem.id) {
             listProduct.push(elem)
             money = money + (elem.price * elem.count)
           }
@@ -244,8 +269,11 @@ const useReducer  = (state = initialState, action) => {
         listProduct: listProduct,
         money: money,
         status: 0,
+        dateCreate: new Date(),
+        dateUpdate: new Date()
       }
-      order.push(newOder)
+      order.push(newOder.id)
+      orderApi.addOrder(newOder)
       userApi.addCart(user.id, user)
       return {
         ...state,
@@ -255,7 +283,7 @@ const useReducer  = (state = initialState, action) => {
 
     case PAY_CART_NO_USER: {
       action.payload.listId.forEach(elem => {
-        user.cart = user.cart.filter(item => item.id !== elem)
+        user.cart = user.cart.filter(item => item.id !== elem.id)
       })
       localStorage.setItem('cart', JSON.stringify(user.cart))
       return {
@@ -353,12 +381,12 @@ const useReducer  = (state = initialState, action) => {
     }
 
     case ADD_ORDER: {
-      const listProduct = []
+      // const listProduct = []
       let money = 0
       action.payload.forEach(item => {
         cart.forEach(elem => {
           if (item === elem.id ) {
-            listProduct.push(elem)
+            // listProduct.push(elem)
             money = money + (elem.price * elem.count)
           }
         })
@@ -366,7 +394,7 @@ const useReducer  = (state = initialState, action) => {
       const newOder = {
         id: uuidv4(),
         idUser: idUser,
-        listProduct: listProduct,
+        listProduct: action.payload,
         money: money,
         status: 0,
         dateCreate: new Date(),
@@ -377,12 +405,12 @@ const useReducer  = (state = initialState, action) => {
     }
 
     case ADD_ORDER_NO_USER: {
-      const listProduct = []
+      // const listProduct = []
       let money = 0
       action.payload.listId.forEach(item => {
         cart.forEach(elem => {
           if (item === elem.id ) {
-            listProduct.push(elem)
+            // listProduct.push(elem)
             money = money + (elem.price * elem.count)
           }
         })
@@ -390,7 +418,7 @@ const useReducer  = (state = initialState, action) => {
       const newOder = {
         id: uuidv4(),
         idUser: '',
-        listProduct: listProduct,
+        listProduct: action.payload.listId,
         address: action.payload.profile.address,
         email: action.payload.profile.email,
         phone: action.payload.profile.phone,
@@ -400,7 +428,8 @@ const useReducer  = (state = initialState, action) => {
         dateCreate: new Date(),
         dateUpdate: new Date()
       }
-      orderApi.addOrder(newOder)
+      console.log(newOder);
+      //orderApi.addOrder(newOder)
       return state
     }
 
@@ -500,6 +529,7 @@ const useReducer  = (state = initialState, action) => {
         }
       })
       userApi.addCart(newUser.id, newUser)
+      return state
     }
 
     break
