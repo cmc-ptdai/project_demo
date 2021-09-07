@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select, Input } from 'antd';
-import { fetchUser } from '../../../redux/Reducer/userSlice';
 import './style.scss';
 import MyTable from './table'
 
 const { Option } = Select;
 
 const Content = () => {
-  const dispatch = useDispatch();
-  const user = useSelector(store => store.users.listUser)
+  const user = useSelector(store => store.userReducer)
+  console.log('123123123', user);
   const [dataTable, setDataTable] = useState([])
   const [inputSearch, setInputSearch] = useState('')
 
-  useEffect(() => {
-    dispatch(fetchUser())
-  }, [dispatch])
   useEffect(() => {
     setDataTable(user)
   },[user])

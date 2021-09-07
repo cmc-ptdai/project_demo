@@ -4,12 +4,15 @@ import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import ApiUser from '../../../api/apiUser';
+import FromEdit from './FormEdit';
 
 
 const MyTable = ({dataTable}) => {
   const [searchText, setSearchText] = useState('')
   const [searchedColumn, setSearchedColumn] = useState('')
   const [isDelete, setIsDelete] = useState('false')
+  const [userEdit, setUserEdit] = useState(null)
+  const [statusFrom, setStatusFrom] = useState(false)
 
   const getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -154,20 +157,29 @@ const MyTable = ({dataTable}) => {
   ];
 
   const handleOk = async (id) => {
-    await ApiUser.deleteUser(id)
-    message.info('Clicked on yes');
+    // await ApiUser.deleteUser(id)
+    message.info('Clicked on yes',);
+    console.log(id);
   };
 
   const handleCancel = () => {
     message.info('Clicked on No.');
   };
 
+  const editStatusFrom = (childData) => {
+    setStatusFrom(childData)
+  };
+
   const editUser = (record) => {
-    console.log(record);
+    setUserEdit(record)
+    setStatusFrom(true)
   }
 
   return (
     <>
+      {
+        statusFrom && <FromEdit dataUser={userEdit} editStatusFrom={editStatusFrom}/>
+      }
       {
         dataTable && <Table columns={columns} dataSource={dataTable} rowKey="id"/>
       }

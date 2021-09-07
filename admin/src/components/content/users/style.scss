@@ -1,10 +1,10 @@
 .tableUser {
   &__button {
     button {
+      width: 75px;
       text-align: center;
-      width: 85px;
-      &:nth-child(1) {
-        margin-right: 10px;
+      &:nth-child(2) {
+        margin-top: 5px;
       }
     }
   }
@@ -39,6 +39,33 @@
       button {
         border-radius: 1.5rem;
         font-weight: 600
+      }
+    }
+  }
+  .ant-table-tbody {
+    tr {
+      td {
+        padding: 8px 8px;
+        word-break: break-word;
+        height: 90px  !important;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
+
+.ant-modal-footer {
+  display: none !important;
+}
+
+.groupButton {
+  width: 40%;
+  margin: auto;
+  .ant-form-item-control {
+    .ant-form-item-control-input {
+      .ant-form-item-control-input-content {
+        display: flex;
+        justify-content: space-between;
       }
     }
   }

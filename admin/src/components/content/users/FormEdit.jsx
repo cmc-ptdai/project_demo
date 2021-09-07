@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 
-const FromEdit = () => {
-  const [visible, setVisible] = useState(false)
-  render (
+const FromEdit = (props) => {
+  const [form] = Form.useForm();
+  const [visible, setVisible] = useState(true)
+  const onFinish = (value) => {
+    console.log(value);
+    handleCancel()
+  }
+  const handleCancel =  () => {
+    props.editStatusFrom(false)
+    form.resetFields();
+  }
+
+  return (
     <div>
       <Modal
         visible={visible}
         title="Điền thông tin"
         // onOk={handleOk}
-        // onCancel={handleCancel}
+        onCancel={handleCancel}
       >
         <Form
           name="basic"
@@ -35,7 +45,9 @@ const FromEdit = () => {
               })
             ]}
           >
-            <Input />
+            <Input
+              defaultValue={props.dataUser.name}
+            />
           </Form.Item>
           <label>Số điện thoại:</label>
           <Form.Item
@@ -53,7 +65,9 @@ const FromEdit = () => {
               })
             ]}
           >
-            <Input />
+            <Input
+              defaultValue={props.dataUser.phone}
+            />
           </Form.Item>
           <label>Email:</label>
           <Form.Item
@@ -72,7 +86,9 @@ const FromEdit = () => {
               })
             ]}
           >
-            <Input />
+            <Input
+              defaultValue={props.dataUser.email}
+            />
           </Form.Item>
           <label>Địa chỉ:</label>
           <Form.Item
@@ -89,14 +105,16 @@ const FromEdit = () => {
               })
             ]}
           >
-            <Input />
+            <Input
+              defaultValue={props.dataUser.address}
+            />
           </Form.Item>
             <Form.Item  className="groupButton">
-              <Button className="btnSubmit" type="primary" danger onClick={onReset}>
+              <Button className="btnSubmit" type="primary" danger onClick={handleCancel}>
                 Huỷ
               </Button>
               <Button className="btnSubmit" type="primary" htmlType="submit" >
-                Đặt hàng
+                Chỉnh sửa
               </Button>
             </Form.Item>
         </Form>

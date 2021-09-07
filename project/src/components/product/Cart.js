@@ -512,7 +512,7 @@ const Cart = () => {
           <p>bạn có thể giảm số lượng đi và tiếp tục mua hàng!</p>
           <div className="cart__mymodel__alert-btn">
             <Button type="primary" onClick={handleCancel}>
-              Dồng ý
+              Đồng ý
             </Button>
           </div>
         </Modal>

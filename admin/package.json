@@ -18,7 +18,12 @@
     "react-highlight-words": "^0.17.0",
     "react-redux": "^7.2.3",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "jw-react-pagination": "^1.1.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -31,6 +31,7 @@ const style = {
   textAlign: 'center',
   fontSize: 14,
 };
+
 const App = () => {
   const dispatch = useDispatch()
   const fetchProducts = async () => {
