@@ -3,14 +3,19 @@ import { Table, Input, Button, Space, Popconfirm, message } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import ApiUser from '../../../api/apiUser';
-import FromEdit from './FormEdit';
+import FormEdit from './FormEdit'
+import {
+  deleteUser,
+  getUser
+} from '../../../redux/action/userAction'
+import { useDispatch } from 'react-redux';
+import userApi from '../../../api/apiUser'
 
 
 const MyTable = ({dataTable}) => {
+  const dispatch = useDispatch()
   const [searchText, setSearchText] = useState('')
   const [searchedColumn, setSearchedColumn] = useState('')
-  const [isDelete, setIsDelete] = useState('false')
   const [userEdit, setUserEdit] = useState(null)
   const [statusFrom, setStatusFrom] = useState(false)
 
@@ -147,7 +152,10 @@ const MyTable = ({dataTable}) => {
               onConfirm={() => handleOk(record.id)}
               onCancel={handleCancel}
             >
-              <Button type="primary" danger>
+              <Button
+                type="primary"
+                danger
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -156,10 +164,17 @@ const MyTable = ({dataTable}) => {
     },
   ];
 
-  const handleOk = async (id) => {
-    // await ApiUser.deleteUser(id)
-    message.info('Clicked on yes',);
-    console.log(id);
+  const handleOk =  (id) => {
+    dispatch(deleteUser(id))
+    setTimeout( async () => {
+        try {
+          const listUser = await userApi.getAllUser()
+          dispatch(getUser(listUser))
+        } catch (error) {
+          console.log(error);
+        }
+    }, 500);
+    message.info('đã xoá user',);
   };
 
   const handleCancel = () => {
@@ -178,7 +193,7 @@ const MyTable = ({dataTable}) => {
   return (
     <>
       {
-        statusFrom && <FromEdit dataUser={userEdit} editStatusFrom={editStatusFrom}/>
+        statusFrom && <FormEdit dataUser={userEdit} editStatusFrom={editStatusFrom}/>
       }
       {
         dataTable && <Table columns={columns} dataSource={dataTable} rowKey="id"/>

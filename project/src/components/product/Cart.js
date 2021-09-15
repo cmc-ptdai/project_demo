@@ -112,12 +112,12 @@ const Cart = () => {
       }
     },
     {
-      title: 'ĐVT',
-      dataIndex: 'dvt',
+      title: 'Sale (%)',
+      dataIndex: 'sale',
       render: text => {
         return (
           <div>
-            {text}
+            {text}(%)
           </div>
         )
       }
@@ -128,7 +128,7 @@ const Cart = () => {
       render: (text, record) => {
         return (
           <div className = "cart__box-text">
-            <p>{(record.price * record.count).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
+            <p>{((record.price * record.count)- (((record.price * record.count)*record.sale)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
           </div>
         )
       }
@@ -157,7 +157,7 @@ const Cart = () => {
     let price = 0
     selectedRowKeys.forEach(item => {
       const index = dataProducts.findIndex(elem => elem.id === item)
-      price = price + (dataProducts[index].count * dataProducts[index].price)
+      price = price + ((dataProducts[index].count * dataProducts[index].price) - ((dataProducts[index].count * dataProducts[index].price) * dataProducts[index].sale / 100))
     })
     setTotalMoney(price)
 
@@ -230,14 +230,13 @@ const Cart = () => {
          dispatch(numberInputProjectNoUserAction(newNumber))
        }
     }, 100);
-    // dispatch(onchangeInputPayByCartAction(newNumber))
   }
 
   const sumOfMoney = () => {
     let price = 0
     selectedRowKeys.forEach(item => {
       const index = dataProducts.findIndex(elem => elem.id === item)
-      price = price + (dataProducts[index].count * dataProducts[index].price)
+      price = price + ((dataProducts[index].count * dataProducts[index].price) - ((dataProducts[index].count * dataProducts[index].price) * dataProducts[index].sale / 100))
     })
     setTotalMoney(price)
   }

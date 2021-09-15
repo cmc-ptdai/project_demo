@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select, Input } from 'antd';
 import './style.scss';
 import MyTable from './table'
+import FormAdd from './FromAddUser'
 
 const { Option } = Select;
 
 const Content = () => {
   const user = useSelector(store => store.userReducer)
-  console.log('123123123', user);
   const [dataTable, setDataTable] = useState([])
   const [inputSearch, setInputSearch] = useState('')
+  const [statusFromAdd, setEditStatusFromAdd] = useState(false)
 
   useEffect(() => {
     setDataTable(user)
@@ -27,9 +28,19 @@ const Content = () => {
     const arrSearch = user.filter(item => (item.name.toLowerCase().indexOf(valueInput) !== -1 || item.email.toLowerCase().indexOf(valueInput) !== -1 || item.address.toLowerCase().indexOf(valueInput) !== -1 || item.userName.toLowerCase().indexOf(valueInput) !== -1))
     setDataTable(arrSearch)
   }
+  const addUser = () => {
+    setEditStatusFromAdd(true)
+  }
+
+  const editStatusFromAdd = (setToForm) => {
+    setEditStatusFromAdd(setToForm)
+  }
 
   return (
     <>
+      {
+        statusFromAdd && <FormAdd editStatusFromAdd={editStatusFromAdd}/>
+      }
       <div className="tableUser">
         <div className="tableUser__action">
           <div className="tableUser__action--search">
@@ -37,7 +48,10 @@ const Content = () => {
             <i className="fas fa-search" onClick={searchUser}></i>
           </div>
           <div className="tableUser__action--addUser">
-            <Button type="primary" >Add User</Button>
+            <Button
+              type="primary"
+              onClick={addUser}
+            >Add User</Button>
           </div>
         </div>
         <div>

@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  UserOutlined,
   TeamOutlined,
-  ShoppingCartOutlined
+  ShoppingCartOutlined,
+  AppstoreFilled,
+  DropboxOutlined
 } from '@ant-design/icons';
 import './style.scss';
-import User from './content/users/index';
 import { getUser } from '../redux/action/userAction';
 import userApi from '../api/apiUser'
 import {
@@ -26,7 +26,6 @@ const { SubMenu } = Menu;
 
 const Body = () => {
   const store = useSelector(store => store)
-  console.log(store);
   const dispatch = useDispatch();
   const [collapsed, setCollapse] = useState(false)
 
@@ -56,18 +55,23 @@ const Body = () => {
           <Sider trigger={null} collapsible collapsed={collapsed}>
             <div className="logo" />
 
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['user']} onClick={handleClickMenu}>
-              <Menu.Item key="user" icon={<UserOutlined />}>
+            <Menu theme="dark" mode="inline" defaultSelectedKeys={['dashboard']} onClick={handleClickMenu}>
+            <Menu.Item key="dashboard" icon={<AppstoreFilled style={{ fontSize: '18px'}}/>}>
                 <Link to='/'>
+                  Dashboard
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="user" icon={<TeamOutlined style={{ fontSize: '18px'}}/>}>
+                <Link to='/users'>
                   Users
                 </Link>
               </Menu.Item>
-              <Menu.Item key="product" icon={<ShoppingCartOutlined />}>
-              <Link to='/product'>
+              <Menu.Item key="product" icon={<ShoppingCartOutlined style={{ fontSize: '18px'}}/>}>
+              <Link to='/products'>
                   Orders
                 </Link>
               </Menu.Item>
-              <SubMenu key="sub2" icon={<TeamOutlined />} title="Products">
+              <SubMenu key="sub2" icon={<DropboxOutlined style={{ fontSize: '18px'}}/>} title="Products">
                 <Menu.Item key="rau">Rau</Menu.Item>
                 <Menu.Item key="cu">Củ</Menu.Item>
                 <Menu.Item key="qua">Quả</Menu.Item>

@@ -11,11 +11,11 @@ const ApiUser = {
   },
   addUser: (data) => {
     const url = `/users`
-    return axiosClient.delete(url,data)
+    return axiosClient.post(url,data)
   },
   editUser: (id,data) => {
     const url = `/users/${id}`
-    return axiosClient.delete(url,data)
+    return axiosClient.put(url,data)
   }
 
 }

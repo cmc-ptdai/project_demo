@@ -10,23 +10,11 @@ const FromEdit = (props) => {
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(true)
   const onFinish = (value) => {
-    const newData = {
-      valueForm: value,
-      dataUser: props.dataUser
-    }
-    dispatch(editUser(newData))
-    setTimeout( async () => {
-      try {
-        const listUser = await userApi.getAllUser()
-        dispatch(getUser(listUser))
-      } catch (error) {
-        console.log(error);
-      }
-    }, 500);
+    dispatch(editUser(value))
     handleCancel()
   }
   const handleCancel =  () => {
-    props.editStatusFrom(false)
+    props.editStatusFromAdd(false)
     form.resetFields();
   }
 
@@ -49,7 +37,7 @@ const FromEdit = (props) => {
           <label>Họ tên:</label>
           <Form.Item
             name="username"
-            rules={[
+            rules={[{ required: true, message: 'Please input your username!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   //const re = /^[a-zA-Z]{25}/;
@@ -62,14 +50,12 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.name}
-            />
+            <Input />
           </Form.Item>
           <label>Số điện thoại:</label>
           <Form.Item
             name="phone"
-            rules={[
+            rules={[{ required: true, message: 'Please input your phone!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   const re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
@@ -82,14 +68,12 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.phone}
-            />
+            <Input />
           </Form.Item>
           <label>Email:</label>
           <Form.Item
             name="email"
-            rules={[
+            rules={[{ required: true, message: 'Please input your email!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   //eslint-disable-next-line
@@ -103,14 +87,12 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.email}
-            />
+            <Input />
           </Form.Item>
           <label>Địa chỉ:</label>
           <Form.Item
             name="address"
-            rules={[
+            rules={[{ required: true, message: 'Please input your address!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   if (value.length > 200) {
@@ -122,9 +104,7 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.address}
-            />
+            <Input />
           </Form.Item>
             <Form.Item  className="groupButton">
               <Button className="btnSubmit" type="primary" danger onClick={handleCancel}>

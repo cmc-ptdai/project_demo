@@ -114,6 +114,7 @@ const useReducer  = (state = initialState, action) => {
           name: action.payload.name,
           img: action.payload.img,
           price: action.payload.price,
+          sale: action.payload.sale,
           countPay: action.payload.countPay,
           count: 1,
         }
@@ -155,6 +156,7 @@ const useReducer  = (state = initialState, action) => {
           name: action.payload.product.name,
           img: action.payload.product.img,
           count: action.payload.number,
+          sale: action.payload.sale,
           countPay: action.payload.countPay
         }
         cartAction.push(newData)
