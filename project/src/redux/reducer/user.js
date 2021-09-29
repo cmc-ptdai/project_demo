@@ -430,8 +430,8 @@ const useReducer  = (state = initialState, action) => {
         dateCreate: new Date(),
         dateUpdate: new Date()
       }
-      console.log(newOder);
-      //orderApi.addOrder(newOder)
+      // console.log(newOder);
+      orderApi.addOrder(newOder)
       return state
     }
 

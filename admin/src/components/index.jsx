@@ -11,7 +11,9 @@ import {
 } from '@ant-design/icons';
 import './style.scss';
 import { getUser } from '../redux/action/userAction';
+import { getProduct } from '../redux/action/productAction';
 import userApi from '../api/apiUser'
+import productApi from '../api/apiProduct'
 import {
   BrowserRouter as Router,
   Switch,
@@ -25,20 +27,21 @@ const { Header, Content,  Sider } = Layout;
 const { SubMenu } = Menu;
 
 const Body = () => {
-  const store = useSelector(store => store)
   const dispatch = useDispatch();
   const [collapsed, setCollapse] = useState(false)
 
-  const fetchUser = async () => {
+  const fetchData = async () => {
     try {
       const listUser = await userApi.getAllUser()
+      const listProduct = await productApi.getAllProduct()
       dispatch(getUser(listUser))
+      dispatch(getProduct(listProduct))
     } catch (error) {
       console.log(error);
     }
   }
   useEffect(() => {
-    fetchUser()
+    fetchData()
   }, [])
 
   const toggle  = () => {
@@ -72,7 +75,11 @@ const Body = () => {
                 </Link>
               </Menu.Item>
               <SubMenu key="sub2" icon={<DropboxOutlined style={{ fontSize: '18px'}}/>} title="Products">
-                <Menu.Item key="rau">Rau</Menu.Item>
+                <Menu.Item key="rau">
+                  <Link to='/vegetable'>
+                    Rau xanh
+                  </Link>
+                </Menu.Item>
                 <Menu.Item key="cu">Củ</Menu.Item>
                 <Menu.Item key="qua">Quả</Menu.Item>
                 <Menu.Item key="nam">Nấm</Menu.Item>

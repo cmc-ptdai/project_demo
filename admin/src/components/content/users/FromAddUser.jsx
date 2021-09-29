@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
-import { useDispatch } from 'react-redux';
+import { Button, Form, Input, Modal, Select } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 import { editUser } from '../../../redux/action/userAction'
 import userApi from '../../../api/apiUser'
-import { getUser } from '../../../redux/action/userAction';
+import { addUser, getUser  } from '../../../redux/action/userAction';
+
+const { Option } = Select;
 
 const FromEdit = (props) => {
+
+  const dataUser = useSelector(store => store.userReducer)
   const dispatch = useDispatch()
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
   const [visible, setVisible] = useState(true)
   const onFinish = (value) => {
-    dispatch(editUser(value))
+    dispatch(addUser(value))
+    setTimeout( async () => {
+      try {
+        const listUser = await userApi.getAllUser()
+        dispatch(getUser(listUser))
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
     handleCancel()
   }
   const handleCancel =  () => {
@@ -36,7 +48,7 @@ const FromEdit = (props) => {
         >
           <label>Họ tên:</label>
           <Form.Item
-            name="username"
+            name="name"
             rules={[{ required: true, message: 'Please input your username!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
@@ -52,10 +64,70 @@ const FromEdit = (props) => {
           >
             <Input />
           </Form.Item>
+
+          <label>Tên đăng nhập:</label>
+          <Form.Item
+            name="userName"
+            rules={[{ required: true, message: 'Please input your username!' },
+              ({ getFieldValue }) => ({
+                validator(rule, value = "") {
+                  const user = dataUser.filter(item => item.userName === value)
+                  if (user.length > 0) {
+                    return Promise.reject("tên đăng nhập đã tồn tại hoặc không hợp lệ");
+                  } else {
+                    return Promise.resolve();
+                  }
+                }
+              })
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <label>Mật khẩu:</label>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Please input your username!' },
+              ({ getFieldValue }) => ({
+                validator(rule, value = "") {
+                  //const re = /^[a-zA-Z]{25}/;
+                  if (value.length > 25) {
+                    return Promise.reject("Tối đa 25 kí tự");
+                  } else {
+                    return Promise.resolve();
+                  }
+                }
+              })
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <label>Ảnh:</label>
+          <Form.Item
+            name="img"
+          >
+            <Input />
+          </Form.Item>
+
+          <label>Giới tính:</label>
+          <Form.Item
+            name="gender"
+          >
+            <Select
+              placeholder="Select a option and change input text above"
+              //onChange={onGenderChange}
+              allowClear
+            >
+              <Option value="nam">Nam</Option>
+              <Option value="nu">Nữ</Option>
+              <Option value="khac">Khác</Option>
+            </Select>
+          </Form.Item>
           <label>Số điện thoại:</label>
           <Form.Item
             name="phone"
-            rules={[{ required: true, message: 'Please input your phone!' },
+            rules={[
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   const re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
@@ -73,7 +145,7 @@ const FromEdit = (props) => {
           <label>Email:</label>
           <Form.Item
             name="email"
-            rules={[{ required: true, message: 'Please input your email!' },
+            rules={[
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
                   //eslint-disable-next-line
@@ -111,7 +183,7 @@ const FromEdit = (props) => {
                 Huỷ
               </Button>
               <Button className="btnSubmit" type="primary" htmlType="submit" >
-                Chỉnh sửa
+                Thêm
               </Button>
             </Form.Item>
         </Form>

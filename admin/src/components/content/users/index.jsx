@@ -9,6 +9,7 @@ const { Option } = Select;
 
 const Content = () => {
   const user = useSelector(store => store.userReducer)
+  console.log(user);
   const [dataTable, setDataTable] = useState([])
   const [inputSearch, setInputSearch] = useState('')
   const [statusFromAdd, setEditStatusFromAdd] = useState(false)

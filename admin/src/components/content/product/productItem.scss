@@ -1,0 +1,55 @@
+.productItem {
+  position: relative;
+  width: 24%;
+  height: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 15px;
+  overflow: hidden;
+  &__info {
+    display: flex;
+    position: absolute;
+    height: 92px;
+    width: 100%;
+    bottom: 0;
+    padding: 10px 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+    &__left {
+      width: 70%;
+      &--name {
+        font-weight: 600;
+        font-size: 18px;
+      }
+      &--sale {
+        font-weight: 500
+      }
+      &--real {
+        font-weight: 500;
+      }
+      .price-sale {
+        text-decoration: line-through;
+        color: rgba(0, 0, 0, 0.4);
+      }
+    }
+    &__right {
+      width: 30%;
+      button {
+        border: none;
+        width: 100%;
+        margin-top: 6px;
+        border-radius: 5px;
+        height: 30px;
+        cursor: pointer;
+        background-color: rgba(222, 222, 222, 0.7);
+        &:hover {
+          background-color: #fff;
+        }
+        i {
+          color: black;
+        }
+      }
+    }
+  }
+}
+
