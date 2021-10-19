@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Form, Input, Modal, Alert } from 'antd';
+import { Table, Button, Form, Input, Modal } from 'antd';
 import './cart.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -25,6 +25,7 @@ import {
 } from './../../redux/actions/products'
 import userApi from '../../api/userApi'
 import ProductApi from '../../api/productApi'
+import Paypal from './Paypal'
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -40,6 +41,10 @@ const Cart = () => {
   const [visible, setVisible] = useState(false)
   const [totalMoney, setTotalMoney] = useState(0)
   const [visibleAlert , setVisibleAlert] = useState(false)
+  const [checkPaypal, setCheckPaypal] = useState(false)
+  //const [payOnlineSuccess , setPayOnlineSuccess] = useState(false)
+  //const [listCartPay, setListCartPay] = useState([])
+  const [moneyPayOl, setMoneyPayOl] = useState(0)
 
   useEffect(() => {
     if(user.id) {
@@ -220,7 +225,7 @@ const Cart = () => {
     setProducts(abc)
     const newNumber = {
       value: value,
-      id: Number(id)
+      id: id
     }
 
     setTimeout(() => {
@@ -272,7 +277,6 @@ const Cart = () => {
     // selectedRowKeys.forEach(item => {
     //   newArr.push(listProduct[item - 1].id)
     // })
-    console.log(selectedRowKeys);
     setLoading(true)
 
     if (user.id) {
@@ -295,14 +299,13 @@ const Cart = () => {
       const listPayCart = []
       const newListKey = []
       const newListKeyFail = []
-
       const productApi = await ProductApi.getAll()
 
       selectedRowKeys.forEach(item => {
         products.forEach(elem => {
           if (item === elem.id) {
             const index = productApi.findIndex(a => a.id === elem.id)
-            if (productApi[index].countPay > elem.count ) {
+            if (productApi[index].countPay >= elem.count ) {
               newListKey.push(item)
               listPayCart.push(elem);
             } else {
@@ -315,21 +318,94 @@ const Cart = () => {
         listId : listPayCart,
         profile: values
       }
-      dispatch(payCartNoUserAction(ojb))
-      dispatch(addOrderNoUserAction(ojb))
-      dispatch(deleteItemByPayCartAction(listPayCart))
-      onSelectChange([])
-      setSelectedRowKeys([])
-      onReset()
+      if (listPayCart.length > 0) {
+        dispatch(addOrderNoUserAction(ojb))
+        setTimeout(() => {
+          dispatch(payCartNoUserAction(ojb))
+          dispatch(deleteItemByPayCartAction(listPayCart))
+        }, 500);
+      }
       if (newListKeyFail.length > 0) {
         setVisibleAlert(true)
       }
+      onReset()
+      onSelectChange([])
+      setSelectedRowKeys([])
     }
   };
 
   // pay cart user
   const PayCart = async () => {
      if (user.id) {
+      const productApi = await ProductApi.getAll()
+      const listPayCart = []
+      const newListKey = []
+      const newListKeyFail = []
+
+      selectedRowKeys.forEach(item => {
+        products.forEach(elem => {
+          if (item === elem.id) {
+            const index = productApi.findIndex(a => a.id === elem.id)
+            if (productApi[index].countPay >= elem.count ) {
+              newListKey.push(item)
+              listPayCart.push(elem);
+            } else {
+              newListKeyFail.push(item)
+            }
+          }
+        });
+      })
+      dispatch(payCartAction({data:listPayCart, payments: 'off'}))
+      //// dispatch(addOrderAction(selectedRowKeys))
+      if (newListKeyFail.length > 0) {
+        setVisibleAlert(true)
+      }
+      dispatch(deleteItemByPayCartAction(listPayCart))
+      onSelectChange([])
+      setTotalMoney(0)
+      setTimeout(() => {
+        dispatch(deleteListItemCartAction(newListKey))
+        setSelectedRowKeys([])
+      }, 500)
+    } else {
+      setVisible(true)
+    }
+  };
+
+  const onReset = () => {
+    form.resetFields();
+    setVisible(false)
+  };
+
+  const  PayCartOnline = async () => {
+    if (user.id) {
+      const productApi = await ProductApi.getAll()
+      const listPayCart = []
+      let money = 0
+      selectedRowKeys.forEach(item => {
+        products.forEach(elem => {
+          if (item === elem.id) {
+            const index = productApi.findIndex(a => a.id === elem.id)
+            if (productApi[index].countPay > elem.count ) {
+              listPayCart.push(elem);
+              if (Number(elem.sale) > 0 ) {
+                money = money + ((elem.price * elem.count) - ((elem.price * elem.count)*elem.sale)/100)
+              } else {
+                money = money + (Number(elem.price) * Number(elem.count))
+              }
+            }
+          }
+        });
+      })
+      money = (money /22758).toFixed(2)
+      setMoneyPayOl(money)
+    }
+    setCheckPaypal(true)
+  }
+  const hasSelected = selectedRowKeys.length > 0;
+
+  const paySuccess = async (status) => {
+    if (status) {
       const productApi = await ProductApi.getAll()
       const listPayCart = []
       const newListKey = []
@@ -348,30 +424,21 @@ const Cart = () => {
           }
         });
       })
-        dispatch(payCartAction(listPayCart))
-        //// dispatch(addOrderAction(selectedRowKeys))
-        if (newListKeyFail.length > 0) {
-          setVisibleAlert(true)
-        }
-        dispatch(deleteItemByPayCartAction(listPayCart))
-        onSelectChange([])
-        setTotalMoney(0)
-        setTimeout(() => {
-          dispatch(deleteListItemCartAction(newListKey))
-          setSelectedRowKeys([])
-        }, 500)
-    } else {
-      setVisible(true)
+      dispatch(payCartAction({data:listPayCart, payments: 'online'}))
+      // dispatch(addOrderAction(selectedRowKeys))
+      if (newListKeyFail.length > 0) {
+        setVisibleAlert(true)
+      }
+      dispatch(deleteItemByPayCartAction(listPayCart))
+      onSelectChange([])
+      setTotalMoney(0)
+      setTimeout(() => {
+        dispatch(deleteListItemCartAction(newListKey))
+        setSelectedRowKeys([])
+      }, 500)
     }
-  };
-
-  const onReset = () => {
-    form.resetFields();
-    setVisible(false)
-  };
-
-  const hasSelected = selectedRowKeys.length > 0;
-
+    setCheckPaypal(false)
+  }
   return (
     <div className="cart">
       <Table
@@ -398,8 +465,29 @@ const Cart = () => {
           disabled={!hasSelected}
           loading={loading}
           >
-          Tiến hành thanh Toán
+          Thanh toán trực tiếp
         </Button>
+
+        {
+          user.id && (
+            <Button
+              className="cart__button--pay"
+              type="primary"
+              onClick={PayCartOnline}
+              disabled={!hasSelected}
+              loading={loading}
+              >
+              Thanh toán online
+            </Button>
+          )
+        }
+      </div>
+      <div className="paypal">
+        {
+          checkPaypal && (
+            <Paypal paySuccess= {paySuccess} moneyPayOl={moneyPayOl}/>
+          )
+        }
       </div>
       <div className="cart__mymodel">
         <div className="cart__mymodal__body">
@@ -490,14 +578,19 @@ const Cart = () => {
               >
                 <Input />
               </Form.Item>
-                <Form.Item  className="groupButton">
-                  <Button className="btnSubmit" type="primary" danger onClick={onReset}>
-                    Huỷ
-                  </Button>
-                  <Button className="btnSubmit" type="primary" htmlType="submit" >
-                    Đặt hàng
-                  </Button>
-                </Form.Item>
+
+              <Form.Item  className="groupButton">
+                <Button className="btnSubmit" type="primary" danger onClick={onReset}>
+                  Huỷ
+                </Button>
+                <Button className="btnSubmit" type="primary" htmlType="submit" >
+                  Đăt hàng
+                </Button>
+
+                {/* <Button className="btnSubmit" type="primary" htmlType="submit" >
+                  thanh toán trực tuyến
+                </Button> */}
+              </Form.Item>
             </Form>
           </Modal>
         </div>

@@ -1,38 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './productItem.scss'
+import { useDispatch } from 'react-redux';
 import FormEditProduct from './FormEditProduct'
+import { deleteProduct as deleteProductAction ,getProduct } from '../../../redux/action/productAction'
+import ApiProduct from '../../../api/apiProduct'
 
-const ProductItem = () => {
+const ProductItem = ({data}) => {
+  const dispatch = useDispatch()
   const [statusFrom, setStatusFrom] = useState(false)
-  const data = {
-      "id": 7,
-      "name": "Táo đỏ Mỹ",
-      "price": 115000,
-      "sale": 20,
-      "countPay": 93,
-      "img": "https://bizweb.dktcdn.net/thumb/1024x1024/100/325/688/products/tao-do-my-red-delicious-size-36-44.jpg",
-      "typeID": "qua",
-      "species": "tuoi",
-      "quantityPurchased": 18,
-      "comments": [],
-      "evaluates": [
-        {
-          "id": 1,
-          "point": 1
-        }
-      ],
-      "country": "viet Nam"
-    }
-    const editStatusFrom = (children) => {
-      setStatusFrom(children)
-    }
-    const showFrom = () => {
-      setStatusFrom(true)
-      console.log(123123);
-    }
+
+  const editStatusFrom = (children) => {
+    setStatusFrom(children)
+  }
+  const showFromEdit = () => {
+    setStatusFrom(true)
+  }
+  const deleteProduct = () => {
+    dispatch(deleteProductAction(data.id))
+    setTimeout( async () => {
+      try {
+        const listProduct = await ApiProduct.getAllProduct()
+        dispatch(getProduct(listProduct))
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
+  }
+
   return (
     <>
       <div className="productItem">
+        {
+          data.sale > 0 &&
+          (
+            <div className="productItem__sale">
+              {data.sale}%
+            </div>
+          )
+        }
         <div className="productItem__img">
           <img src={data.img} alt="" />
         </div>
@@ -46,9 +51,16 @@ const ProductItem = () => {
           </div>
           <div className="productItem__info__right">
             <button
-              onClick={showFrom}
-            ><i class="fas fa-eye"></i></button>
-            <button><i class="fas fa-edit"></i></button>
+               onClick={showFromEdit}
+            >
+              <i className="fas fa-edit"></i>
+            </button>
+
+            <button
+              onClick={deleteProduct}
+            >
+              <i className="fas fa-trash-alt"></i>
+            </button>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import MyPagination from './MyPagination'
 import { Breadcrumb } from 'antd'
 
-const Products = ({typeID}) => {
+const Products = ({typeID, species1}) => {
   const [products, setProducts] = useState([])
   const [listSort, setListSort] = useState([])
 
@@ -15,9 +15,13 @@ const Products = ({typeID}) => {
     const params = {
       typeID: ''
     }
-    if(typeID !== '') {
+    if(typeID !== '' && species1 !== '') {
+      params.typeID = typeID
+      params.species = species1
+    } else {
       params.typeID = typeID
     }
+    console.log(params);
     try {
       let response = []
       if (params.typeID === '') {

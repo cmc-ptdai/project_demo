@@ -2,6 +2,7 @@
   &__button {
     button {
       width: 75px;
+      border-radius: 15px;
       text-align: center;
       &:nth-child(2) {
         margin-top: 5px;
@@ -9,7 +10,7 @@
     }
   }
   &__action {
-    width: 700px;
+    width: 70%;
     display: flex;
     margin: auto;
     margin-bottom: 4rem;
@@ -17,7 +18,7 @@
     &--search {
       position: relative;
       margin-right: 5rem;
-      width: 70%;
+      width: 65%;
       input {
         width: 100%;
         margin: auto;
@@ -36,6 +37,9 @@
     }
     &--addUser {
       margin-left: 5rem;
+      width: 25%;
+      display: flex;
+      justify-content: space-between;
       button {
         border-radius: 1.5rem;
         font-weight: 600
@@ -47,7 +51,7 @@
       td {
         padding: 8px 8px;
         word-break: break-word;
-        height: 90px  !important;
+        // /height: 90px  !important;
         text-overflow: ellipsis;
       }
     }
@@ -69,4 +73,8 @@
       }
     }
   }
+}
+
+.table__user {
+
 }

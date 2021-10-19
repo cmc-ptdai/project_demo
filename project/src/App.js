@@ -44,8 +44,15 @@ const App = () => {
         dispatch(getUserAction(user))
       } else {
         const cartLocal = JSON.parse(localStorage.getItem('cart'));
-        const user = {
-          cart: cartLocal
+        let user = {}
+        if (cartLocal) {
+          user = {
+            cart: cartLocal
+          }
+        } else {
+          user = {
+            cart: []
+          }
         }
         dispatch(getUserAction(user))
       }
@@ -76,7 +83,7 @@ const App = () => {
                     const {Component} = item
                     return (
                       <Route path={item.path} exact={item.exact} key={index}>
-                        <Component typeID={item.type}/>
+                        <Component typeID={item.type} species1={item.species1}/>
                       </Route>
                     )
                   })

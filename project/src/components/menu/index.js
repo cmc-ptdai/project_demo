@@ -33,11 +33,11 @@ const MyMenu = () => {
           children: [
             {
               title: 'Quả tươi',
-              path: '/t'
+              path: '/tubers/fresh'
             },
             {
               title: 'Quả khô',
-              path: '/k'
+              path: '/tubers/dried'
             }
           ]
         },
@@ -47,11 +47,11 @@ const MyMenu = () => {
           children: [
             {
               title: 'Quả tươi',
-              path: '/t'
+              path: '/fruit/fresh'
             },
             {
               title: 'Quả khô',
-              path: '/k'
+              path: '/fruit/dried'
             }
           ]
         },
@@ -61,11 +61,11 @@ const MyMenu = () => {
           children: [
             {
               title: 'Quả tươi',
-              path: '/t'
+              path: '/mushroom/fresh'
             },
             {
               title: 'Quả khô',
-              path: '/k'
+              path: '/mushroom/dried'
             }
           ]
         },

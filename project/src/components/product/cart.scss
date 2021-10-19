@@ -1,4 +1,3 @@
-
 .cart {
   &__box-img {
     img {
@@ -60,6 +59,15 @@
     display: flex;
     justify-content: center;
   }
+}
+
+.paypal {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+#zoid-paypal-buttons-uid_a8df25972e_mtc6mtu6ndq {
+  width: 300px !important;
 }
 
 .ant-modal-footer {

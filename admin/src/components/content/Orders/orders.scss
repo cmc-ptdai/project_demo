@@ -1,0 +1,70 @@
+.tableUser__input {
+  height: auto !important;
+  margin-top: 20px;
+  input {
+    text-align: center;
+    width: 70%;
+  }
+}
+.table__order {
+  th {
+    text-align: center !important;
+  }
+  td {
+    margin: 0;
+    text-align: center;
+    padding: 0px !important;
+  }
+}
+.form__edit {
+  &__totals {
+    li {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 10px;
+      border-bottom: 1px solid #ccc;
+      font-size: 15px;
+      font-weight: 500;
+    }
+  }
+}
+.display-none {
+  display: none  !important;
+}
+
+.group-btn {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid #ccc;
+  button {
+    width: 33.5%;
+    height: 50px;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  &-active {
+    background-color: #fff;
+    color: rgb(37, 37, 220);
+  }
+}
+
+.search-order-date {
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  padding: 20px 0px;
+  &-button {
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+    button {
+      width: 90px;
+      height: 32px;
+      border-radius: 10px;
+    }
+  }
+}

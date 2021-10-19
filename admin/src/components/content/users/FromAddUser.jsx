@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Form, Input, Modal, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { editUser } from '../../../redux/action/userAction'
 import userApi from '../../../api/apiUser'
 import { addUser, getUser  } from '../../../redux/action/userAction';
 
@@ -12,7 +11,6 @@ const FromEdit = (props) => {
   const dataUser = useSelector(store => store.userReducer)
   const dispatch = useDispatch()
   const [form] = Form.useForm()
-  const [visible, setVisible] = useState(true)
   const onFinish = (value) => {
     dispatch(addUser(value))
     setTimeout( async () => {
@@ -33,7 +31,7 @@ const FromEdit = (props) => {
   return (
     <div>
       <Modal
-        visible={visible}
+        visible={true}
         title="Điền thông tin"
         // onOk={handleOk}
         onCancel={handleCancel}
@@ -71,7 +69,7 @@ const FromEdit = (props) => {
             rules={[{ required: true, message: 'Please input your username!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
-                  const user = dataUser.filter(item => item.userName === value)
+                  const user = dataUser.filter(item => item.userName.toLowerCase() === value.toLowerCase())
                   if (user.length > 0) {
                     return Promise.reject("tên đăng nhập đã tồn tại hoặc không hợp lệ");
                   } else {
@@ -101,6 +99,21 @@ const FromEdit = (props) => {
             ]}
           >
             <Input.Password />
+          </Form.Item>
+
+          <label>Role:</label>
+          <Form.Item
+            name="role"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Select
+              placeholder="Select a option and change input text above"
+              //onChange={onGenderChange}
+              allowClear
+            >
+              <Option value="user">User</Option>
+              <Option value="admin">Admin</Option>
+            </Select>
           </Form.Item>
 
           <label>Ảnh:</label>

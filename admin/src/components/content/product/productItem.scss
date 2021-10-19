@@ -6,6 +6,19 @@
   border-radius: 5px;
   margin-top: 15px;
   overflow: hidden;
+  &__sale {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 30px;
+    background-color: #fe9705;
+    border-radius: 0px 0px 0px 4px;
+    text-align: center;
+    line-height: 30px;
+    color: #fff;
+    font-weight: bold;
+  }
   &__info {
     display: flex;
     position: absolute;

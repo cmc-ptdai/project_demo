@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Form, Input, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import { editUser } from '../../../redux/action/userAction'
@@ -8,7 +8,6 @@ import { getUser } from '../../../redux/action/userAction';
 const FromEdit = (props) => {
   const dispatch = useDispatch()
   const [form] = Form.useForm();
-  const [visible, setVisible] = useState(true)
   const onFinish = (value) => {
     const newData = {
       valueForm: value,
@@ -33,7 +32,7 @@ const FromEdit = (props) => {
   return (
     <div>
       <Modal
-        visible={visible}
+        visible={true}
         title="Điền thông tin"
         // onOk={handleOk}
         onCancel={handleCancel}

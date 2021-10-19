@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -10,17 +10,21 @@ import {
   DropboxOutlined
 } from '@ant-design/icons';
 import './style.scss';
-import { getUser } from '../redux/action/userAction';
-import { getProduct } from '../redux/action/productAction';
-import userApi from '../api/apiUser'
-import productApi from '../api/apiProduct'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom"
+
+import { getUser } from '../redux/action/userAction';
+import { getProduct } from '../redux/action/productAction';
+import { getOrder } from '../redux/action/orderAction';
+
 import router from '../router'
+import userApi from '../api/apiUser'
+import productApi from '../api/apiProduct'
+import orderApi from '../api/apiOrders'
 
 
 const { Header, Content,  Sider } = Layout;
@@ -34,6 +38,8 @@ const Body = () => {
     try {
       const listUser = await userApi.getAllUser()
       const listProduct = await productApi.getAllProduct()
+      const listOrder = await orderApi.getAllOrders()
+      dispatch(getOrder(listOrder))
       dispatch(getUser(listUser))
       dispatch(getProduct(listProduct))
     } catch (error) {
@@ -42,13 +48,13 @@ const Body = () => {
   }
   useEffect(() => {
     fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggle  = () => {
     setCollapse(!collapsed)
   }
   const handleClickMenu = e => {
-    console.log(e);
   }
 
   return (
@@ -58,32 +64,53 @@ const Body = () => {
           <Sider trigger={null} collapsible collapsed={collapsed}>
             <div className="logo" />
 
-            <Menu theme="dark" mode="inline" defaultSelectedKeys={['dashboard']} onClick={handleClickMenu}>
-            <Menu.Item key="dashboard" icon={<AppstoreFilled style={{ fontSize: '18px'}}/>}>
-                <Link to='/'>
+            <Menu className="nav-item" theme="dark" mode="inline" defaultSelectedKeys={['dashboard']} onClick={handleClickMenu}>
+              <Menu.Item key="dashboard" icon={<AppstoreFilled style={{ fontSize: '18px'}}/>}>
+                <Link  to='/'>
                   Dashboard
                 </Link>
               </Menu.Item>
+
               <Menu.Item key="user" icon={<TeamOutlined style={{ fontSize: '18px'}}/>}>
-                <Link to='/users'>
+                <Link  to='/users'>
                   Users
                 </Link>
               </Menu.Item>
+
               <Menu.Item key="product" icon={<ShoppingCartOutlined style={{ fontSize: '18px'}}/>}>
-              <Link to='/products'>
+                <Link  to='/orders'>
                   Orders
                 </Link>
               </Menu.Item>
+
               <SubMenu key="sub2" icon={<DropboxOutlined style={{ fontSize: '18px'}}/>} title="Products">
                 <Menu.Item key="rau">
-                  <Link to='/vegetable'>
+                  <Link  to='/vegetable'>
                     Rau xanh
                   </Link>
                 </Menu.Item>
-                <Menu.Item key="cu">Củ</Menu.Item>
-                <Menu.Item key="qua">Quả</Menu.Item>
-                <Menu.Item key="nam">Nấm</Menu.Item>
+                <Menu.Item key="cu">
+                  <Link  to='/tubers'>
+                    Củ
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="qua">
+                  <Link  to='/fruit'>
+                    Quả
+                  </Link>
+                </Menu.Item>
+                <Menu.Item key="nam">
+                  <Link  to='/mushroom'>
+                    Nấm
+                  </Link>
+                </Menu.Item>
               </SubMenu>
+
+              <Menu.Item key="slides" icon={<TeamOutlined style={{ fontSize: '18px'}}/>}>
+                <Link  to='/slides'>
+                  Slides
+                </Link>
+              </Menu.Item>
             </Menu>
           </Sider>
           <Layout className="site-layout">
@@ -107,7 +134,7 @@ const Body = () => {
                     const {Component} = item
                     return (
                       <Route path={item.path} exact={item.exact} key={index}>
-                        <Component typeID={item.type}/>
+                        <Component typeID={item.typeID}/>
                       </Route>
                     )
                   })

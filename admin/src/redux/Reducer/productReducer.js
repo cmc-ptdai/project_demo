@@ -9,10 +9,34 @@ import {
 
 const initialState = []
 
-const userReducer = (state = initialState, action) => {
+const productReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_PRODUCT: {
       state = action.payload
+      return state
+    }
+    case ADD_PRODUCT: {
+      const newData = {
+        ...action.payload,
+        countPay: Number(action.payload.countPay),
+        evaluates: [],
+        comments: [],
+        quantityPurchased: 0,
+      }
+      //console.log('data-reducer', newData);
+      productApi.addProducts(newData)
+      return state
+    }
+    case DELETE_PRODUCT: {
+      productApi.deleteProducts(action.payload)
+      return state
+    }
+    case EDIT_PRODUCT: {
+      const newData = {
+        ...action.payload,
+        countPay: Number(action.payload.countPay),
+      }
+      productApi.editProducts(action.payload.id, newData)
       return state
     }
     default:
@@ -20,4 +44,4 @@ const userReducer = (state = initialState, action) => {
   };
 }
 
-export default userReducer
+export default productReducer

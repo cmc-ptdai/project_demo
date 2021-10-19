@@ -49,7 +49,7 @@ const Header = () => {
                     }
                     <div className="login__listchose">
                       <ul>
-                        <Link to='/login'>
+                        <Link to='/profileUser'>
                           <li onClick={() => onActive(1)}
                             style={{backgroundColor: keyActive === 1 ? '#ccc' : ''}}
                           >
@@ -57,7 +57,7 @@ const Header = () => {
                           </li>
                         </Link>
 
-                        <Link to='/login'>
+                        <Link to='/orderInformation'>
                           <li onClick={() => onActive(2)} style={{backgroundColor: keyActive === 2 ? '#ccc' : ''}}>
                             <i className="fas fa-cart-plus"/>đơn hàng
                           </li>

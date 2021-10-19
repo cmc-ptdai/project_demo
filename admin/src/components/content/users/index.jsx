@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Select, Input } from 'antd';
+import { useSelector } from 'react-redux';
+import { Button, Input } from 'antd';
 import './style.scss';
 import MyTable from './table'
 import FormAdd from './FromAddUser'
-
-const { Option } = Select;
+import ExportToExcel from '../ExportToExcel'
 
 const Content = () => {
   const user = useSelector(store => store.userReducer)
-  console.log(user);
   const [dataTable, setDataTable] = useState([])
   const [inputSearch, setInputSearch] = useState('')
   const [statusFromAdd, setEditStatusFromAdd] = useState(false)
@@ -37,6 +35,18 @@ const Content = () => {
     setEditStatusFromAdd(setToForm)
   }
 
+  const headers = [
+    { label: "Họ và tên", key: "name"},
+    { label: "Địa chỉ email", key: "email"},
+    { label: "Giới tính", key: "gender"},
+    { label: "Địa chỉ", key: "address"},
+    { label: "Số điện thoại", key: "phone"},
+    { label: "tên đăng nhập", key: "userName"},
+    { label: "NGày tạo", key: "dateCreate"},
+    { label: "Ngày Sửa", key: "dateUpdate"}
+  ]
+
+  const fileName1 = 'ListUser.csv'
   return (
     <>
       {
@@ -52,11 +62,15 @@ const Content = () => {
             <Button
               type="primary"
               onClick={addUser}
-            >Add User</Button>
+            >
+              Add User
+            </Button>
+
+            <ExportToExcel csvData={dataTable} headers={headers} fileName1={fileName1}/>
           </div>
         </div>
         <div>
-          <MyTable dataTable={dataTable}/>
+          <MyTable dataTable={dataTable} />
         </div>
       </div>
     </>

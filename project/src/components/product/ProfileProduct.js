@@ -12,6 +12,7 @@ import {
   setEvaluate as setEvaluateAction
 } from "./../../redux/actions/products";
 import { Tabs, Rate, Modal, Button, notification } from 'antd';
+import ShowComment from './commentProduct/index'
 
 const { TabPane } = Tabs;
 const openNotification = (item) => {
@@ -21,6 +22,7 @@ const openNotification = (item) => {
     icon: <i className="fab fa-optin-monster" style={{fontSize: "40px", color: '#fe9705'}}></i>,
   });
 };
+
 
 const ProfileProduct = () => {
   const param = useParams()
@@ -38,11 +40,16 @@ const ProfileProduct = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false)
 
+
   const fetchProduct = async () => {
     try {
       const response = await productApi.getById(param.id)
       setProduct(response)
-      getValueEvaluate('3')
+      if (response.evaluates.length >0) {
+        getValueEvaluate('3')
+      } else {
+        getValueEvaluate('1')
+      }
     } catch (error) {
       console.log(error);
     }
@@ -118,12 +125,11 @@ const ProfileProduct = () => {
 
   const getValueEvaluate = (key) => {
     let count = 0
-    if (key === "3") {
-      product.evaluates.forEach((item, index) => {
+    if (key === "3" && product) {
+      product.evaluates.forEach(item => {
         count = count + item.point
       });
-      const s = (count - (count % product.evaluates.length))  / product.evaluates.length
-      console.log(s);
+      const s = (count - (count % product.evaluates.length))  / product.evaluates.length;
       setEvaluateDefault(s)
     }
   }
@@ -230,13 +236,20 @@ const ProfileProduct = () => {
                         </div>
                       )
                     }
-                    <span className="price__real">
-                      {(product.price - (product.price * product.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
-                    </span>
+                     <div className="price__sale">
+                        <span className="price__sale-text">Chỉ còn:</span>
+                      <span className="price__real ">
+                        {(product.price - (product.price * product.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
+                      </span>
+                      </div>
                   </div>
 
                   <div className="nutrition">
-                    giá trị dinh dưỡng
+                  <textarea
+                    className="content-product"
+                    readOnly
+                    defaultValue={product.content}
+                  />
                   </div>
 
                   <div className="profile__addCart">
@@ -258,14 +271,13 @@ const ProfileProduct = () => {
           </div>
 
           <Tabs defaultActiveKey="1" type="card" onChange={getValueEvaluate}>
-            <TabPane tab="Mô tả" key="1">
-              mô tả sản phẩm
+            <TabPane tab="Thông tin chung về sản phẩm" key="1">
+              <textarea
+                className="content-product"
+                readOnly
+                defaultValue={product.content}
+              />
             </TabPane>
-
-            <TabPane tab="Thông tin" key="2">
-              thông tin sản phẩm
-            </TabPane>
-
             <TabPane tab="Đánh giá" key="3">
               <h3>Đánh giá sản phẩm</h3>
               <div className="evaluate-content">
@@ -327,7 +339,7 @@ const ProfileProduct = () => {
             </TabPane>
 
             <TabPane tab="Bình luận" key="4">
-              bình luận
+               <ShowComment  data={product}/>
             </TabPane>
           </Tabs>
         </div>

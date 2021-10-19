@@ -7,6 +7,8 @@ import {
   // DECREMENT_COUNT_PAY_BY_CART,
   // INCREMENT_COUNT_PAY_BY_CART,
   // ONCHANGE_NUMBER_INPUT_BY_CART,
+  COMMENT_PRODUCT,
+  REPLY_COMMENT_PRODUCT,
   SET_EVALUATE,
   DELETE_ITEM_BY_PAY_CART
 } from '../actionType'
@@ -93,18 +95,42 @@ const productReducer = (state = initialState, action) => {
       newArr.forEach(item => {
         action.payload.forEach(elem => {
           if (item.id === elem.id) {
-            const newCount = item.countPay - elem.count
-            const newQuantityPurchased = item.quantityPurchased + elem.count
+            const newCount = Number(item.countPay) - Number(elem.count)
+            const newQuantityPurchased = Number(item.quantityPurchased) + Number(elem.count)
             const newElem = {
               ...item,
               countPay: newCount,
               quantityPurchased: newQuantityPurchased
             }
-            productApi.updateProduct(elem.id, newElem)
+            setTimeout(() => {
+              productApi.updateProduct(item.id, newElem)
+            }, 300);
           }
         })
       })
       return state
+    }
+
+    case REPLY_COMMENT_PRODUCT: {
+      const newArr = [...state]
+      const index = newArr.findIndex(item => item.id === action.payload.dataProduct.id)
+
+      const listComment =  newArr[index].comments
+      listComment.forEach(item => {
+        if(item.id === action.payload.idComment) {
+          item.replyComment.push(action.payload.newData)
+        }
+      })
+      productApi.updateProduct(newArr[index].id, newArr[index])
+      return state = [...newArr]
+    }
+
+    case COMMENT_PRODUCT: {
+      const newArr = [...state]
+      const index = newArr.findIndex(item => item.id === action.payload.dataProduct.id)
+      newArr[index].comments.push(action.payload.newData)
+      productApi.updateProduct(newArr[index].id, newArr[index])
+      return state = [...newArr]
     }
 
     default:

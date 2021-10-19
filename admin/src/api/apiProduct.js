@@ -9,7 +9,7 @@ const fetchProduct = {
     const url = `/products/${id}`
     return axiosClient.delete(url)
   },
-  adProducts: (data) => {
+  addProducts: (data) => {
     const url = `/products`
     return axiosClient.post(url,data)
   },

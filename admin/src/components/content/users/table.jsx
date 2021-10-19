@@ -7,7 +7,7 @@ import FormEdit from './FormEdit'
 import {
   deleteUser,
   getUser
-} from '../../../redux/action/userAction'
+} from '../../../redux/action/userAction';
 import { useDispatch } from 'react-redux';
 import userApi from '../../../api/apiUser'
 
@@ -93,18 +93,21 @@ const MyTable = ({dataTable}) => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      fixed: 'left',
       ...getColumnSearchProps('name'),
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+      width: 250,
       ...getColumnSearchProps('email'),
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'id',
+      width: 80,
       render: (text, record) => (
         <span>{text === 'nam' ? 'Nam' : 'Nữ'}</span>
       )
@@ -119,12 +122,14 @@ const MyTable = ({dataTable}) => {
       title: 'Phone',
       dataIndex: 'phone',
       key: 'phone',
+      width: 120,
       ...getColumnSearchProps('phone'),
     },
     {
       title: 'UserName',
       key: 'username',
       dataIndex: 'userName',
+      width: 150,
       ...getColumnSearchProps('userName'),
     },
     {
@@ -144,6 +149,8 @@ const MyTable = ({dataTable}) => {
     {
       title: 'Action',
       key: 'action',
+      fixed: 'right',
+      width: 100,
       render: (text, record) => (
           <div className="tableUser__button">
             <Button type="primary" onClick={() => editUser(record)}>Edit</Button>
@@ -196,7 +203,7 @@ const MyTable = ({dataTable}) => {
         statusFrom && <FormEdit dataUser={userEdit} editStatusFrom={editStatusFrom}/>
       }
       {
-        dataTable && <Table columns={columns} dataSource={dataTable} rowKey="id"/>
+        dataTable && <Table className="table__user" columns={columns} dataSource={dataTable} rowKey="id" scroll={{ x: 1500}}/>
       }
     </>
   )

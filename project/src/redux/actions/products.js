@@ -6,7 +6,9 @@ import {
   // INCREMENT_COUNT_PAY_BY_CART,
   // ONCHANGE_NUMBER_INPUT_BY_CART,
   SET_EVALUATE,
-  DELETE_ITEM_BY_PAY_CART
+  DELETE_ITEM_BY_PAY_CART,
+  COMMENT_PRODUCT,
+  REPLY_COMMENT_PRODUCT
 } from '../actionType'
 
 export const getProduct = (payload) => {
@@ -61,6 +63,21 @@ export const setEvaluate = (payload) => {
 export const deleteItemByPayCart = (payload) => {
   return {
     type: DELETE_ITEM_BY_PAY_CART,
+    payload
+  }
+}
+
+
+export const commentProduct = (payload) => {
+  return {
+    type: COMMENT_PRODUCT,
+    payload
+  }
+}
+
+export const replyCommentProduct = (payload) => {
+  return {
+    type: REPLY_COMMENT_PRODUCT,
     payload
   }
 }
