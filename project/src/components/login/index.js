@@ -23,6 +23,8 @@ const Login = () => {
   const [listUser, setListUser] = useState([])
   const [user, setUser] = useState({})
   const [visible, setVisible] = useState(false)
+  const [notificationPassword, setNotificationPassword] = useState(null)
+  const [newPassword, setNewPassword] = useState('')
 
   const fetchUser = async () => {
     const response = await UserApi.getUser()
@@ -31,6 +33,7 @@ const Login = () => {
 
   useEffect (() => {
     fetchUser();
+    setNotificationPassword(null)
   },[])
 
   const onFinish = (values) => {
@@ -48,7 +51,6 @@ const Login = () => {
     } else {
       alert("sai tài khoản hoặc mật khẩu")
     }
-    //console.log('Success:', values);
   };
 
   const handleCancel = () => {
@@ -84,12 +86,16 @@ const Login = () => {
   }
 
   const onFinishPasswordRetrieval = (values) => {
-    //console.log('Success:', values);
+    const user = listUser.filter(item => (item.email === values.email && item.userName === values.userName ))
+    console.log(listUser, values, user);
+    if (user.length > 0) {
+      setNotificationPassword(true)
+      setNewPassword(user[0].password)
+    } else {
+      setNotificationPassword(false)
+    }
   };
 
-  const onFinishFailedPasswordRetrieval = (errorInfo) => {
-    // console.log('Failed:', errorInfo);
-  };
 
   return (
     <div className="login">
@@ -134,19 +140,36 @@ const Login = () => {
         <div className="col-6 login__right">
           <p>Bạn quên mật khẩu?</p>
           <Form
+            {...layout}
             name="password retrieval"
             initialValues={{ remember: true }}
             onFinish={onFinishPasswordRetrieval}
-            onFinishFailed={onFinishFailedPasswordRetrieval}
           >
             <Form.Item
               label="Username"
-              name="usernameRetrieval"
-              rules={[{ required: true, message: 'Please input your username!' }]}
+              name="userName"
+              rules={[{ required: true, message: 'Please input your user name!' }]}
             >
               <Input />
             </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: 'Please input your email!' }]}
+            >
+              <Input />
+            </Form.Item>
+            {
+              notificationPassword === false && (
+                <div style={{ marginBottom: '20px', color: 'red'}}> email hoặc số điện thoại không trung khớp </div>
+              )
+            }
 
+            {
+              notificationPassword === true && (
+                <div style={{ marginBottom: '20px'}}> mật khẩu của bạn là: {newPassword}</div>
+              )
+            }
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit">
                 Lấy lại mật khẩu

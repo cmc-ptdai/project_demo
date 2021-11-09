@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import FormEditProduct from './FormEditProduct'
 import { deleteProduct as deleteProductAction ,getProduct } from '../../../redux/action/productAction'
 import ApiProduct from '../../../api/apiProduct'
+import { Popconfirm } from 'antd'
+import {Link} from 'react-router-dom'
 
 const ProductItem = ({data}) => {
   const dispatch = useDispatch()
@@ -25,6 +27,10 @@ const ProductItem = ({data}) => {
         console.log(error);
       }
     }, 500);
+  }
+
+  const cancel = () => {
+
   }
 
   return (
@@ -50,24 +56,34 @@ const ProductItem = ({data}) => {
             <p className={data.sale > 0 ? "productItem__info__left--real price-sale" : "productItem__info__left--real"}>{data.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
           </div>
           <div className="productItem__info__right">
+            <Link to={`/body/comments/${data.id}`}>
+              <button><i className="fas fa-comments-alt" /></button>
+            </Link>
+            <Link to={`/body/evaluates/${data.id}`}>
+              <button><i className="fas fa-stars" /></button>
+            </Link>
             <button
-               onClick={showFromEdit}
+              onClick={showFromEdit}
             >
               <i className="fas fa-edit"></i>
             </button>
-
-            <button
-              onClick={deleteProduct}
+            <Popconfirm
+              title="Bạn có muốn xoá sản phẩm này không?"
+              onConfirm={deleteProduct}
+              onCancel={cancel}
+              okText="Xoá"
+              cancelText="Không"
             >
-              <i className="fas fa-trash-alt"></i>
-            </button>
+              <button>
+                <i className="fas fa-trash-alt"></i>
+              </button>
+            </Popconfirm>
           </div>
         </div>
       </div>
       {
         statusFrom && <FormEditProduct data={data} editStatusFrom={editStatusFrom} />
       }
-      {/* from show thông tin */}
     </>
   )
 }

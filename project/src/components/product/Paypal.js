@@ -1,32 +1,9 @@
-import React, {useState ,useEffect, useRef} from 'react'
+import React, { useEffect, useRef } from 'react'
 
 export default function Paypal(props) {
 
-
   const  paypal = useRef()
-  //const [paidFor, setPaidFor] = useState(false);
-  // useEffect(() => {
-  //   window.paypal.Buttons({
-  //     createOrder: (data, actions, err) => {
-  //       return actions.order.create({
-  //         intent: 'CAPTURE',
-  //         purchase_units: [
-  //           {
-  //             description: 'thanh toán tại thực phẩm sạch',
-  //             value: 100
-  //           }
-  //         ]
-  //       })
-  //     },
-  //     onApprove: async (data, actions) => {
-  //       const order = await (actions.order.capture())
-  //       console.log(order);
-  //     },
-  //     onErr: (err) => {
-  //       console.log(err);
-  //     }
-  //   }).render(paypal.current)
-  // }, [])
+
   const product = {
     price: 100.77,
     name: 'comfy chair',
@@ -61,6 +38,7 @@ export default function Paypal(props) {
         },
       })
       .render(paypal.current);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.description, product.price]);
 
   const sendStatus = () => {

@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, Select } from 'antd';
 import { useDispatch } from 'react-redux';
 import { editProduct, getProduct } from '../../../redux/action/productAction'
 import userProduct from '../../../api/apiProduct'
 import './product.scss';
+import apiWarehouse from '../../../api/apiWarehouse';
 
 const { Option } = Select;
 
 const FromEditProduct = (props) => {
   const dispatch = useDispatch()
   const [data, setData] = useState({...props.data})
-  const [imgEdit, setImgEdit] = useState('');
+  const [imgEdit, setImgEdit] = useState('')
+  const [warehouse, setWarehouse] = useState(null)
+
+  useEffect(() => {
+    fetchWarehouse()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+  const fetchWarehouse = async () => {
+    const warehouse = await apiWarehouse.getWarehouseById(data.id)
+    setWarehouse(warehouse);
+  }
 
 
   const onFinish = () => {
+    if (props.data.countPay !== data.countPay) {
+      const newWarehouse = {
+        dateInput: new Date(),
+        numberCount: 0,
+        numberProduct: data.countPay
+      }
+      warehouse.listWarehouse.push(newWarehouse)
+
+      apiWarehouse.editWarehouse(warehouse.id, warehouse)
+    }
+
     dispatch(editProduct(data))
     setTimeout( async () => {
       try {
@@ -25,6 +48,7 @@ const FromEditProduct = (props) => {
     }, 500);
     handleCancel()
   }
+
   const handleCancel =  () => {
     props.editStatusFrom(false)
   }
@@ -50,12 +74,13 @@ const FromEditProduct = (props) => {
   }
 
   const onchangeInputSale = (e) => {
+    console.log(e.target.value);
     if (e.target.value >= 100) {
       setData({
         ...data,
         sale: 99,
       })
-    } else if (e.target.value < 0){
+    } else if (e.target.value < 0 || e.target.value === '' ){
       setData({
         ...data,
         sale: 0,
@@ -106,6 +131,7 @@ const FromEditProduct = (props) => {
     setData({
       ...data,
       endDate: e.target.value,
+      dateUpdate: new Date(),
     })
   }
 

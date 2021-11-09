@@ -14,6 +14,11 @@ const orderApi = {
   addOrder: (data) => {
     const url = `/order`
     return axiosClient.post(url, data)
-  }
+  },
+
+  editOrder: (id, data) => {
+    const url = `/order//${id}`
+    return axiosClient.put(url, data)
+  },
 }
 export default orderApi

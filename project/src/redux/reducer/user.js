@@ -23,6 +23,10 @@ import {
   DELETE_LIST_ITEM_CART_NO_USER,
   NUMBER_INPUT_NO_USER,
   PUSH_CART_LOCAL_IN_CART_USER,
+  ADD_USER,
+  EDIT_USER,
+  EDIT_USER_IMG,
+  EDIT_USER_PW
 } from '../actionType'
 
 const initialState = {
@@ -265,12 +269,19 @@ const useReducer  = (state = initialState, action) => {
           }
         })
       })
+      if (action.payload.transport === "fastShipping") {
+        money += 30000
+      }
+      if (action.payload.transport === "normalShipping") {
+        money += 15000
+      }
       const newOder = {
         id: uuidv4(),
         idUser: idUser,
         listProduct: listProduct,
         money: money,
         status: "pending",
+        transportFee: action.payload.transport,
         payments: action.payload.payments,
         username: user.userName,
         phone: user.phone,
@@ -279,12 +290,46 @@ const useReducer  = (state = initialState, action) => {
         dateUpdate: new Date()
       }
       order.push(newOder.id)
+
       orderApi.addOrder(newOder)
+
       userApi.addCart(idUser, user)
-      return {
-        ...state,
-        user: user
+      return state
+    }
+
+    case ADD_ORDER_NO_USER: {
+      // const listProduct = []
+      let money = 0
+      action.payload.listId.forEach(item => {
+        user.cart.forEach(elem => {
+          if (item.id === elem.id ) {
+            money = money + ((Number(elem.price) * Number(elem.count)) - ((Number(elem.price) * Number(elem.count)*Number(elem.sale))/100))
+          }
+        })
+      })
+      if (action.payload.transport === "fastShipping") {
+        money += 30000
+      } else {
+        money += 15000
       }
+      const newOder = {
+        id: uuidv4(),
+        idUser: "",
+        listProduct: action.payload.listId,
+        address: action.payload.profile.address,
+        email: action.payload.profile.email,
+        phone: action.payload.profile.phone,
+        username: action.payload.profile.username,
+        transportFee: action.payload.transport,
+        money: money,
+        payments: 'off',
+        status: "pending",
+        dateCreate: new Date(),
+        dateUpdate: new Date()
+      }
+
+      orderApi.addOrder(newOder)
+      return state
     }
 
     case PAY_CART_NO_USER: {
@@ -413,35 +458,6 @@ const useReducer  = (state = initialState, action) => {
     //   return state
     // }
 
-    case ADD_ORDER_NO_USER: {
-      // const listProduct = []
-      let money = 0
-      action.payload.listId.forEach(item => {
-        user.cart.forEach(elem => {
-          if (item.id === elem.id ) {
-            money = money + ((Number(elem.price) * Number(elem.count)) - ((Number(elem.price) * Number(elem.count)*Number(elem.sale))/100))
-          }
-        })
-      })
-      const newOder = {
-        id: uuidv4(),
-        idUser: "",
-        listProduct: action.payload.listId,
-        address: action.payload.profile.address,
-        email: action.payload.profile.email,
-        phone: action.payload.profile.phone,
-        username: action.payload.profile.username,
-        money: money,
-        payments: 'off',
-        status: "pending",
-        dateCreate: new Date(),
-        dateUpdate: new Date()
-      }
-
-      orderApi.addOrder(newOder)
-      return state
-    }
-
     case INCREMENT_PROJECT_NO_USER: {
       const index = cart.findIndex(item => item.id === action.payload)
       if (index !== -1) {
@@ -541,6 +557,55 @@ const useReducer  = (state = initialState, action) => {
       return state
     }
 
+    case ADD_USER: {
+      const newUser = {
+        ...action.payload,
+        img: "",
+        role: 'user',
+        cart: [],
+        order: [],
+        dateCreate: new Date(),
+        dateUpdate: new Date(),
+      }
+      delete newUser.Confirm
+
+      userApi.addUser(newUser)
+      return state
+    }
+
+    case EDIT_USER: {
+      const newUser = {
+        ...state.user,
+        ...action.payload,
+        dateUpdate: new Date()
+      }
+      userApi.addCart(newUser.id, newUser)
+
+      return state
+    }
+
+    case EDIT_USER_IMG: {
+      const newUser = {
+        ...state.user,
+        img: action.payload,
+        dateUpdate: new Date()
+      }
+      userApi.addCart(newUser.id, newUser)
+      return state = {
+        ...state,
+        user: newUser
+      }
+    }
+
+    case EDIT_USER_PW: {
+      const newUser = {
+        ...state.user,
+        password: action.payload.passwordNew,
+        dateUpdate: new Date()
+      }
+      userApi.addCart(newUser.id, newUser)
+      return state
+    }
     default:
       return state
   }

@@ -41,7 +41,10 @@ const FromEdit = (props) => {
           name="basic"
           form={form}
           initialValues={{
-            remember: true
+            username: props.dataUser.name,
+            phone: props.dataUser.phone,
+            email: props.dataUser.email,
+            address: props.dataUser.address
           }}
           onFinish={onFinish}
         >
@@ -49,7 +52,7 @@ const FromEdit = (props) => {
           <Form.Item
             name="username"
             rules={[
-              ({ getFieldValue }) => ({
+              () => ({
                 validator(rule, value = "") {
                   //const re = /^[a-zA-Z]{25}/;
                   if (value.length > 25) {
@@ -61,15 +64,13 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.name}
-            />
+            <Input/>
           </Form.Item>
           <label>Số điện thoại:</label>
           <Form.Item
             name="phone"
             rules={[
-              ({ getFieldValue }) => ({
+              () => ({
                 validator(rule, value = "") {
                   const re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
                   if (!re.test(value)) {
@@ -81,15 +82,13 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.phone}
-            />
+            <Input/>
           </Form.Item>
           <label>Email:</label>
           <Form.Item
             name="email"
             rules={[
-              ({ getFieldValue }) => ({
+              () => ({
                 validator(rule, value = "") {
                   //eslint-disable-next-line
                   const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -102,15 +101,13 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.email}
-            />
+            <Input/>
           </Form.Item>
           <label>Địa chỉ:</label>
           <Form.Item
             name="address"
             rules={[
-              ({ getFieldValue }) => ({
+              () => ({
                 validator(rule, value = "") {
                   if (value.length > 200) {
                     return Promise.reject("tối đa 200 kí tự");
@@ -121,9 +118,7 @@ const FromEdit = (props) => {
               })
             ]}
           >
-            <Input
-              defaultValue={props.dataUser.address}
-            />
+            <Input/>
           </Form.Item>
             <Form.Item  className="groupButton">
               <Button className="btnSubmit" type="primary" danger onClick={handleCancel}>

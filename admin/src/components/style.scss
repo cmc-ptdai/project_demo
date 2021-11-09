@@ -24,5 +24,48 @@
     min-height: 80rem;
   }
 
-
+  .ant-layout-header {
+    display:  flex;
+    justify-content: space-between;
+    .accountUser {
+      position: relative;
+      margin-right: 20px;
+      &-img {
+        span {
+          margin-left: 10px;
+          font-weight: bold;
+        }
+      }
+      &:hover {
+        .accountUser-logout {
+          visibility: visible;
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      &-logout {
+        width: 140px;
+        height: 40px;
+        line-height: 40px;
+        margin-left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        position: absolute;
+        background-color: rgba(#ccc, 0.8);
+        visibility: hidden;
+        opacity: 0;
+        text-align: center;
+        transform: translateY(30%);
+        transition: all 0.3s ease-in-out;
+        span {
+          cursor: pointer;
+          font-weight: bold;
+          text-decoration: underline;
+          &:hover {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
 }

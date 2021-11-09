@@ -18,6 +18,10 @@ import { GET_USERS,
   DELETE_LIST_ITEM_CART_NO_USER,
   NUMBER_INPUT_NO_USER,
   PUSH_CART_LOCAL_IN_CART_USER,
+  ADD_USER,
+  EDIT_USER,
+  EDIT_USER_IMG,
+  EDIT_USER_PW
 } from '../actionType';
 
 export const getUser = (payload) => {
@@ -156,6 +160,34 @@ export const numberInputProjectNoUser = (payload) => {
 export const pushCartLocalInCartUser = (payload) => {
   return {
     type : PUSH_CART_LOCAL_IN_CART_USER,
+    payload
+  }
+}
+
+export const addUser = (payload) => {
+  return {
+    type : ADD_USER,
+    payload
+  }
+}
+
+export const editUser = (payload) => {
+  return {
+    type : EDIT_USER,
+    payload
+  }
+}
+
+export const editUserImg = (payload) => {
+  return {
+    type : EDIT_USER_IMG,
+    payload
+  }
+}
+
+export const editUserPW = (payload) => {
+  return {
+    type : EDIT_USER_PW,
     payload
   }
 }

@@ -21,7 +21,6 @@ const Products = ({typeID, species1}) => {
     } else {
       params.typeID = typeID
     }
-    console.log(params);
     try {
       let response = []
       if (params.typeID === '') {

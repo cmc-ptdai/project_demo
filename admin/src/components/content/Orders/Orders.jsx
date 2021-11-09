@@ -22,6 +22,12 @@ const Orders = () => {
           Pending
         </button>
         <button
+          className={showTab === "delivery" ? "group-btn-active" : '' }
+          onClick={() => changeTab("delivery")}
+        >
+          Delivery
+        </button>
+        <button
           className={showTab === "delivered" ? "group-btn-active" : '' }
           onClick={() => changeTab("delivered")}
         >
@@ -39,11 +45,15 @@ const Orders = () => {
           showTab === "pending" && <Pending statusProps="pending"/>
         }
         {
+          showTab === "delivery" && <Pending statusProps="delivery"/>
+        }
+        {
           showTab === "delivered" && <Pending statusProps="delivered"/>
         }
         {
           showTab === "cancelled" && <Pending statusProps="cancelled"/>
         }
+
       </div>
     </>
   )

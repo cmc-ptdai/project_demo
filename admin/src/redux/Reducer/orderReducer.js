@@ -2,7 +2,6 @@ import orderApi from '../../api/apiOrders'
 
 import {
   GET_ORDER,
-  //ADD_ORDER,
   EDIT_ORDER,
   DELETE_ORDER
 } from '../actionType'
@@ -15,16 +14,11 @@ const orderReducer = (state = initialState, action) => {
       state = action.payload;
       return state
     }
-    // case ADD_ORDER: {
-    //   console.log(action.payload);
-    //   return state
-    // }
     case EDIT_ORDER: {
       orderApi.editOrders(action.payload.id, action.payload)
       return state
     }
     case DELETE_ORDER: {
-      //console.log(action.payload);
       orderApi.deleteOrders(action.payload)
       return state
     }

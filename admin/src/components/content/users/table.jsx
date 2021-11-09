@@ -138,6 +138,9 @@ const MyTable = ({dataTable}) => {
       dataIndex: 'dateCreate',
       defaultSortOrder: 'addsendring',
       sorter: (a, b) => moment(a.dateCreate).format('x') - moment(b.dateCreate).format('x'),
+      render: (text) => (
+        <p>{text.slice(0,10)}</p>
+      )
     },
     {
       title: 'Date update',
@@ -145,6 +148,9 @@ const MyTable = ({dataTable}) => {
       dataIndex: 'dateUpdate',
       defaultSortOrder: 'addsendring',
       sorter: (a, b) => moment(a.dateCreate).format('x') - moment(b.dateCreate).format('x'),
+      render: (text) => (
+        <p>{text.slice(0,10)}</p>
+      )
     },
     {
       title: 'Action',
@@ -155,7 +161,7 @@ const MyTable = ({dataTable}) => {
           <div className="tableUser__button">
             <Button type="primary" onClick={() => editUser(record)}>Edit</Button>
             <Popconfirm
-              title="Bạn có muốn xóa user không?"
+              title="Bạn có muốn xóa người dùng này không?"
               onConfirm={() => handleOk(record.id)}
               onCancel={handleCancel}
             >

@@ -1,15 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import { Button } from 'antd'
+import apiNewComment from '../../../api/apiNewComment'
 import './style.scss'
 
 const Dashboard = () => {
 
+  const history = useHistory()
   const store = useSelector(store => store)
+  const [listNewComment, setNewListComment] = useState(null)
+  const [status, setStatus] = useState(false)
 
   useEffect(() => {
-  }, [])
+    fetchNewComment()
+  }, [status])
+
+  const fetchNewComment = async () => {
+    const newList = await apiNewComment.getNewComment()
+    setNewListComment(newList)
+  }
 
   const money = () => {
     let a = 0
@@ -56,6 +67,16 @@ const Dashboard = () => {
   const options = {
     maintainAspectRatio: true,
   }
+
+  const skipNewComment = (comment) => {
+    apiNewComment.deleteNewComment(comment.id)
+    setStatus(!status)
+  }
+  const replyNewComment = (comment) => {
+    skipNewComment(comment)
+    return history.push({ pathname: `/body/comments/${comment.idProduct}/${comment.idComment}`})
+  }
+
   return (
     <div className="dashboard">
       <div className="dashboard-status">
@@ -74,18 +95,19 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
-          <Link
-            to='/orders'
-            className="dashboard-status-item"
-          >
-            <div className="dashboard-status-item-icon">
-            <i className="fad fa-shopping-cart"></i>
-            </div>
-            <div className="dashboard-status-item-info">
-              <h3>Order</h3>
-              <p>{store.orderReducer.length}</p>
-            </div>
-          </Link>
+
+        <Link
+          to='/orders'
+          className="dashboard-status-item"
+        >
+          <div className="dashboard-status-item-icon">
+          <i className="fad fa-shopping-cart"></i>
+          </div>
+          <div className="dashboard-status-item-info">
+            <h3>Order</h3>
+            <p>{store.orderReducer.length}</p>
+          </div>
+        </Link>
 
         <Link
           to='/users'
@@ -99,6 +121,7 @@ const Dashboard = () => {
             <p>{store.userReducer.length}</p>
           </div>
         </Link>
+
         <Link
           to='/vegetable'
           className="dashboard-status-item"
@@ -112,10 +135,72 @@ const Dashboard = () => {
           </div>
         </Link>
       </div>
-      <Line
-        data={data}
-        options= {options}
-      />
+      <div className="dashboard-chart">
+        <div className="dashboard-chart-line">
+          <Line
+            data={data}
+            options= {options}
+          />
+        </div>
+        <div className="dashboard-chart-comment">
+          <Link
+            to='/users'
+            className="dashboard-chart-comment-item"
+          >
+            <div className="dashboard-chart-comment-item-icon">
+            <i className="fad fa-users"></i>
+            </div>
+            <div className="dashboard-chart-comment-item-info">
+              <h3>New comment</h3>
+              {
+                listNewComment && (
+                  <p>{listNewComment.length}</p>
+                )
+              }
+
+            </div>
+          </Link>
+          {
+            (listNewComment !== null && listNewComment.length > 0 ) && (
+              <div className="dashboard-chart-comment-list">
+                {
+                  listNewComment && (
+                    listNewComment.map((item, index) => {
+                      return (
+                        <div
+                          className="dashboard-chart-comment-list-item"
+                          key={index}
+                        >
+                          <p
+                            className="dashboard-chart-comment-list-item-name"
+                          >
+                            {item.name}
+                          </p>
+                          <p>{item.comment}</p>
+                          <div className='dashboard-chart-comment-list-item-button'>
+                            <Button
+                              danger
+                              onClick={() => skipNewComment(item)}
+                            >
+                              skip
+                            </Button>
+                            <Button
+                              type="primary"
+                              onClick={() => replyNewComment(item)}
+                            >
+                              reply
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })
+                  )
+                }
+              </div>
+            )
+          }
+        </div>
+      </div>
     </div>
   )
 }

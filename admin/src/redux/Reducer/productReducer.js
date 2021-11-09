@@ -19,11 +19,10 @@ const productReducer = (state = initialState, action) => {
       const newData = {
         ...action.payload,
         countPay: Number(action.payload.countPay),
-        evaluates: [],
-        comments: [],
-        quantityPurchased: 0,
+        // evaluates: [],
+        // comments: [], tim kiếm bằng id mới tạo của user
+        quantityPurchased: 0
       }
-      //console.log('data-reducer', newData);
       productApi.addProducts(newData)
       return state
     }

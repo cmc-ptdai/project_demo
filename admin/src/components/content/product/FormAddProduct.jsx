@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Modal, Select } from 'antd';
+import { Button, Form, Input, Modal, Select, message  } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, getProduct } from '../../../redux/action/productAction'
 import productApi from '../../../api/apiProduct';
 import './product.scss';
+import { v4 as uuidv4 } from 'uuid';
+import ApiComment from '../../../api/apiComment'
+import ApiEvaluate from '../../../api/apiEvaluates'
+import apiWarehouse from '../../../api/apiWarehouse';
 
 const { Option } = Select;
 
@@ -12,8 +16,31 @@ const FromAddProduct = (props) => {
   const dispatch = useDispatch()
   const [form] = Form.useForm();
   const [imgEdit, setImgEdit] = useState('');
+
   const onFinish = (value) => {
-    dispatch(addProduct(value))
+    const newValue = {
+      ...value,
+      id : uuidv4(),
+      dateUpdate: new Date(),
+    }
+    const evaluate = {
+      id: newValue.id,
+      evaluates: []
+    }
+    const comment = {
+      id: newValue.id,
+      comments: []
+    }
+
+    const warehouse = {
+      id: newValue.id,
+      children: []
+    }
+    apiWarehouse.addWarehouse(warehouse)
+    ApiComment.addApiComments(comment)
+    ApiEvaluate.addEvaluates(evaluate)
+    dispatch(addProduct(newValue))
+
     setTimeout( async () => {
       try {
         const listProduct = await productApi.getAllProduct()
@@ -22,6 +49,7 @@ const FromAddProduct = (props) => {
         console.log(error);
       }
     }, 500);
+    message.success('Thêm sản phẩm thành công');
     handleCancel()
   }
 

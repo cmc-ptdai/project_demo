@@ -160,38 +160,64 @@
     }
   }
 }
+
+.evaluate-title {
+  font-size: 25px;
+  font-weight: bold;
+  span {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
 .evaluate-content {
   display: flex;
+  height: 400px;
+  &-right {
+    overflow: hidden;
+    overflow-y: scroll;
+    width: 60%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px 40px;
+  }
   &-rate {
-    width: 40%;
+    div + div {
+      margin-top: 10px;
+    }
+    width: 35%;
     .evaluate {
       button {
+        margin-left: 80px;
+        margin-top: 20px;
         background-color: #80bb35;
-        border: 1px solid #80bb35;
         border-radius: 5px;
         padding: 5px 10px ;
         color: #fff;
         font-weight: 600;
+        border: none;
         font-size: 16px;
+        &:hover {
+          background-color: #fe9705;
+        }
       }
-    }
-  }
-  &-groupButton {
-    text-align: center;
-    .evaluateDisable {
-      button {
-        background-color: #ccc;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 5px 10px ;
-        color: #fff;
-        font-weight: 600;
-        font-size: 16px;
-      }
-      span {
-        margin-top: 10px;
-        display: inline-block;
+      &-groupButton {
         text-align: center;
+        .evaluateDisable {
+          button {
+            background-color: #ccc;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px ;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+          }
+          span {
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+          }
+        }
       }
     }
   }
@@ -205,12 +231,11 @@
 
 .fromEvaluate {
   &__btn {
+    width: 80%;
+    margin: auto;
     margin-top: 20px;
     display: flex;
-    justify-content: center;
-    button:nth-last-child(1) {
-      margin-left: 130px;
-    }
+    justify-content: space-between;
   }
 }
 .ant-tabs {

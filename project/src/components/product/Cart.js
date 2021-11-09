@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Form, Input, Modal } from 'antd';
+import { Table, Button, Form, Input, Modal, Select, notification } from 'antd';
 import './cart.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -25,7 +25,17 @@ import {
 } from './../../redux/actions/products'
 import userApi from '../../api/userApi'
 import ProductApi from '../../api/productApi'
+import WarehouseApi from '../../api/apiWarehouse';
 import Paypal from './Paypal'
+
+const { Option } = Select;
+const openNotification = (text) => {
+  notification.open({
+    message: '',
+    description:<span>{text}</span>,
+    icon: <i className="fab fa-optin-monster" style={{fontSize: "40px", color: '#fe9705'}}></i>,
+  });
+};
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -42,6 +52,8 @@ const Cart = () => {
   const [totalMoney, setTotalMoney] = useState(0)
   const [visibleAlert , setVisibleAlert] = useState(false)
   const [checkPaypal, setCheckPaypal] = useState(false)
+  const [listWarehouse, setListWarehouse] = useState(null)
+  const [transportFee, setTransportFee] = useState(null)
   //const [payOnlineSuccess , setPayOnlineSuccess] = useState(false)
   //const [listCartPay, setListCartPay] = useState([])
   const [moneyPayOl, setMoneyPayOl] = useState(0)
@@ -84,7 +96,7 @@ const Cart = () => {
       render: text => {
         return (
           <div className = "cart__box-text">
-            <p>{text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
+            <p>{text.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
           </div>
         )
       }
@@ -187,6 +199,8 @@ const Cart = () => {
   const fetchApi = async () => {
     try {
       const response = await userApi.getUserById(user.id)
+      const Warehouses = await WarehouseApi.getWarehouse()
+      setListWarehouse(Warehouses);
       setProducts(response.cart)
     } catch (error) {
       console.log(error);
@@ -300,34 +314,49 @@ const Cart = () => {
       const newListKey = []
       const newListKeyFail = []
       const productApi = await ProductApi.getAll()
+      const listWarehouse1 = await WarehouseApi.getWarehouse()
 
       selectedRowKeys.forEach(item => {
-        products.forEach(elem => {
-          if (item === elem.id) {
-            const index = productApi.findIndex(a => a.id === elem.id)
-            if (productApi[index].countPay >= elem.count ) {
+        for (let ad = 0; ad < products.length; ad++) {
+          if (products[ad].id === item) {
+            const index = productApi.findIndex(a => a.id === products[ad].id)
+            if (productApi[index].countPay >= products[ad].count ) {
               newListKey.push(item)
-              listPayCart.push(elem);
+              listPayCart.push(products[ad]);
             } else {
               newListKeyFail.push(item)
             }
+            break
           }
-        });
+        }
+
+        for (let index = 0; index < listWarehouse1.length; index++) {
+          if (listWarehouse1[index].id === item) {
+            const indexProductCart = products.findIndex(a => a.id === listWarehouse1[index].id)
+            const lth = listWarehouse1[index].listWarehouse
+            lth[lth.length - 1].numberCount = lth[lth.length - 1].numberCount + products[indexProductCart].count
+            WarehouseApi.editWarehouse(listWarehouse1[index].id, listWarehouse1[index])
+            break
+          }
+        }
+
       })
       const ojb = {
         listId : listPayCart,
-        profile: values
+        profile: values,
+        transport: transportFee
       }
       if (listPayCart.length > 0) {
         dispatch(addOrderNoUserAction(ojb))
         setTimeout(() => {
           dispatch(payCartNoUserAction(ojb))
           dispatch(deleteItemByPayCartAction(listPayCart))
-        }, 500);
+        }, 100);
       }
       if (newListKeyFail.length > 0) {
         setVisibleAlert(true)
       }
+      setTransportFee(null)
       onReset()
       onSelectChange([])
       setSelectedRowKeys([])
@@ -336,37 +365,56 @@ const Cart = () => {
 
   // pay cart user
   const PayCart = async () => {
-     if (user.id) {
+    if (transportFee === null) {
+      openNotification('Hãy chọn hình thức vận chuyển cho hoá đơn của bạn')
+      return;
+    }
+    if (user.id) {
       const productApi = await ProductApi.getAll()
       const listPayCart = []
       const newListKey = []
       const newListKeyFail = []
 
       selectedRowKeys.forEach(item => {
-        products.forEach(elem => {
-          if (item === elem.id) {
-            const index = productApi.findIndex(a => a.id === elem.id)
-            if (productApi[index].countPay >= elem.count ) {
+        for (let ad = 0; ad < products.length; ad++) {
+          if (products[ad].id === item) {
+            const index = productApi.findIndex(a => a.id === products[ad].id)
+            if (productApi[index].countPay >= products[ad].count ) {
               newListKey.push(item)
-              listPayCart.push(elem);
+              listPayCart.push(products[ad]);
             } else {
               newListKeyFail.push(item)
             }
+            break
           }
-        });
+        }
+
+        for (let index = 0; index < listWarehouse.length; index++) {
+          if (listWarehouse[index].id === item) {
+            const indexProductCart = products.findIndex(a => a.id === listWarehouse[index].id)
+            const lth = listWarehouse[index].listWarehouse
+            lth[lth.length - 1].numberCount = lth[lth.length - 1].numberCount + products[indexProductCart].count
+            WarehouseApi.editWarehouse(listWarehouse[index].id, listWarehouse[index])
+            break
+          }
+        }
+
       })
-      dispatch(payCartAction({data:listPayCart, payments: 'off'}))
-      //// dispatch(addOrderAction(selectedRowKeys))
+
+      // dispatch(addOrderAction(selectedRowKeys))
       if (newListKeyFail.length > 0) {
         setVisibleAlert(true)
       }
-      dispatch(deleteItemByPayCartAction(listPayCart))
+
       onSelectChange([])
       setTotalMoney(0)
-      setTimeout(() => {
+       setTimeout(() => {
+        dispatch(deleteItemByPayCartAction(listPayCart))
         dispatch(deleteListItemCartAction(newListKey))
         setSelectedRowKeys([])
-      }, 500)
+      }, 100)
+       setTransportFee(null)
+       dispatch(payCartAction({data:listPayCart, payments: 'off', transport: transportFee}))
     } else {
       setVisible(true)
     }
@@ -412,42 +460,84 @@ const Cart = () => {
       const newListKeyFail = []
 
       selectedRowKeys.forEach(item => {
-        products.forEach(elem => {
-          if (item === elem.id) {
-            const index = productApi.findIndex(a => a.id === elem.id)
-            if (productApi[index].countPay > elem.count ) {
+        for (let ad = 0; ad < products.length; ad++) {
+          if (products[ad].id === item) {
+            const index = productApi.findIndex(a => a.id === products[ad].id)
+            if (productApi[index].countPay >= products[ad].count ) {
               newListKey.push(item)
-              listPayCart.push(elem);
+              listPayCart.push(products[ad]);
             } else {
               newListKeyFail.push(item)
             }
+            break
           }
-        });
+        }
+
+        for (let index = 0; index < listWarehouse.length; index++) {
+          if (listWarehouse[index].id === item) {
+            const indexProductCart = products.findIndex(a => a.id === listWarehouse[index].id)
+            const lth = listWarehouse[index].listWarehouse
+            lth[lth.length - 1].numberCount = lth[lth.length - 1].numberCount + products[indexProductCart].count
+            WarehouseApi.editWarehouse(listWarehouse[index].id, listWarehouse[index])
+            break
+          }
+        }
+
       })
-      dispatch(payCartAction({data:listPayCart, payments: 'online'}))
+
+      dispatch(payCartAction({data:listPayCart, payments: 'online', transport: 'free'}))
       // dispatch(addOrderAction(selectedRowKeys))
+      setTransportFee(null)
       if (newListKeyFail.length > 0) {
         setVisibleAlert(true)
       }
-      dispatch(deleteItemByPayCartAction(listPayCart))
       onSelectChange([])
       setTotalMoney(0)
       setTimeout(() => {
         dispatch(deleteListItemCartAction(newListKey))
+        dispatch(deleteItemByPayCartAction(listPayCart))
         setSelectedRowKeys([])
       }, 500)
     }
     setCheckPaypal(false)
   }
+
+  const onchangeShip = (e) => {
+    setTransportFee(e)
+  }
   return (
     <div className="cart">
-      <Table
-        rowKey="id"
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={products}
-      />
+      {
+        products.length > 0 && (
+          <Table
+            rowKey="id"
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={products}
+          />
+        )
+      }
+
+      {
+        selectedRowKeys.length > 0 && (
+          <div className="ship">
+            <p className="ship-text">Chọn hình thức vận chuyển :</p>
+            <Select
+              placeholder="chọn hình thức thanh toán"
+              allowClear
+              onChange={onchangeShip}
+            >
+              <Option value="fastShipping">vận chuyển siêu tốc : 30,000 VND</Option>
+              <Option value="normalShipping">vận chuyển thương : 15,000 VND</Option>
+            </Select>
+          </div>
+          )
+      }
+
       <h2>Tổng tiền: <span>{totalMoney.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span> VND</h2>
+      {
+        user.id && <p style={{ textAlign: 'right' , color: '#fe9705'}}> ( Free ship khi thanh toán online  ) </p>
+      }
       <div className="cart__button">
         <Button
           type="primary"
@@ -527,12 +617,12 @@ const Cart = () => {
               <label>Số điện thoại:</label>
               <Form.Item
                 name="phone"
-                rules={[{ required: true, message: 'Please input your phone!' },
+                rules={[{ required: true, message: '' },
                   ({ getFieldValue }) => ({
                     validator(rule, value = "") {
                       const re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
-                      if (value.length > 0 && !re.test(value)) {
-                        return Promise.reject("vui lòng nhập ít hơn 10 kí tự");
+                      if (!re.test(value)){
+                        return Promise.reject("vui lòng nhập đúng định dạng số điện thoại");
                       } else {
                         return Promise.resolve();
                       }

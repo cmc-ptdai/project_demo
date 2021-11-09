@@ -9,6 +9,10 @@ const fetchProduct = {
     const url = `/products/${id}`
     return axiosClient.delete(url)
   },
+  getProductsById: (id) => {
+    const url = `/products/${id}`
+    return axiosClient.get(url)
+  },
   addProducts: (data) => {
     const url = `/products`
     return axiosClient.post(url,data)

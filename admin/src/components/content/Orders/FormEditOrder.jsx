@@ -1,5 +1,5 @@
 import React, {useEffect,useState} from "react";
-import { Select, Form, Input, Modal, Table, Button } from 'antd';
+import { Select, Input, Modal, Table, Button } from 'antd';
 import './orders.scss'
 import { useDispatch } from 'react-redux';
 import { editOrder } from '../../../redux/action/orderAction'
@@ -11,7 +11,7 @@ const FromEditOrder = (props) => {
   const dispatch = useDispatch()
   //const orders = useSelector(store => store.orderReducer)
 
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
 
   const [dataForm, setDataForm] = useState({...props.data})
   const [totalPrice, setTotalPrice] = useState(0)
@@ -27,7 +27,6 @@ const FromEditOrder = (props) => {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
       key: 'name',
-      width: 200,
     },
     {
       title: 'Giá',
@@ -41,7 +40,6 @@ const FromEditOrder = (props) => {
       title: 'Số lượng',
       dataIndex: 'count',
       key: 'count',
-      width: 160,
       render: (text, record) => (
         <div className="tableUser__input">
           <Input
@@ -55,21 +53,25 @@ const FromEditOrder = (props) => {
         </div>
       ),
     },
-    // {
-    //   title: 'Tổng tiền',
-    //   dataIndex: 'money',
-    //   key: 'money',
-    //   width: 130,
-    //   render: (text, record) => (
-    //     <p>{((record.price * record.count) - (((record.price * record.count)*record.sale)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
-    //   ),
-    // },
+    {
+      title: 'Giảm giá  (%)',
+      dataIndex: 'sale',
+      key: 'sale',
+    },
+    {
+      title: 'Tổng tiền',
+      dataIndex: '',
+      key: '',
+      render: (text, record) => (
+        <p>{((record.price * record.count) - (((record.price * record.count)*record.sale)/100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
+      ),
+    },
     {
       title: 'Thao tác',
       key: 'action',
       width: 140,
       render: (text, record) => (
-          <div className= {dataForm.status === 'pending' ? 'tableUser__button' : 'display-none'}>
+          <div className= {(dataForm.status === 'pending' && dataForm.listProduct.length > 1) ? 'tableUser__button' : 'display-none'}>
             <Button
               type="primary"
               onClick={() => deleteProductByOrder(record)}
@@ -82,14 +84,26 @@ const FromEditOrder = (props) => {
   ];
 
   const deleteProductByOrder = (record) => {
-    console.log(record);
+    for (let i = 0; i < dataForm.listProduct.length; i++) {
+      if (dataForm.listProduct[i].id === record.id) {
+        dataForm.listProduct = dataForm.listProduct.filter(item => item.id !== record.id)
+        break
+      }
+    }
+    setDataForm(dataForm);
+    setDataTotal()
+    // dataForm.listProduct.forEach((item, index) => {
+    //   if (item.id === record.id) {
+
+    //   }
+    // })
   }
 
   const setDataTotal = () => {
     let newDta1 = 0
     let newDta2 = 0
     dataForm.listProduct.forEach(item => {
-      newDta1 = newDta1 + Number(item.price * item.count)
+      newDta1 = newDta1 + Number(item.price * item.count) - (((item.price * item.count)*item.sale)/100)
       newDta2 = newDta2 + Number(item.count)
     })
     setTotalPrice(newDta1);
@@ -98,7 +112,7 @@ const FromEditOrder = (props) => {
 
   const handleCancel =  () => {
     props.editStatusFrom(false)
-    form.resetFields();
+    //form.resetFields();
   }
 
   const onchangeStatus = (e) => {
@@ -136,11 +150,16 @@ const FromEditOrder = (props) => {
         }
       }
     })
+    setDataForm(dataForm);
     setDataTotal()
   }
 
   const onFinish = () => {
-    dispatch(editOrder(dataForm))
+    const newData = {
+      ...dataForm,
+      dateUpdate: new Date(),
+    }
+    dispatch(editOrder(newData))
     handleCancel()
   }
   return (
@@ -163,6 +182,7 @@ const FromEditOrder = (props) => {
           onChange={onchangeStatus}
         >
           <Option value="pending">Pending</Option>
+          <Option value="delivery">Delivery</Option>
           <Option value="delivered">Delivered</Option>
           <Option value="cancelled">Cancelled</Option>
         </Select>
@@ -209,7 +229,6 @@ const FromEditOrder = (props) => {
             <div>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</div>
           </li>
         </ul>
-        thông số lúc giảm Giá
         <div className="groupButton">
           <Button className="btnSubmit" type="primary" onClick={onFinish} >
             save

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Input, Button, Space ,DatePicker} from 'antd';
+import { Table, Input, Button, Space, DatePicker, Popconfirm} from 'antd';
 import { useDispatch } from 'react-redux';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
@@ -23,7 +23,9 @@ const Pending = (props) => {
   const [dateSearch, setDateSearch] = useState([])
 
   useEffect(() => {
-    fetchData()
+    setTimeout(() => {
+      fetchData()
+    }, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.statusProps,statusFrom])
 
@@ -58,11 +60,18 @@ const Pending = (props) => {
             Search
           </Button>
 
-          <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => {
+              handleReset(clearFilters)
+              //fetchData()
+            }}
+            size="small"
+            style={{ width: 90 }}
+          >
             Reset
           </Button>
 
-          <Button
+          {/* <Button
             type="link"
             size="small"
             onClick={() => {
@@ -72,7 +81,7 @@ const Pending = (props) => {
             }}
           >
             Filter
-          </Button>
+          </Button> */}
         </Space>
       </div>
     ),
@@ -149,14 +158,26 @@ const Pending = (props) => {
       ),
     },
     {
+      title: 'Hình thức giao hàng',
+      dataIndex: 'transportFee',
+      key: 'transportFee',
+      width: 150,
+      render: (text, record) => (
+          <>
+            <p>{text}</p>
+          </>
+      ),
+    },
+    {
       title: 'Tổng tiền',
       dataIndex: 'money',
       key: 'money',
       width: 120,
-      sorter: (a, b) => a.address.length - b.address.length,
+      sorter: (a, b) => a.money.length - b.money.length,
       render: (text, record) => (
         <>
-          <span>{text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>
+          {/* <span>{text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span> */}
+          <span>{text} VND</span>
         </>
       ),
     },
@@ -172,7 +193,9 @@ const Pending = (props) => {
       key: 'dateCreate',
       width: 200,
       sorter: (a, b) => moment(a.dateCreate).format('x') - moment(b.dateCreate).format('x'),
-      ...getColumnSearchProps('dateCreate'),
+      render: (text) => (
+        <p>{text.slice(0,10)}</p>
+      )
     },
     {
       title: 'Ngày sửa',
@@ -180,6 +203,9 @@ const Pending = (props) => {
       key: 'dateUpdate',
       width: 200,
       sorter: (a, b) => moment(a.dateCreate).format('x') - moment(b.dateCreate).format('x'),
+      render: (text) => (
+        <p>{text.slice(0,10)}</p>
+      )
     },
     {
       title: 'status',
@@ -200,16 +226,26 @@ const Pending = (props) => {
             onClick={() => editOrder(record)}
           >
             Edit</Button>
-          <Button
-            onClick={() => deleteOrderTable(record.id)}
-            danger
-          >
-            Delete
-          </Button>
+          <Popconfirm
+              title="Bạn có muốn xóa đơn hàng này không?"
+              onConfirm={() => deleteOrderTable(record.id)}
+              onCancel={handleCancel}
+            >
+              <Button
+                danger
+              >
+                Delete
+              </Button>
+            </Popconfirm>
         </div>
       ),
     },
   ];
+
+
+  const handleCancel = () => {
+
+  }
 
   const editStatusFrom = (childData) => {
     setStatusFrom(childData)

@@ -9,7 +9,7 @@ import SingUp from './components/signUp/index'
 import Concat from './components/product/contact/index'
 import Introduce from './components/product/introduce/index'
 import ProfileUser from './components/profileUser/ProfileUser'
-import OrderInformation from './components/orderinfomation/Orderinformation.jsx'
+import Orders from './components/listOrderUser/index'
 
 
 // const AuthLogin = Component => {
@@ -48,7 +48,7 @@ const router = [
   {path: '/concat', exact: true, type: '', Component: Concat},
   {path: '/introduce', exact: true, type: '', Component: Introduce},
   {path: '/profileUser', exact: true, Component: ProfileUser},
-  {path: '/orderInformation', exact: true, Component: OrderInformation},
+  {path: '/orderInformation', exact: true, Component: Orders},
   {path: '', exact: true, Component: NotFound},
 ]
 

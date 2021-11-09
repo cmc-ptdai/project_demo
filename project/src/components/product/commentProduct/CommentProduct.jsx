@@ -1,17 +1,25 @@
 import React, { useState } from 'react';
-import {Button,  Comment, Avatar, Form, Input} from 'antd';
+import {Button,  Comment, Avatar, Form, Input, Popconfirm } from 'antd';
 import { useDispatch, useSelector }  from 'react-redux'
 import './styleComment.scss'
-import { replyCommentProduct } from '../../../redux/actions/products'
+import {
+  replyCommentProduct,
+  deleteComment as deleteCommentAction,
+  deleteCommentReply as deleteCommentReplyAction
+} from '../../../redux/actions/products'
 import { Link } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid';
+import apiNewComment from '../../../api/apiNewComment'
+//import apiUser from '../../../api/userApi'
 
 const { TextArea } = Input;
 
-const CommentProduct = ({dataComment, dataProduct}) => {
+const CommentProduct = ({dataComment, dataProduct, listUser, data, changeStatus}) => {
 
   const user = useSelector(store => store.userReducer.user)
   const dispatch = useDispatch()
   const dataLocal = {...dataComment}
+
   const [valueComment, setValueComment] = useState('')
   const [showInputComment ,setShowInputComment] = useState(false)
 
@@ -19,17 +27,65 @@ const CommentProduct = ({dataComment, dataProduct}) => {
     setValueComment(e.target.value);
   }
 
-  // xoá rep comment thì truyền thằng index
+  const fetchImg = (id) => {
+    let img = ''
+    for (let i = 0; i < listUser.length ; i++) {
+      if (listUser[i].id === id) {
+        img = listUser[i].img;
+        break;
+      }
+    }
+    return img;
+  }
+
+  const deleteComment = (id) => {
+    const newListComment = data.comments.filter(comment => comment.id !== id)
+    const newComment = {
+      ...data,
+      comments: newListComment
+    }
+    dispatch(deleteCommentAction(newComment))
+    changeStatus(id)
+  }
+
+  const deleteReplyComment = (id) => {
+    const data1 = {...data}
+    const newReplyComment = dataLocal.children.filter(comment => comment.id !== id)
+    for (let i = 0; i < data1.comments.length; i++) {
+      if (data1.comments[i].id === dataLocal.id) {
+        data1.comments[i].children = newReplyComment
+      }
+    }
+    dispatch(deleteCommentReplyAction(data1))
+    changeStatus(id)
+  }
+
   const handleSubmitComment =  () => {
     if (valueComment) {
-      const newData = {
+      data.comments.forEach((item, index) => {
+        if (item.id === dataComment.id) {
+          const newDate = new Date()
+          const newData = {
+            id: uuidv4(),
+            idUser: user.id,
+            name: user.name,
+            comment: valueComment,
+            date: newDate
+          }
+          data.comments[index].children.push(newData);
+        }
+      })
+      const newComment = {
+        id : uuidv4(),
+        idProduct: data.id,
+        idComment: dataLocal.id,
         idUser: user.id,
-        userName: user.name,
-        img: user.img,
+        date: new Date(),
+        name: user.name,
         comment: valueComment
       }
-      dataLocal.replyComment.push(newData);
-      dispatch(replyCommentProduct({newData: newData, dataProduct: dataProduct, idComment: dataComment.id}))
+      apiNewComment.addNewComment(newComment)
+      dispatch(replyCommentProduct({newData: data, dataProduct: dataProduct.id}))
       setShowInputComment(false);
       setValueComment('')
     }
@@ -42,16 +98,39 @@ const CommentProduct = ({dataComment, dataProduct}) => {
   const  handleCancel =  () => {
     setShowInputComment(false);
   }
+
+  // const formatDate = (date) => {
+  //   return date.slice(0, 10)
+  // }
+
+  const cancel = () => {}
   return (
     <>
       <Comment
         className="comment"
-        actions={[<span onClick={submitReplyComment} key="comment-nested-reply-to">Reply to</span>]}
-        author={<span>{dataLocal.userName}</span>}
+        actions={[
+          <span onClick={submitReplyComment} key="comment-basic-reply-to">Reply to</span>,
+          <Popconfirm
+            title="Bạn muốn xoá bình luận này chứ?"
+            onConfirm={() => deleteComment(dataLocal.id)}
+            onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <span
+              key="comment-basic-delete"
+              className={dataLocal.idUser !== user.id ? 'display-none' : ''}
+            >
+              Delete
+            </span>
+          </Popconfirm>,
+          <span key="comment-basic-date"></span>
+        ]}
+        author={<span>{dataLocal.name}</span>}
         avatar={
           <Avatar
-            src={dataLocal.img.length === 0 ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' :  dataLocal.img}
-            alt={dataLocal.userName}
+            src={fetchImg(dataComment.idUser) === '' ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' :  fetchImg(dataComment.idUser)}
+            alt=""
           />
         }
         content={
@@ -60,17 +139,34 @@ const CommentProduct = ({dataComment, dataProduct}) => {
           </p>
         }
       >
-        { dataLocal.replyComment && (
-          dataLocal.replyComment.map((item, index) => {
+        { dataLocal.children && (
+          dataLocal.children.map((item, index) => {
             return (
               <Comment
                 key={index}
+                actions={[
+                  <Popconfirm
+                    title="Bạn muốn xoá bình luận này chứ?"
+                    onConfirm={() => deleteReplyComment(item.id)}
+                    onCancel={cancel}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                  <span
+                    key="comment-basic-delete"
+                    className={item.idUser !== user.id ? 'display-none' : ''}
+                  >
+                    Delete
+                  </span>
+                  </Popconfirm>,
+                  <span key="comment-basic-date"></span>
+                ]}
                 className="comment"
-                author={<span>{item.userName}</span>}
+                author={<span>{item.name}</span>}
                 avatar={
                   <Avatar
-                    src={item.img.length === 0 ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : item.img}
-                    alt={item.userName}
+                    src={fetchImg(item.idUser) === '' ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : fetchImg(item.idUser)}
+                    alt=''
                   />
                 }
                 content={
@@ -90,8 +186,8 @@ const CommentProduct = ({dataComment, dataProduct}) => {
               className="replyComment"
               avatar={
                 <Avatar
-                  src={dataLocal.img.length === 0 ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : dataLocal.img}
-                  alt={dataLocal.userName}
+                  src={user.img === '' ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : user.img}
+                  alt={user.userName}
                 />
               }
               content={

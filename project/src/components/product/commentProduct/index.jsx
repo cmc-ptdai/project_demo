@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CommentProduct from './CommentProduct';
 import { useDispatch, useSelector }  from 'react-redux'
 import { Button,  Comment,Avatar,Form, Input } from 'antd';
@@ -6,14 +6,37 @@ import { commentProduct } from '../../../redux/actions/products'
 import { v4 as createId } from 'uuid';
 import './styleComment.scss'
 import { Link } from 'react-router-dom'
+import apiComment from '../../../api/apiComment'
+import apiUser from '../../../api/userApi'
+import apiNewComment from '../../../api/apiNewComment'
 
 const { TextArea } = Input;
 
 const ShowComment = ({data}) => {
+  const user = useSelector(store => store.userReducer.user)
+
+  const [dataComments, setDataComment] = useState(null)
+  const [listUsers, setListUsers] = useState(null)
+  const [status, setStatus] = useState('')
+
+  useEffect(() => {
+    fetchComment()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[data,status])
+
+  const fetchComment = async () => {
+    const listComments = await apiComment.getAllApiComments()
+    const listUsers = await apiUser.getUser()
+    setListUsers(listUsers)
+    for (let i=0 ; i < listComments.length; i++) {
+      if (listComments[i].id === data.id) {
+        setDataComment(listComments[i])
+        break
+      }
+    }
+  }
 
   const dispatch = useDispatch()
-
-  const user = useSelector(store => store.userReducer.user)
   const [valueComment, setValueComment] = useState('')
 
   const handleChangeComment = (e) => {
@@ -26,28 +49,54 @@ const ShowComment = ({data}) => {
         id: createId(),
         idUser: user.id,
         userName: user.name,
-        img: user.img,
         comment: valueComment,
-        replyComment: []
+        date: new Date(),
+        children: []
       }
-      data.comments.push(newData)
-      dispatch(commentProduct({newData: newData, dataProduct: data}))
+
+      const newComment = {
+        id : createId(),
+        idProduct: dataComments.id,
+        idComment: newData.id,
+        idUser: user.id,
+        date: new Date(),
+        name: user.name,
+        comment: valueComment
+      }
+
+      dataComments.comments.push(newData)
+      apiNewComment.addNewComment(newComment)
+      dispatch(commentProduct({newData: dataComments, dataProduct: data.id}))
       setValueComment('')
+      setStatus(newData.id);
     }
+  }
+
+  const changeStatus = (status) => {
+    setStatus(status);
   }
   return (
     <>
       {
-        data &&
-        data.comments.map((item, index) => {
-          return <CommentProduct dataComment={item} dataProduct={data} key={index}/>
+        dataComments !== null &&
+        dataComments.comments.map((item, index) => {
+          return (
+          <CommentProduct
+            dataComment={item}
+            dataProduct={data}
+            listUser={listUsers}
+            data={dataComments}
+            key={index}
+            changeStatus={changeStatus}
+          />
+          )
         })
       }
       <Comment
         avatar={
           user.id && <Avatar
-          src={data.img ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : data.img}
-          alt={data.userName}
+          src={user.img === '' ? 'https://thumbs.dreamstime.com/b/default-avatar-profile-vector-user-profile-default-avatar-profile-vector-user-profile-profile-179376714.jpg' : user.img}
+          alt={user.userName}
         />
         }
         content={
