@@ -10,18 +10,9 @@ import Concat from './components/product/contact/index'
 import Introduce from './components/product/introduce/index'
 import ProfileUser from './components/profileUser/ProfileUser'
 import Orders from './components/listOrderUser/index'
+import Posts from './components/Posts/Posts'
+import DetailedPosts from './components/Posts/DetailedPosts'
 
-
-// const AuthLogin = Component => {
-//   const [isOk, setIsOk] = useState(true)
-//   return (
-//     <>
-//       {
-//         isOk ? <Component /> : <Redirect to='/' />
-//       }
-//     </>
-//   )
-// }
 const router = [
   {path: '/', exact: true, Component: Home},
   {path: '/vegetable', exact: true, type:'rau', species1: '', Component: Products},
@@ -46,7 +37,9 @@ const router = [
   {path: '/login', exact: true, type: '', Component: Login},
   {path: '/singup', exact: true, type: '', Component: SingUp},
   {path: '/concat', exact: true, type: '', Component: Concat},
-  {path: '/introduce', exact: true, type: '', Component: Introduce},
+  {path: '/posts', exact: true, Component: Posts},
+  {path: '/detailedPosts/:id', exact: true, Component: DetailedPosts},
+  {path: '/introduce', exact: true, Component: Introduce},
   {path: '/profileUser', exact: true, Component: ProfileUser},
   {path: '/orderInformation', exact: true, Component: Orders},
   {path: '', exact: true, Component: NotFound},

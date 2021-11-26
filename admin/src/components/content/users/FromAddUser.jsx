@@ -33,7 +33,6 @@ const FromEdit = (props) => {
       <Modal
         visible={true}
         title="Điền thông tin"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form
@@ -50,7 +49,6 @@ const FromEdit = (props) => {
             rules={[{ required: true, message: 'Please input your username!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
-                  //const re = /^[a-zA-Z]{25}/;
                   if (value.length > 25) {
                     return Promise.reject("Tối đa 25 kí tự");
                   } else {
@@ -88,7 +86,6 @@ const FromEdit = (props) => {
             rules={[{ required: true, message: 'Please input your username!' },
               ({ getFieldValue }) => ({
                 validator(rule, value = "") {
-                  //const re = /^[a-zA-Z]{25}/;
                   if (value.length > 25) {
                     return Promise.reject("Tối đa 25 kí tự");
                   } else {
@@ -108,7 +105,6 @@ const FromEdit = (props) => {
           >
             <Select
               placeholder="Select a option and change input text above"
-              //onChange={onGenderChange}
               allowClear
             >
               <Option value="user">User</Option>
@@ -129,7 +125,6 @@ const FromEdit = (props) => {
           >
             <Select
               placeholder="Select a option and change input text above"
-              //onChange={onGenderChange}
               allowClear
             >
               <Option value="nam">Nam</Option>

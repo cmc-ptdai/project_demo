@@ -9,6 +9,10 @@ const fetchOrder = {
     const url = `/order/${id}`
     return axiosClient.delete(url)
   },
+  getOrdersById: (id) => {
+    const url = `/order/${id}`
+    return axiosClient.get(url)
+  },
   addOrders: (data) => {
     const url = `/order`
     return axiosClient.post(url,data)

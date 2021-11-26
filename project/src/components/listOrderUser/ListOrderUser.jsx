@@ -3,7 +3,6 @@ import './style.scss';
 import OrderItem from './OrderItem';
 import { useSelector } from 'react-redux'
 import apiOrder from '../../api/order'
-//import MyPaginationOrder from './MyPaginationOrder'
 
 const ListOrderUser = ({statusProps}) => {
   const [ordersApi , setOrdersApi] = useState([]);
@@ -14,7 +13,7 @@ const ListOrderUser = ({statusProps}) => {
   useEffect(() => {
     fetchOrder()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusChange])
+  }, [statusChange, listOrderUser])
 
   const changeOrder = (id) => {
     setStatusChange(id);
@@ -22,7 +21,7 @@ const ListOrderUser = ({statusProps}) => {
 
   const fetchOrder = async () => {
       const listOrder = await apiOrder.getOder()
-      if (listOrder.length > 0 && listOrderUser.length > 0) {
+      if (listOrder.length > 0 && listOrderUser) {
         let newOrder = [];
         listOrder.forEach(item => {
           listOrderUser.forEach(elem => {
@@ -41,7 +40,6 @@ const ListOrderUser = ({statusProps}) => {
       ordersApi.length > 0 && ordersApi.map((item,index) => {
         return <OrderItem dataOrder={item} key={index} status={statusProps} changeOrder={changeOrder}/>
       })
-      //ordersApi.length > 0 && (<MyPaginationOrder listSort={ordersApi}/>)
     }
     </>
   )

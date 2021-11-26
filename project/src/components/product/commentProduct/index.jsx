@@ -48,7 +48,7 @@ const ShowComment = ({data}) => {
       const newData = {
         id: createId(),
         idUser: user.id,
-        userName: user.name,
+        name: user.name,
         comment: valueComment,
         date: new Date(),
         children: []
@@ -72,8 +72,8 @@ const ShowComment = ({data}) => {
     }
   }
 
-  const changeStatus = (status) => {
-    setStatus(status);
+  const changeStatus1 = (status1) => {
+    setStatus(status1);
   }
   return (
     <>
@@ -87,7 +87,7 @@ const ShowComment = ({data}) => {
             listUser={listUsers}
             data={dataComments}
             key={index}
-            changeStatus={changeStatus}
+            changeStatus={changeStatus1}
           />
           )
         })

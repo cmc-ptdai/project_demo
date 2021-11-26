@@ -1,45 +1,86 @@
 import React , { useState, useEffect} from 'react';
-import './style.scss'
+import { useSelector } from 'react-redux';
 import { Button, Form, Input, Radio, Modal, notification } from 'antd';
 import { useHistory } from "react-router-dom"
 import { useDispatch } from 'react-redux';
-import userApi from '../../api/userApi'
-import { editUser, editUserImg, editUserPW, getUser } from '../../redux/actions/userAction'
+import apiUser from '../../../api/apiUser'
+import { getAccount } from '../../../redux/action/accLoginAction'
+import './style.scss'
+
 
 const openNotification = (number) => {
   notification.info({
     message: '',
-    description: `Mật Khẩu cũ của bạn bị sai ban còn ${number} lần để đổi`,
+    description: `Mật Khẩu cũ của bạn không hợp lệ`,
   });
 };
 
-const openNotificationSuccess = (number) => {
+const openNotificationSuccess = (text) => {
   notification.info({
     message: '',
-    description: `Bạn đã đổi mật khẩu thành công`,
+    description: `Bạn đã đổi ${text} thành công`,
   });
 };
-
-const ProfileUser = () => {
+const ProfileAdmin = () => {
 
   const history = useHistory();
   const dispatch = useDispatch()
   const [form] = Form.useForm();
-  const [user, setUser] = useState({})
-  const [visible, setVisible] = useState(false)
+  const user = useSelector(store => store.accLoginReducer)
   const [imgInput, setImgInput] = useState('')
+  const [visible, setVisible] = useState(false)
   const [showButtonChange, setShowButtonChange]= useState(false)
   const [showChangePassword, setShowChangePassword]= useState(false)
 
   useEffect(() => {
-    fetchData()
+    fetchDataUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const onFinish = (values) => {
-    dispatch(editUser(values))
-    setTimeout(() => {
-      fetchData()
-    }, 200);
-    handleCancel()
+  const fetchDataUser = async () => {
+    const id = getCookie('idUserName')
+    const fetchUser = await apiUser.getUserById(id)
+    setImgInput(fetchUser.img)
+    dispatch(getAccount(fetchUser))
+  }
+
+  const getCookie = (cname) => {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        if (ca[i].indexOf(name) === 0) {
+          return ca[i].substring(name.length, ca[i].length);
+        }
+    }
+  }
+
+  const ShowChangePwd = () => {
+    setShowChangePassword(true)
+  }
+
+  const handleCancelPassword = () => {
+    setShowChangePassword(false)
+    form.resetFields();
+  }
+
+  const onFinishChangePassword = (value) => {
+    if (user.password !== value.passwordOld) {
+      openNotification(4)
+    } else {
+      openNotificationSuccess('mật khẩu')
+      const newUser = {
+        ...user,
+        password: value.passwordNew
+      }
+      apiUser.editUser(newUser.id, newUser)
+      setTimeout(() => {
+        history.push('/')
+      handleCancelPassword()
+      }, 500);
+    }
+  }
+
+  const ShowForm = () => {
+    setVisible(true)
   }
 
   const handleCancel =  () => {
@@ -47,11 +88,21 @@ const ProfileUser = () => {
     form.resetFields();
   }
 
-  const fetchData = async () => {
-    const id = atob(localStorage.getItem('userID'))
-    const user = await userApi.getUserById(id)
-    setImgInput(user.img)
-    setUser(user)
+  const onFinish = (values) => {
+    const newDataUsers = {
+      ...user,
+      name: values.name,
+      phone: values.phone,
+      email: values.email,
+      address: values.address,
+      gender: values.gender,
+    }
+    apiUser.editUser(newDataUsers.id, newDataUsers)
+    setTimeout(() => {
+      openNotificationSuccess('ảnh')
+      fetchDataUser()
+    }, 200);
+    handleCancel()
   }
 
   const inputFile = async (e) => {
@@ -60,8 +111,6 @@ const ProfileUser = () => {
     setImgInput(fileBase64);
     setShowButtonChange(true);
   }
-
-
   const converterBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
@@ -78,45 +127,21 @@ const ProfileUser = () => {
   };
 
   const handleSubmitImg = () => {
-    dispatch(editUserImg(imgInput))
+    const newUser = {
+      ...user,
+      img: imgInput
+    }
+    apiUser.editUser(newUser.id, newUser)
+    setTimeout(() => {
+      fetchDataUser()
+    }, 500);
+    setShowButtonChange(false)
+    handleCancel()
   }
 
   const handleCancelImg = () => {
     setImgInput(user.img)
     setShowButtonChange(false)
-  }
-
-  const ShowForm = () => {
-    setVisible(true)
-  }
-
-  const ShowChangePwd = () => {
-    setShowChangePassword(true)
-  }
-
-  const handleCancelPassword = () => {
-    setShowChangePassword(false)
-    form.resetFields();
-  }
-
-  const onFinishChangePassword = (value) => {
-    if (user.password !== value.passwordOld) {
-      openNotification(4)
-    } else {
-      openNotificationSuccess()
-      dispatch(editUserPW(value));
-      const newCart = JSON.parse(localStorage.getItem('cart'))
-      const user = {
-        cart: newCart,
-      }
-      localStorage.removeItem('userID')
-      dispatch(getUser(user))
-      setTimeout(() => {
-        history.push('/login')
-      handleCancelPassword()
-      }, 500);
-    }
-
   }
   return (
     <>
@@ -140,7 +165,12 @@ const ProfileUser = () => {
                 <label>Mật Khẩu cũ:</label>
                 <Form.Item
                   name="passwordOld"
-                  rules={[{ required: true, message: 'Please input your password!'}]}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input your password!',
+                    },
+                  ]}
                 >
                   <Input.Password/>
                 </Form.Item>
@@ -322,7 +352,7 @@ const ProfileUser = () => {
                 >
                   <Radio.Group>
                     <Radio value="nam">Nam</Radio>
-                    <Radio value="nư">Nữ</Radio>
+                    <Radio value="nu">Nữ</Radio>
                     <Radio value="khac">Khác</Radio>
                   </Radio.Group>
                 </Form.Item>
@@ -355,7 +385,7 @@ const ProfileUser = () => {
             <input type="file" onChange={inputFile} accept=".jpg, .jpeg, .png" />
             {
               showButtonChange && (
-                <div>
+                <div className="ChangeImg-button">
                   <Button className="btnSubmit" type="primary" danger onClick={handleCancelImg}>
                     Huỷ
                   </Button>
@@ -372,4 +402,4 @@ const ProfileUser = () => {
   )
 }
 
-export default ProfileUser;
+export default ProfileAdmin;

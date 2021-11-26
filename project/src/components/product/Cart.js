@@ -19,8 +19,6 @@ import {
   deleteListItemCartNoUser as deleteListItemCartNoUserAction,
 } from '../../redux/actions/userAction'
 import {
-  // incrementCountPayByCart as incrementCountPayByCartAction,
-  // onchangeInputPayByCart as onchangeInputPayByCartAction
   deleteItemByPayCart as deleteItemByPayCartAction
 } from './../../redux/actions/products'
 import userApi from '../../api/userApi'
@@ -54,9 +52,10 @@ const Cart = () => {
   const [checkPaypal, setCheckPaypal] = useState(false)
   const [listWarehouse, setListWarehouse] = useState(null)
   const [transportFee, setTransportFee] = useState(null)
-  //const [payOnlineSuccess , setPayOnlineSuccess] = useState(false)
-  //const [listCartPay, setListCartPay] = useState([])
   const [moneyPayOl, setMoneyPayOl] = useState(0)
+  const [listProduct, setListProduct] = useState(null)
+
+  const [status, setStatus] = useState(true)
 
   useEffect(() => {
     if(user.id) {
@@ -64,8 +63,9 @@ const Cart = () => {
     } else {
       setProducts(dataProducts)
     }
+    fetchApiProduct()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[user])
+  },[user, status])
 
   const columns = [
     {
@@ -112,12 +112,6 @@ const Cart = () => {
               onClick={() => decrement(record.id)}
               disabled = {record.count === 1  ? true : false}
             >-</button>
-              {/* <input
-                type="text" value={record.count}
-                id={record.id}
-                onChange={getNumberInput}
-                // onClick={getValue}
-              /> */}
               <input type="text" value={text} onChange={getNumberInput} id={record.id}/>
             <button
               className="cart__box-text--plus"
@@ -169,17 +163,34 @@ const Cart = () => {
     },
   ];
 
-  const onSelectChange = async (selectedRowKeys) => {
-    await setSelectedRowKeys(selectedRowKeys);
+  const onSelectChange = (selectedRowKeys) => {
+    let newSelect = [...selectedRowKeys]
     let price = 0
-    selectedRowKeys.forEach(item => {
+    let status = false
+    if (user.id) {
+      for (let key = 0; key < selectedRowKeys.length; key++) {
+        for (let ad = 0; ad < products.length; ad++) {
+          if (products[ad].id === selectedRowKeys[key]) {
+            const index = listProduct.findIndex(a => a.id === products[ad].id)
+            if (listProduct[index].countPay < products[ad].count ) {
+              status = true
+              newSelect = newSelect.filter(a => a !== selectedRowKeys[key])
+            }
+          }
+        }
+      }
+    }
+    setSelectedRowKeys(newSelect);
+    setVisibleAlert(status)
+
+    newSelect.forEach(item => {
       const index = dataProducts.findIndex(elem => elem.id === item)
       price = price + ((dataProducts[index].count * dataProducts[index].price) - ((dataProducts[index].count * dataProducts[index].price) * dataProducts[index].sale / 100))
     })
     setTotalMoney(price)
 
     dataProducts.forEach(item => {
-      const index = selectedRowKeys.findIndex(elem => elem === item.id)
+      const index = newSelect.findIndex(elem => elem === item.id)
       const buttonDelete = document.getElementById(`${item.id}delete`)
       if (index !== -1) {
         buttonDelete.classList.add("overlay");
@@ -207,21 +218,20 @@ const Cart = () => {
     }
   }
 
+  const fetchApiProduct = async () => {
+    try {
+      const listProductApi = await ProductApi.getAll()
+      setListProduct(listProductApi)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const getNumberInput = (event) => {
     const { value, id } = event.target
-    //const index = listProduct.findIndex(item => item.id === Number(event.target.id))
-    // let a = 0
-    // if ( event.target.value === "" || isNaN(event.target.value)) {
-    //   setNumber(1)
-    // }else {
-    //   a = event.target.value
-    //   if (event.target.value > listProduct[index].countPay) {
-    //     a = listProduct[index].countPay
-    //   }
-    //   setNumber(a)
-    // }
+    const index = listProduct.findIndex(item => item.id === id)
     const [...newData] = products
-     const abc =  newData.map(item => {
+     const abc = newData.map(item => {
       if (item.id === Number(id)) {
         return {
           ...item,
@@ -230,16 +240,11 @@ const Cart = () => {
       }
       return item
     })
-    // let price = 0
-    // selectedRowKeys.forEach(item => {
-    //   const index = dataProducts.findIndex(elem => elem.id === item)
-    //   price = price + (dataProducts[index].count * dataProducts[index].price)
-    // })
-    // setTotalMoney(price)
     setProducts(abc)
     const newNumber = {
       value: value,
-      id: id
+      id: id,
+      max: listProduct[index].countPay
     }
 
     setTimeout(() => {
@@ -261,10 +266,11 @@ const Cart = () => {
   }
 
   const increment = (id) => {
+    const index = listProduct.findIndex(item => item.id === id)
      if (user.id) {
-      dispatch(incrementProjectAction(id))
+      dispatch(incrementProjectAction({id: id, max: listProduct[index].countPay}))
      } else {
-       dispatch(incrementProjectNoUserAction(id))
+       dispatch(incrementProjectNoUserAction({id: id, max: listProduct[index].countPay}))
      }
      sumOfMoney()
   }
@@ -284,15 +290,11 @@ const Cart = () => {
      } else {
        dispatch(deleteItemCartNoUserAction(id))
      }
+     setStatus(!status)
   }
 
   const deleteListItem = () => {
-    // const newArr = []
-    // selectedRowKeys.forEach(item => {
-    //   newArr.push(listProduct[item - 1].id)
-    // })
     setLoading(true)
-
     if (user.id) {
       dispatch(deleteListItemCartAction(selectedRowKeys))
      } else {
@@ -301,32 +303,30 @@ const Cart = () => {
     setTimeout(() => {
       setSelectedRowKeys([])
       setLoading(false)
+      setStatus(!status)
      }, 500);
   };
 
   const handleCancel = () => {
     setVisibleAlert(false)
   }
+
   //pay cart no user
   const onFinish = async (values) => {
     if (values.username !== undefined && values.phone !== undefined && values.email !== undefined && values.address !== undefined) {
       const listPayCart = []
       const newListKey = []
-      const newListKeyFail = []
-      const productApi = await ProductApi.getAll()
       const listWarehouse1 = await WarehouseApi.getWarehouse()
 
       selectedRowKeys.forEach(item => {
         for (let ad = 0; ad < products.length; ad++) {
           if (products[ad].id === item) {
-            const index = productApi.findIndex(a => a.id === products[ad].id)
-            if (productApi[index].countPay >= products[ad].count ) {
+            const index = listProduct.findIndex(a => a.id === products[ad].id)
+            if (listProduct[index].countPay >= products[ad].count ) {
               newListKey.push(item)
               listPayCart.push(products[ad]);
-            } else {
-              newListKeyFail.push(item)
             }
-            break
+            break;
           }
         }
 
@@ -353,13 +353,11 @@ const Cart = () => {
           dispatch(deleteItemByPayCartAction(listPayCart))
         }, 100);
       }
-      if (newListKeyFail.length > 0) {
-        setVisibleAlert(true)
-      }
       setTransportFee(null)
       onReset()
       onSelectChange([])
       setSelectedRowKeys([])
+      setStatus(!status)
     }
   };
 
@@ -370,20 +368,16 @@ const Cart = () => {
       return;
     }
     if (user.id) {
-      const productApi = await ProductApi.getAll()
       const listPayCart = []
       const newListKey = []
-      const newListKeyFail = []
 
       selectedRowKeys.forEach(item => {
         for (let ad = 0; ad < products.length; ad++) {
           if (products[ad].id === item) {
-            const index = productApi.findIndex(a => a.id === products[ad].id)
-            if (productApi[index].countPay >= products[ad].count ) {
+            const index = listProduct.findIndex(a => a.id === products[ad].id)
+            if (listProduct[index].countPay >= products[ad].count ) {
               newListKey.push(item)
               listPayCart.push(products[ad]);
-            } else {
-              newListKeyFail.push(item)
             }
             break
           }
@@ -400,12 +394,6 @@ const Cart = () => {
         }
 
       })
-
-      // dispatch(addOrderAction(selectedRowKeys))
-      if (newListKeyFail.length > 0) {
-        setVisibleAlert(true)
-      }
-
       onSelectChange([])
       setTotalMoney(0)
        setTimeout(() => {
@@ -415,9 +403,11 @@ const Cart = () => {
       }, 100)
        setTransportFee(null)
        dispatch(payCartAction({data:listPayCart, payments: 'off', transport: transportFee}))
+       //openNotification("Đơn hàng của bạn đã đươc đặt thành công")
     } else {
       setVisible(true)
     }
+    setStatus(!status)
   };
 
   const onReset = () => {
@@ -425,16 +415,16 @@ const Cart = () => {
     setVisible(false)
   };
 
-  const  PayCartOnline = async () => {
+  const PayCartOnline = async () => {
+    setStatus(!status)
     if (user.id) {
-      const productApi = await ProductApi.getAll()
       const listPayCart = []
       let money = 0
       selectedRowKeys.forEach(item => {
         products.forEach(elem => {
           if (item === elem.id) {
-            const index = productApi.findIndex(a => a.id === elem.id)
-            if (productApi[index].countPay > elem.count ) {
+            const index = listProduct.findIndex(a => a.id === elem.id)
+            if (listProduct[index].countPay > elem.count ) {
               listPayCart.push(elem);
               if (Number(elem.sale) > 0 ) {
                 money = money + ((elem.price * elem.count) - ((elem.price * elem.count)*elem.sale)/100)
@@ -452,22 +442,19 @@ const Cart = () => {
   }
   const hasSelected = selectedRowKeys.length > 0;
 
-  const paySuccess = async (status) => {
-    if (status) {
-      const productApi = await ProductApi.getAll()
+  const paySuccess = async (status1) => {
+    setStatus(!status)
+    if (status1) {
       const listPayCart = []
       const newListKey = []
-      const newListKeyFail = []
 
       selectedRowKeys.forEach(item => {
         for (let ad = 0; ad < products.length; ad++) {
           if (products[ad].id === item) {
-            const index = productApi.findIndex(a => a.id === products[ad].id)
-            if (productApi[index].countPay >= products[ad].count ) {
+            const index = listProduct.findIndex(a => a.id === products[ad].id)
+            if (listProduct[index].countPay >= products[ad].count ) {
               newListKey.push(item)
               listPayCart.push(products[ad]);
-            } else {
-              newListKeyFail.push(item)
             }
             break
           }
@@ -486,11 +473,7 @@ const Cart = () => {
       })
 
       dispatch(payCartAction({data:listPayCart, payments: 'online', transport: 'free'}))
-      // dispatch(addOrderAction(selectedRowKeys))
       setTransportFee(null)
-      if (newListKeyFail.length > 0) {
-        setVisibleAlert(true)
-      }
       onSelectChange([])
       setTotalMoney(0)
       setTimeout(() => {
@@ -499,6 +482,7 @@ const Cart = () => {
         setSelectedRowKeys([])
       }, 500)
     }
+    //openNotification("Đơn hàng của bạn đã đươc đặt thành công")
     setCheckPaypal(false)
   }
 
@@ -584,8 +568,7 @@ const Cart = () => {
           <Modal
             visible={visible}
             title="Điền thông tin"
-            // onOk={handleOk}
-            // onCancel={handleCancel}
+            onCancel={onReset}
             className="modalCart"
           >
             <Form
@@ -602,9 +585,8 @@ const Cart = () => {
                 rules={[{ required: true, message: 'Please input your username!' },
                   ({ getFieldValue }) => ({
                     validator(rule, value = "") {
-                      const re = /^[a-zA-Z]+$/;
-                      if (value.length > 0 && !re.test(value)) {
-                        return Promise.reject("Minimum 10 characters");
+                      if (value.length > 20) {
+                        return Promise.reject("Minimum 20 characters");
                       } else {
                         return Promise.resolve();
                       }
@@ -654,17 +636,7 @@ const Cart = () => {
               <label>Địa chỉ:</label>
               <Form.Item
                 name="address"
-                rules={[{ required: true, message: 'Please input your address!' },
-                  // ({ getFieldValue }) => ({
-                  //   validator(rule, value = "") {
-                  //     if (value.length > 0 && value.length < 10) {
-                  //       return Promise.reject("Minimum 10 characters");
-                  //     } else {
-                  //       return Promise.resolve();
-                  //     }
-                  //   }
-                  // })
-                ]}
+                rules={[{ required: true, message: 'Please input your address!' }]}
               >
                 <Input />
               </Form.Item>
@@ -677,9 +649,6 @@ const Cart = () => {
                   Đăt hàng
                 </Button>
 
-                {/* <Button className="btnSubmit" type="primary" htmlType="submit" >
-                  thanh toán trực tuyến
-                </Button> */}
               </Form.Item>
             </Form>
           </Modal>

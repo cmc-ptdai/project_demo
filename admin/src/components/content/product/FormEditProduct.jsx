@@ -74,7 +74,6 @@ const FromEditProduct = (props) => {
   }
 
   const onchangeInputSale = (e) => {
-    console.log(e.target.value);
     if (e.target.value >= 100) {
       setData({
         ...data,
@@ -141,7 +140,6 @@ const FromEditProduct = (props) => {
        className="form__edit"
         visible={true}
         title="Chỉnh sửa sản phẩm"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <label>Tên sản phẩm:</label>

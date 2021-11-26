@@ -5,7 +5,9 @@ import {
   COMMENT_PRODUCT,
   REPLY_COMMENT_PRODUCT,
   DELETE_COMMENT,
-  DELETE_COMMENT_REPLY
+  DELETE_COMMENT_REPLY,
+  DELETE_NEW_COMMENT,
+  INCREMENT_PROJECT_DELETE_ORDER
 } from '../actionType'
 
 export const getProduct = (payload) => {
@@ -57,3 +59,18 @@ export const deleteCommentReply = (payload) => {
     payload
   }
 }
+
+export const deleteNewComment = (payload) => {
+  return {
+    type: DELETE_NEW_COMMENT,
+    payload
+  }
+}
+
+export const incrementProjectDeleteOrder = (payload) => {
+  return {
+    type: INCREMENT_PROJECT_DELETE_ORDER,
+    payload
+  }
+}
+

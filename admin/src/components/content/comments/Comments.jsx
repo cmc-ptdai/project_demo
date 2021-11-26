@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Popconfirm, Button } from 'antd';
+import { Table, Popconfirm, Button, Modal, Input, Form } from 'antd';
 import apiComment from '../../../api/apiComment'
 import apiProduct from '../../../api/apiProduct'
 import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { v4 as uuidv4 } from 'uuid';
 import './comment.scss'
 
 const Comments = () => {
   const param = useParams()
-  console.log(param);
+  const [form] = Form.useForm();
   const [commentProduct, setCommentProduct] = useState()
   const [product, setProduct] = useState(null)
   const [sttFetchData, setSttFetchData] = useState(false)
+  const [showFormReply, setShowFormReply] = useState(false)
+  const accountAdmin = useSelector(store => store.accLoginReducer)
+  const [idComment, seIdComment] = useState('')
 
   useEffect(() => {
     fetchComment()
@@ -56,6 +61,7 @@ const Comments = () => {
               type="primary"
               style={{marginRight: '5px'}}
               className="btn-replyComment"
+              onClick={() => replyCommentTable(record.id)}
             >
               Reply
             </Button>
@@ -127,10 +133,17 @@ const Comments = () => {
     }
   ];
 
-  const handleOk = (record) => {
+  const replyCommentTable = (record) => {
+    setShowFormReply(true)
+    seIdComment(record)
+  }
 
+  const handleCancelForm = () => {
+    setShowFormReply(false)
+    form.resetFields();
+  }
+  const handleOk = (record) => {
     const a = record?.children
-    console.log(record, a);
     if (a) {
       for (let i = 0; i < commentProduct.comments.length; i++) {
         if (commentProduct.comments[i].id === record.id) {
@@ -158,6 +171,25 @@ const Comments = () => {
     apiComment.editComments(commentProduct.id, commentProduct)
     setSttFetchData(!sttFetchData)
   }
+
+  const onFinish = (value) => {
+    const newComment = {
+      id: uuidv4(),
+      idUser: accountAdmin.id,
+      date: new Date(),
+      name: accountAdmin.name,
+      comment: value.comment
+    }
+    for (let i = 0; i < commentProduct.comments.length; i++) {
+      if (commentProduct.comments[i].id === idComment) {
+        commentProduct.comments[i].children.push(newComment)
+        break
+      }
+    }
+    apiComment.editComments(commentProduct.id, commentProduct)
+    fetchComment()
+    handleCancelForm()
+  }
   const handleCancel = () => {}
   return (
     <>
@@ -182,6 +214,34 @@ const Comments = () => {
         />
        )
      }
+     <Modal
+        className="form__add"
+        visible={showFormReply}
+        title="trả lời comment"
+        onCancel={handleCancelForm}
+      >
+        <Form
+          name="basic"
+          form={form}
+          onFinish={onFinish}
+        >
+          <Form.Item
+            name="comment"
+            rules={[{ required: true, message: 'Please input your comment!' } ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item  className="groupButton">
+            <Button className="btnSubmit" type="primary" danger onClick={handleCancelForm}>
+              Huỷ
+            </Button>
+            <Button className="btnSubmit" type="primary" htmlType="submit" >
+              Thêm
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   )
 }

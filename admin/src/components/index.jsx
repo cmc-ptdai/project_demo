@@ -38,8 +38,6 @@ function Body() {
   const dispatch = useDispatch();
   const [collapsed, setCollapse] = useState(false)
   const accountUser = useSelector(store => store.accLoginReducer)
-  // const getCookie = document.cookie
-  // console.log(getCookie);
 
   useEffect(() => {
     fetchData()
@@ -89,12 +87,10 @@ function Body() {
 
   const logout = () => {
     deleteCookie('idUserName')
-    // khi logout thi xoa cookie
     return history.replace({ pathname: '/' })
-    // if (getCookie('idUserName') === undefined || getCookie('idUserName') === '') {
-    //   console.log(getCookie('idUserName'));
-    //   history.replace({ pathname: '/' })
-    // }
+  }
+  const Profile = () => {
+    return history.push({ pathname: '/body/profileAdmin' })
   }
 
   if (getCookie('idUserName') === undefined || getCookie('idUserName') === '') {
@@ -160,6 +156,11 @@ function Body() {
                   Warehouse
                 </Link>
               </Menu.Item>
+              <Menu.Item key="listPosts" icon={<TeamOutlined style={{ fontSize: '18px'}}/>}>
+                <Link  to='/body/listPosts'>
+                  Posts
+                </Link>
+              </Menu.Item>
             </Menu>
           </Sider>
           <Layout className="site-layout">
@@ -179,6 +180,7 @@ function Body() {
                 </div>
                 <div className="accountUser-logout">
                   <span onClick={logout}> Logout {'>>'}</span>
+                  <span onClick={Profile}> profile Admin </span>
                 </div>
               </div>
             </Header>

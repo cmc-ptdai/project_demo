@@ -138,7 +138,6 @@ const ReplyNewComments = () => {
   const handleOk = (record) => {
 
     const a = record?.children
-    console.log(record, a);
     if (a) {
       for (let i = 0; i < commentProduct.comments.length; i++) {
         if (commentProduct.comments[i].id === record.id) {
@@ -223,7 +222,6 @@ const ReplyNewComments = () => {
         className="form__add"
         visible={showFormReply}
         title="trả lời comment"
-        // onOk={handleOk}
         onCancel={handleCancelForm}
       >
         <Form

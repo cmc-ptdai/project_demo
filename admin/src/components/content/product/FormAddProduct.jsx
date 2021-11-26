@@ -68,7 +68,6 @@ const FromAddProduct = (props) => {
         className="form__add"
         visible={true}
         title="Chỉnh sửa sản phẩm"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form

@@ -1,12 +1,10 @@
 import 'antd/dist/antd.css';
-//import Body from './components/index';
 import './App.css'
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom"
-//import Login from './components/content/login/Login';
 import RouterAdmin from './routerAdmin'
 
 function App() {

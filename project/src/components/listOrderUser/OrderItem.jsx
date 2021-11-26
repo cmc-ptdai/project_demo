@@ -1,32 +1,39 @@
 import React, { useEffect, useState} from 'react';
 import './style.scss'
 import { Button, Popconfirm } from 'antd'
+import { useDispatch } from 'react-redux';
 import orderApi from '../../api/order';
+import productsApi from '../../api/productApi'
+import { incrementProjectDeleteOrder } from '../../redux/actions/products'
 
 const OrderItem = ({dataOrder, status, changeOrder}) => {
 
+  const dispatch = useDispatch()
+
   const [listOrder, setListOrder] = useState(null)
+  const [listProducts, setListProducts] = useState(null)
 
   useEffect(() => {
     fetchOrder()
   }, [])
   const fetchOrder = async () => {
     const newList = await orderApi.getOder()
+    const newProduct = await productsApi.getAll()
+    setListProducts(newProduct)
     setListOrder(newList)
   }
 
-  const cancelOrder = (id) => {
+  const cancelOrder = (dataOrder) => {
     for (let index = 0; index < listOrder.length; index++) {
-      if (listOrder[index].id === id) {
+      if (listOrder[index].id === dataOrder.id) {
         listOrder[index].status = 'cancelled'
         orderApi.editOrder(listOrder[index].id, listOrder[index])
       }
     }
-    changeOrder(id)
+    changeOrder(dataOrder.id)
+    dispatch(incrementProjectDeleteOrder({ dataOrder: dataOrder, product: listProducts}))
   }
-  const cancel = () => {
-
-  }
+  const cancel = () => {}
   return (
     <>
       <div className="Order">
@@ -54,13 +61,13 @@ const OrderItem = ({dataOrder, status, changeOrder}) => {
           })
         }
         <div className="Order-footer">
-          <p><span><i className="fad fa-usd-circle" /></span> Số tiền phải trả: <span>{dataOrder.money.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span></p>
+          <p><span><i className="fad fa-usd-circle" /></span> Số tiền phải trả: <span>{dataOrder.money} VND</span></p>
           {
             status === 'pending' && (
               <Popconfirm
                 title="Bạn muốn huỷ đơn hàng này chứ?"
                 onConfirm={cancel}
-                onCancel={() => cancelOrder(dataOrder.id)}
+                onCancel={() => cancelOrder(dataOrder)}
                 okText="Giữ lại"
                 cancelText="Huỷ đơn"
               >

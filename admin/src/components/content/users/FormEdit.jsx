@@ -34,7 +34,6 @@ const FromEdit = (props) => {
       <Modal
         visible={true}
         title="Điền thông tin"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form
@@ -54,7 +53,6 @@ const FromEdit = (props) => {
             rules={[
               () => ({
                 validator(rule, value = "") {
-                  //const re = /^[a-zA-Z]{25}/;
                   if (value.length > 25) {
                     return Promise.reject("Tối đa 25 kí tự");
                   } else {

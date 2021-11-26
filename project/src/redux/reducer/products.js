@@ -1,6 +1,7 @@
 import productApi from '../../api/productApi'
 import commentApi from '../../api/apiComment'
-import EvaluateApi from '../../api/apiEvaluates';
+import EvaluateApi from '../../api/apiEvaluates'
+import NewCommentApi from '../../api/apiNewComment'
 
 import {
   GET_PRODUCT,
@@ -9,7 +10,9 @@ import {
   SET_EVALUATE,
   DELETE_ITEM_BY_PAY_CART,
   DELETE_COMMENT,
-  DELETE_COMMENT_REPLY
+  DELETE_COMMENT_REPLY,
+  DELETE_NEW_COMMENT,
+  INCREMENT_PROJECT_DELETE_ORDER
 } from '../actionType'
 
 const initialState = []
@@ -43,6 +46,22 @@ const productReducer = (state = initialState, action) => {
       return state
     }
 
+    case INCREMENT_PROJECT_DELETE_ORDER: {
+      action.payload.dataOrder.listProduct.forEach(item => {
+        for (let i = 0; i < action.payload.product.length; i++) {
+          if (item.id === action.payload.product[i].id) {
+            const newProduct = {
+              ...action.payload.product[i],
+              countPay: action.payload.product[i].countPay + item.count
+            }
+            productApi.updateProduct(newProduct.id, newProduct)
+            return
+          }
+        }
+      })
+      return state
+    }
+
     case REPLY_COMMENT_PRODUCT: {
       commentApi.editApiComments(action.payload.dataProduct, action.payload.newData)
       return state
@@ -60,6 +79,11 @@ const productReducer = (state = initialState, action) => {
 
     case DELETE_COMMENT_REPLY: {
       commentApi.editApiComments(action.payload.id, action.payload)
+      return state
+    }
+
+    case DELETE_NEW_COMMENT: {
+      NewCommentApi.deleteNewComment(action.payload.id)
       return state
     }
 

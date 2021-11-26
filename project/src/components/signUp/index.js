@@ -91,25 +91,6 @@ const SingUp = () => {
             <Option value="khac">Khác</Option>
           </Select>
         </Form.Item>
-        {/* <Form.Item
-          label="Email"
-          name="email"
-          rules={[ { required: true, message: 'Please input your email!' },
-            ({ getFieldValue }) => ({
-              validator(rule, value = "") {
-                //eslint-disable-next-line
-                const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-                if (!re.test(value)) {
-                  return Promise.reject("email chưa đúng đinh dạng email @,com,gmail,.....");
-                } else {
-                  return Promise.resolve();
-                }
-              }
-            })
-          ]}
-        >
-          <Input />
-        </Form.Item> */}
 
         <Form.Item
           name="email"

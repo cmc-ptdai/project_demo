@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom'
 
 
 const MyMenu = () => {
-  // const user = useSelector(store => store.userReducer.user)
   const [isAffix, setIsAffix] = useState(false)
   const myUser = useSelector(store => store.userReducer.user)
 
@@ -71,22 +70,18 @@ const MyMenu = () => {
         },
       ]
     },
-    // {
-    //   title: 'Tin tức',
-    //   path: '/vegetable'
-    // },
     {
       title: 'Giới thiệu',
       path: '/introduce'
     },
     {
+      title: 'Tin tức',
+      path: '/posts'
+    },
+    {
       title: 'Liên hệ',
       path: '/concat'
-    },
-    // {
-    //   title: 'Chỉ đường',
-    //   path: '/mushroom'
-    // }
+    }
   ]
   return (
     <>

@@ -36,6 +36,9 @@ const ProductItem = ({data}) => {
   return (
     <>
       <div className="productItem">
+        <div className="productItem__countPay">
+          {data.countPay <= 0 ? 'Hết Hàng' : data.countPay }
+        </div>
         {
           data.sale > 0 &&
           (
@@ -51,9 +54,9 @@ const ProductItem = ({data}) => {
           <div className="productItem__info__left">
             <p className="productItem__info__left--name">{data.name}</p>
             {
-              data.sale > 0 &&  <p className="productItem__info__left--sale">{(data.price - (data.price * data.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
+              data.sale > 0 &&  <p className="productItem__info__left--sale">{(data.price - (data.price * data.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND / {data.unit}</p>
             }
-            <p className={data.sale > 0 ? "productItem__info__left--real price-sale" : "productItem__info__left--real"}>{data.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</p>
+            <p className={data.sale > 0 ? "productItem__info__left--real price-sale" : "productItem__info__left--real"}>{data.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND / {data.unit}</p>
           </div>
           <div className="productItem__info__right">
             <Link to={`/body/comments/${data.id}`}>

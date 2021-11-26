@@ -6,6 +6,7 @@ const MyPagination = ({ listSort }) => {
   const [pageOfItems, setPageOfItems] = useState([]);
 
   const onChangePage = (data) => {
+    window.scrollTo(0, 0)
     setPageOfItems(data);
   };
 

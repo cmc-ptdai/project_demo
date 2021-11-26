@@ -11,18 +11,12 @@ import apiUser from '../../../api/userApi'
 const Evaluate = ({data}) => {
   const dispatch = useDispatch()
   const user = useSelector(store => store.userReducer.user)
-
   const desc = ['terrible', 'bad', 'normal', 'good', 'wonderful'];
   const [evaluateDefault, setEvaluateDefault] = useState(null)
   const [listUser, setListUser] = useState(null)
-  //const [listEvaluateApi, setListEvaluateApi] = useState(null)
-
   const [valueInputEvaluate, setValueInputEvaluate] = useState('')
   const [evaluate, setEvaluate] = useState(0)
-
-
   const [isModalVisible, setIsModalVisible] = useState(false)
-
   const [showEdit, setShowEdit] = useState(false)
   useEffect(() => {
     fetchEvaluate()
@@ -32,7 +26,6 @@ const Evaluate = ({data}) => {
     const listEvaluate = await EvaluateApi.getAllEvaluates()
     const litUser = await apiUser.getUser()
     setListUser(litUser)
-    //setListEvaluateApi(listEvaluate)
     for (let i=0 ; i < listEvaluate.length; i++) {
       if (listEvaluate[i].id === data.id) {
         setEvaluateDefault(listEvaluate[i]);
@@ -68,16 +61,21 @@ const Evaluate = ({data}) => {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const handleOk = () => {
-    for (let i = 0; i < evaluateDefault.evaluates.length; i++) {
-      if (evaluateDefault.evaluates[i].id === user.id ) {
-        evaluateDefault.evaluates[i] = {
-          ...evaluateDefault.evaluates[i],
-          point: evaluate,
-          text: valueInputEvaluate
+  const submitEvaluate = () => {
+    if ( evaluateDefault.evaluates.length > 0) {
+      let a = 0;
+      for (let i = 0; i < evaluateDefault.evaluates.length; i++) {
+        if (evaluateDefault.evaluates[i].id === user.id ) {
+          a += 1
+          evaluateDefault.evaluates[i] = {
+            ...evaluateDefault.evaluates[i],
+            point: evaluate,
+            text: valueInputEvaluate
+          }
+          break
         }
-        break;
-      } else {
+      }
+      if (a === 0) {
         evaluateDefault.evaluates.push(
           {
             id: user.id,
@@ -85,10 +83,16 @@ const Evaluate = ({data}) => {
             text: valueInputEvaluate
           }
         )
-        break;
       }
+    } else {
+      evaluateDefault.evaluates.push(
+        {
+          id: user.id,
+          point: evaluate,
+          text: valueInputEvaluate
+        }
+      )
     }
-
     dispatch(setEvaluateAction(evaluateDefault))
     setIsModalVisible(false);
     setShowEdit(false)
@@ -260,7 +264,7 @@ const Evaluate = ({data}) => {
                 <Button
                   key="submit"
                   type="primary"
-                  onClick={handleOk}
+                  onClick={submitEvaluate}
                   disabled={fetchPointDefault(user.id) && evaluate === 0 }
                 >
                   Gửi đánh giá

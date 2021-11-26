@@ -11,7 +11,6 @@ const userReducer = (state = initialState, action) => {
       state = action.payload
       return state
     }
-
     case EDIT_ACCOUNT: {
       return state
     }

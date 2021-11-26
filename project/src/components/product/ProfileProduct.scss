@@ -200,23 +200,23 @@
           background-color: #fe9705;
         }
       }
-      &-groupButton {
-        text-align: center;
-        .evaluateDisable {
-          button {
-            background-color: #ccc;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px 10px ;
-            color: #fff;
-            font-weight: 600;
-            font-size: 16px;
-          }
-          span {
-            margin-top: 10px;
-            display: inline-block;
-            text-align: center;
-          }
+    }
+    &-groupButton {
+      text-align: center;
+      .evaluateDisable {
+        button {
+          background-color: #ccc;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          padding: 5px 10px ;
+          color: #fff;
+          font-weight: 600;
+          font-size: 16px;
+        }
+        span {
+          margin-top: 10px;
+          display: inline-block;
+          text-align: center;
         }
       }
     }

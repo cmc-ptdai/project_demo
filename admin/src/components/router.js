@@ -8,10 +8,18 @@ import Warehouse from './content/warehouse/Warehouse'
 import Notfound from './content/Notfound'
 import Slides from './content/slides/Slide'
 import ReplyNewComment from './content/comments/ReplyNewComments'
+import ProfileAdmin from './content/profileAdmin/ProfileAdmin'
+import AddPosts from './content/posts/Posts'
+import EditPosts from './content/posts/EditPost'
+import ListPosts from './content/posts/ListPosts'
 
 const router = [
   {path: '/body', exact: true, Component: Dashboard},
   {path: '/body/users', exact: true, Component: user},
+  {path: '/body/listPosts', exact: true, Component: ListPosts},
+  {path: '/body/AddPosts', exact: true, Component: AddPosts},
+  {path: '/body/EditPosts/:id', exact: true, Component: EditPosts},
+  {path: '/body/profileAdmin', exact: true, Component: ProfileAdmin},
   {path: '/body/slides', exact: true, Component: Slides},
   {path: '/body/vegetable',typeID:  'rau', exact: true, Component: Products},
   {path: '/body/tubers',typeID:  'cu', exact: true, Component: Products},

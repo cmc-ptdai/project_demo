@@ -9,11 +9,42 @@
 .table__order {
   th {
     text-align: center !important;
+    padding: 10px 0px !important;
   }
   td {
     margin: 0;
     text-align: center;
-    padding: 0px !important;
+    padding: 10px 0px !important;
+  }
+  &__groupCount {
+    position: relative;
+    width: 85px;
+    display: flex;
+    align-items: center;
+    margin: auto;
+    input {
+      margin: 0 !important;
+      border: 1px solid #ccc;
+      width: 100%;
+      text-align: center;
+    }
+    button {
+      position: absolute;
+      border: none;
+      width: 22px;
+      background-color: #ccc;
+      transition: all 0.3s ease-in-out
+    }
+    button:hover {
+      background-color: rgb(230, 230, 230);
+    }
+    &--minus {
+      left: 1px;
+    }
+    &--plus {
+      right: 1px;
+    }
+
   }
 }
 .form__edit {

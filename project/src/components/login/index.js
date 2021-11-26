@@ -46,7 +46,9 @@ const Login = () => {
       } else {
         const passwordBase = btoa(user[0].id)
         localStorage.setItem('userID', passwordBase);
-        history.push('/')
+        setTimeout(() => {
+          history.goBack()
+        }, 400);
       }
     } else {
       alert("sai tài khoản hoặc mật khẩu")
@@ -87,7 +89,6 @@ const Login = () => {
 
   const onFinishPasswordRetrieval = (values) => {
     const user = listUser.filter(item => (item.email === values.email && item.userName === values.userName ))
-    console.log(listUser, values, user);
     if (user.length > 0) {
       setNotificationPassword(true)
       setNewPassword(user[0].password)

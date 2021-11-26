@@ -99,7 +99,6 @@ const  Slide = () => {
         className="form__add"
         visible={showModal}
         title="Chỉnh sửa sản phẩm"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form

@@ -39,22 +39,60 @@ const Product = ({typeID}) => {
     setEditStatusFrom(setToForm)
   }
 
+  const expiredProduct = () => {
+    const newData = []
+    const dateOffset = (24*60*60*1000) * 5;
+    const myDate = new Date();
+    const time = myDate.getTime();
+    dataDf.forEach(item => {
+      const endDate = new Date(item.endDate)
+      const timeDate = time - endDate.getTime()
+      if (timeDate < 0 && (dateOffset + timeDate) > 0) {
+        newData.push(item);
+      }
+    })
+    setListProducts(newData)
+
+  }
+
+  const sortProductEndDate = () => {
+    const newData = []
+    const myDate = new Date();
+    const time = myDate.getTime();
+    dataDf.forEach(item => {
+      const endDate = new Date(item.endDate)
+      const timeDate = time - endDate.getTime()
+      if (timeDate > 0 ) {
+        newData.push(item);
+      }
+    })
+    setListProducts(newData)
+  }
+
   return (
     <>
       {
         statusFromAdd && <FormAddProduct editStatusFrom={editStatusFrom}/>
       }
       <div className="tableUser">
-        <div className="tableUser__action">
-          <div className="tableUser__action--search">
+        <div className="tableUser__action" style={{width: '90%'}}>
+          <div className="tableUser__action--search" style={{width: '45%'}}>
             <Input type="text" name="search" placeholder="Tim kiếm...." onChange={changeInputSearch} value={inputSearch}/>
             <i className="fas fa-search" onClick={searchProduct}></i>
           </div>
-          <div className="tableUser__action--addUser">
+          <div className="tableUser__action--addUser" style={{width: '55%'}}>
             <Button
               type="primary"
               onClick={AddProduct}
             >Add Product</Button>
+            <Button
+              type="primary"
+              onClick={expiredProduct}
+            >sản phẩm gần hết hạn</Button>
+            <Button
+              type="primary"
+              onClick={sortProductEndDate}
+            >sản phẩm đã hết hạn</Button>
           </div>
         </div>
       </div>

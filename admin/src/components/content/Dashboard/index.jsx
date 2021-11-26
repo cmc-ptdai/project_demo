@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { Button } from 'antd'
 import apiNewComment from '../../../api/apiNewComment'
+import apiOrders from '../../../api/apiOrders'
 import './style.scss'
 
 const Dashboard = () => {
@@ -12,13 +13,68 @@ const Dashboard = () => {
   const store = useSelector(store => store)
   const [listNewComment, setNewListComment] = useState(null)
   const [status, setStatus] = useState(false)
+  const [data , setData] = useState(
+    {
+      labels: [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+      ],
+      datasets: [
+        {
+          label: 'Tổng doanh thu',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          // data: [500, 600, 850, 460, 280, 223, 268,330, 450, 570, 610, 240],
+          fill: true,
+          borderColor: 'rgb(255, 99, 132)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          tension: 0.3,
+        },
+        {
+          label: 'tổng số đơn hang',
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          //data: [200, 300, 250, 160, 180, 123, 168,230, 250, 270, 210, 140],
+          fill: true,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.3,
+        },
+      ]
+
+    }
+  )
 
   useEffect(() => {
     fetchNewComment()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   const fetchNewComment = async () => {
+    const newData = {...data}
+    newData.datasets[0].data= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    newData.datasets[1].data= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    const date = new Date()
+    const year1 = date.getFullYear()
     const newList = await apiNewComment.getNewComment()
+    const newListOrders = await apiOrders.getAllOrders()
+    newListOrders.forEach(item => {
+      const yearProduct = item.dateCreate.slice(0, 4)
+      if (year1.toString() === yearProduct) {
+        const monthProduct = item.dateCreate.slice(5, 7)
+        newData.datasets[0].data[monthProduct - 1] = newData.datasets[0].data[monthProduct - 1] +  (item.money/230000)
+        newData.datasets[1].data[monthProduct - 1] = newData.datasets[1].data[monthProduct - 1] +  1
+      }
+    })
+    setData(newData);
     setNewListComment(newList)
   }
 
@@ -29,41 +85,6 @@ const Dashboard = () => {
     })
     return a
   }
-
-  const data = {
-    labels: [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ],
-    datasets: [
-      {
-        label: 'Tổng doanh thu',
-        data: [500, 600, 850, 460, 280, 223, 268,330, 450, 570, 610, 240],
-        fill: true,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        tension: 0.3,
-      },
-      {
-        label: 'tổng số đơn hang',
-        data: [200, 300, 250, 160, 180, 123, 168,230, 250, 270, 210, 140],
-        fill: true,
-        borderColor: 'rgb(75, 192, 192)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        tension: 0.3,
-      },
-  ]
-  };
   const options = {
     maintainAspectRatio: true,
   }

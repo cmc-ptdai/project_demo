@@ -1,28 +1,11 @@
 import React, { useState } from 'react';
 import ListOrder from './ListOrderUser'
-import { useSelector } from 'react-redux'
-// import apiOrder from '../../api/order'
-
 
 const Orders = () => {
-
-  const user = useSelector(store => store.userReducer.user)
-
-  //const [ordersApi , setOrdersApi] = useState([])
-
   const [ showTab, setShowTab] = useState("pending")
   function changeTab(a) {
     setShowTab(a)
   };
-
-  // useEffect(() => {
-  //   fetchOrder()
-  // }, [])
-
-  // const fetchOrder = async () => {
-  //     const listOrder = await apiOrder.getOder()
-  //     setOrdersApi(listOrder)
-  // }
 
   return (
     <>
@@ -57,8 +40,7 @@ const Orders = () => {
           showTab === "pending" &&
           <ListOrder
             key="1"
-            listOrderUser1={user.order}
-            // listOrder={ordersApi}
+            //listOrderUser1={user.order}
             statusProps="pending"
           />
         }
@@ -66,8 +48,7 @@ const Orders = () => {
           showTab === "delivery" &&
           <ListOrder
             key="2"
-            listOrderUser1={user.order}
-            // listOrder={ordersApi}
+            //listOrderUser1={user.order}
             statusProps="delivery"
           />
         }
@@ -75,8 +56,7 @@ const Orders = () => {
           showTab === "delivered" &&
           <ListOrder
             key="3"
-            listOrderUser1={user.order}
-            // listOrder={ordersApi}
+            //listOrderUser1={user.order}
             statusProps="delivered"
           />
         }
@@ -84,8 +64,7 @@ const Orders = () => {
           showTab === "cancelled" &&
           <ListOrder
             key="4"
-            listOrderUser1={user.order}
-            // listOrder={ordersApi}
+            //listOrderUser1={user.order}
             statusProps="cancelled"
           />
         }

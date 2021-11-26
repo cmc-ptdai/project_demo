@@ -17,7 +17,7 @@ const orderApi = {
   },
 
   editOrder: (id, data) => {
-    const url = `/order//${id}`
+    const url = `/order/${id}`
     return axiosClient.put(url, data)
   },
 }

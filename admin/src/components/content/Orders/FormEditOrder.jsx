@@ -3,25 +3,31 @@ import { Select, Input, Modal, Table, Button } from 'antd';
 import './orders.scss'
 import { useDispatch } from 'react-redux';
 import { editOrder } from '../../../redux/action/orderAction'
-//import orderApi from '../../../api/apiOrders'
+import { countProduct, incrementProduct } from '../../../redux/action/productAction'
+import apiProduct from '../../../api/apiProduct'
+import apiOrders from '../../../api/apiOrders'
 
 const { Option } = Select;
 const FromEditOrder = (props) => {
 
   const dispatch = useDispatch()
-  //const orders = useSelector(store => store.orderReducer)
-
-  // const [form] = Form.useForm();
-
   const [dataForm, setDataForm] = useState({...props.data})
+  const [dataLocal ,setDataLocal] = useState(null)
   const [totalPrice, setTotalPrice] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
+  const [listProduct, setListProduct] = useState(null)
 
   useEffect(() => {
     setDataTotal()
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-
+  const fetchData = async () => {
+    const newData = await apiProduct.getAllProduct()
+    const newOrders= await apiOrders.getOrdersById(props.data.id)
+    setDataLocal(newOrders)
+    setListProduct(newData)
+  }
   const columns = [
     {
       title: 'Tên sản phẩm',
@@ -41,15 +47,22 @@ const FromEditOrder = (props) => {
       dataIndex: 'count',
       key: 'count',
       render: (text, record) => (
-        <div className="tableUser__input">
-          <Input
-            type="number"
-            min="1"
-            max= "20"
-            defaultValue={Number(record.count)}
-            onChange={changeInputInTable}
-            id={record.id}
-          />
+        <div className="table__order__groupCount">
+          <button
+            className={dataForm.status === "pending" ? "table__order__groupCount--minus" : "display-none"}
+            onClick={() => decrement(record.id)}
+            disabled = {record.count === 1  ? true : false}
+          >-</button>
+          {
+            dataForm.status === "pending" ?
+              (<input type="text" value={text} onChange={getNumberInput} id={record.id}/>) :
+              (<p style={{ textAlign: 'center', width: '100%' }}>{text}</p>)
+          }
+          <button
+            className={dataForm.status === "pending" ? "table__order__groupCount--plus" : "display-none"}
+            onClick={() => increment(record.id)}
+            disabled = {record.count > record.countPay  ? true : false}
+          >+</button>
         </div>
       ),
     },
@@ -82,6 +95,56 @@ const FromEditOrder = (props) => {
       ),
     },
   ];
+  const increment = (id) => {
+    const newData = {...dataForm}
+    const indexProduct = listProduct.findIndex(item => item.id === id)
+    const index = newData.listProduct.findIndex(item => item.id === id)
+    if (listProduct[indexProduct].countPay - 1 < 0) {
+      return
+    } else {
+      newData.listProduct[index].count = newData.listProduct[index].count + 1
+      listProduct[indexProduct].countPay = listProduct[indexProduct].countPay - 1
+    }
+    setDataForm(newData);
+    setDataTotal()
+  }
+  const decrement = (id) => {
+    const newData = {...dataForm}
+    const indexProduct = listProduct.findIndex(item => item.id === id)
+    const index = newData.listProduct.findIndex(item => item.id === id)
+        if (newData.listProduct[index].count - 1 <= 0 ) {
+          newData.listProduct[index].count = 1
+        } else {
+          newData.listProduct[index].count = newData.listProduct[index].count - 1
+          listProduct[indexProduct].countPay = listProduct[indexProduct].countPay + 1
+        }
+    setDataForm(newData);
+    setDataTotal()
+  }
+  const getNumberInput = (e) => {
+    const newData = {...dataForm}
+    const indexProduct = listProduct.findIndex(item => item.id === e.target.id)
+    const index = newData.listProduct.findIndex(item => item.id === e.target.id)
+    if(isNaN(e.target.value)) {
+      return
+    } else {
+      if (Number(e.target.value) > (listProduct[indexProduct].countPay + newData.listProduct[index].count)) {
+        newData.listProduct[index].count = listProduct[indexProduct].countPay + newData.listProduct[index].count
+        listProduct[indexProduct].countPay = 0
+      } else {
+        if (Number(e.target.value) <= 0) {
+          listProduct[indexProduct].countPay = listProduct[indexProduct].countPay + (newData.listProduct[index].count - 1)
+          newData.listProduct[index].count = 1
+          return
+        } else {
+          listProduct[indexProduct].countPay = listProduct[indexProduct].countPay + (newData.listProduct[index].count - Number(e.target.value))
+          newData.listProduct[index].count = Number(e.target.value)
+        }
+      }
+    }
+    setDataForm(newData);
+    setDataTotal()
+  }
 
   const deleteProductByOrder = (record) => {
     for (let i = 0; i < dataForm.listProduct.length; i++) {
@@ -92,11 +155,6 @@ const FromEditOrder = (props) => {
     }
     setDataForm(dataForm);
     setDataTotal()
-    // dataForm.listProduct.forEach((item, index) => {
-    //   if (item.id === record.id) {
-
-    //   }
-    // })
   }
 
   const setDataTotal = () => {
@@ -112,7 +170,6 @@ const FromEditOrder = (props) => {
 
   const handleCancel =  () => {
     props.editStatusFrom(false)
-    //form.resetFields();
   }
 
   const onchangeStatus = (e) => {
@@ -130,9 +187,15 @@ const FromEditOrder = (props) => {
     }
     setDataForm(newData);
   }
+
   const onchangeInputPhone = (e) => {
-    console.log(e.target.value);
+    const newData = {
+      ...dataForm,
+      phone: e.target.value,
+    }
+    setDataForm(newData);
   }
+
   const onchangeInputAddress = (e) => {
     const newData = {
       ...dataForm,
@@ -141,23 +204,37 @@ const FromEditOrder = (props) => {
     setDataForm(newData);
   }
 
-  const changeInputInTable = (e) => {
-    dataForm.listProduct.forEach((item, index) => {
-      if (item.id === e.target.id) {
-        dataForm.listProduct[index] = {
-          ...dataForm.listProduct[index],
-          count: e.target.value,
-        }
-      }
-    })
-    setDataForm(dataForm);
-    setDataTotal()
-  }
-
   const onFinish = () => {
     const newData = {
       ...dataForm,
       dateUpdate: new Date(),
+    }
+
+    if (dataForm.status === "cancelled") {
+      dispatch(incrementProduct({ dataOrder :newData, product: listProduct}))
+    }
+    if (props.data.status === "pending") {
+      const listDataDelete = []
+      dataLocal.listProduct.forEach((item, index) => {
+        let a = 0
+        for (let i = 0; i < dataForm.listProduct.length; i++) {
+          if (item.id === dataForm.listProduct[i].id) {
+            if (item.count !== dataForm.listProduct[i].count) {
+              const newOrder = {
+                id: item.id,
+                count: item.count - dataForm.listProduct[i].count
+              }
+              listDataDelete.push(newOrder)
+              a = a + 1
+            }
+            return
+          }
+        }
+        if (a === 0) {
+          listDataDelete.push(item);
+        }
+      })
+      dispatch(countProduct({listAdd: listDataDelete, Product: listProduct}))
     }
     dispatch(editOrder(newData))
     handleCancel()
@@ -168,24 +245,36 @@ const FromEditOrder = (props) => {
         className="form__edit"
         visible={true}
         title="Chi tiết đơn hàng"
-        // onOk={handleOk}
         onCancel={handleCancel}
       >
         <label>Ngày tạo đơn: {dataForm.dateCreate}</label>
         <label>Ngày tạo sửa đơn: {dataForm.dateUpdate}</label>
         <br/>
-        <label>Trạng thái đơn hàng:</label>
-        <Select
-          placeholder="Select a option and change input text above"
-          allowClear
-          defaultValue={dataForm.status}
-          onChange={onchangeStatus}
-        >
-          <Option value="pending">Pending</Option>
-          <Option value="delivery">Delivery</Option>
-          <Option value="delivered">Delivered</Option>
-          <Option value="cancelled">Cancelled</Option>
-        </Select>
+        {
+          (props.statusOrder === 'pending' || props.statusOrder === 'delivery') && (
+            <>
+              <label>Trạng thái đơn hàng:</label>
+              <Select
+                placeholder="Select a option and change input text above"
+                allowClear
+                defaultValue={dataForm.status}
+                onChange={onchangeStatus}
+              >
+                {
+                  props.statusOrder === 'pending' && <Option value="pending">Pending</Option>
+                }
+                <Option value="delivery">Delivery</Option>
+                {
+                  props.statusOrder === 'delivery' && <Option value="delivered">Delivered</Option>
+                }
+
+                {
+                  props.statusOrder === 'pending' && <Option value="cancelled">Cancelled</Option>
+                }
+              </Select>
+            </>
+          )
+        }
 
         <label>Tên người mua:</label>
         <Input

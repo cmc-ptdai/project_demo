@@ -1,10 +1,6 @@
 import React, {useState} from 'react';
 import './orders.scss'
 import Pending from './Pending'
-// import { useDispatch, useSelector } from 'react-redux';
-// import orderApi from '../../../api/apiOrders'
-// import { getOrder } from '../../../redux/action/orderAction'
-// import { Button } from 'antd/lib/radio';
 
 const Orders = () => {
   const [ showTab, setShowTab] = useState("pending")

@@ -5,14 +5,13 @@ import productApi from '../../api/productApi'
 import './ProfileProduct.scss'
 import {
   addCartByProfile as addCartByProfileAction,
-  addCartByProfileNoUser as addCartByProfileNoUserAction
+  addCartByProfileNoUser as addCartByProfileNoUserAction,
+  getUser as getUserAction
 } from '../../redux/actions/userAction'
-// import {
-//   setEvaluate as setEvaluateAction
-// } from "./../../redux/actions/products";
 import { Tabs, notification, Breadcrumb } from 'antd';
 import ShowComment from './commentProduct/index'
 import Evaluate from './evaluateProduct/Evaluate'
+import UserApi from '../../api/userApi'
 
 const { TabPane } = Tabs;
 const openNotification = (item) => {
@@ -37,10 +36,17 @@ const ProfileProduct = () => {
 
   useEffect(() => {
     fetchProduct()
+    window.scrollTo(0, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [param])
 
   const fetchProduct = async () => {
+    const baseId =  localStorage.getItem('userID')
+    if(baseId) {
+      const id = atob(baseId)
+      const response = await UserApi.getUserById(id)
+      dispatch(getUserAction(response))
+    }
     try {
       const response = await productApi.getById(param.id)
       setProduct(response)
@@ -80,45 +86,19 @@ const ProfileProduct = () => {
     }
   }
 
-  const buyProduct = async () => {
+  const buyProduct = () => {
     const data = {
       product: product,
       number: number
     }
     if (user.id) {
-      await dispatch(addCartByProfileAction(data))
+      dispatch(addCartByProfileAction(data))
+    } else {
+      dispatch(addCartByProfileNoUserAction(data))
     }
-    dispatch(addCartByProfileNoUserAction(data))
     setNumber(1)
     openNotification(product)
   }
-  // const handleChange = (evaluate) => {
-  //   setEvaluate(evaluate)
-  // }
-
-  // const showModal = () => {
-  //   setIsModalVisible(true);
-  // };
-
-  // const handleOk = () => {
-  //   setIsModalVisible(false);
-  //   const value = {
-  //     id: product.id,
-  //     evaluate
-  //   }
-  //   dispatch(setEvaluateAction(value))
-  // };
-
-  //const getValueEvaluate = (key) => {
-    // let count = 0
-    // if (key === "3" && product) {
-    //   product.evaluates.forEach(item => {
-    //     count = count + item.point
-    //   });
-    //   const s = (count - (count % product.evaluates.length))  / product.evaluates.length;
-    //   setEvaluateDefault(s)
-    // }
-  //}
 
   let outstanding = []
   if ( listProduct ) {
@@ -204,26 +184,26 @@ const ProfileProduct = () => {
 
                   <h2 className="title">{product.name}</h2>
 
-                  <p className="status">Trạng Thái:
+                  <p className="status"><b>Trạng Thái:</b>
                     { product.countPay > 0 ? (
                       <span className="status--stocking"> <i className="fas fa-check"></i> Còn hàng</span>
                     ) : (
                       <span className="status--OutOfStock"> <i className="fas fa-times"></i> Hết hàng</span>
                     )}
                   </p>
-                  <p><span>Hạn sử dụng đến ngày: </span> === == == </p>
+                  <p><b>Hạn sử dụng đến ngày: </b> {product.endDate} </p>
                   <div className="price">
                     {
                       product.sale > 0 && (
                         <div className="price__sale">
-                          <span className="price__sale-text">Giá gốc:</span>
+                          <span className="price__sale-text"><b>Giá gốc:</b></span>
                           <span className="price__sale-number">{product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>
                           <span className="price__sale-numberSale">(-{product.sale}%)</span>
                         </div>
                       )
                     }
                      <div className="price__sale">
-                        <span className="price__sale-text">Chỉ còn:</span>
+                        <span className="price__sale-text"><b>Chỉ còn:</b></span>
                       <span className="price__real ">
                         {(product.price - (product.price * product.sale / 100)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND
                       </span>

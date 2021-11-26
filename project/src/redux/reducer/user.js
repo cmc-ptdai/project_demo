@@ -14,7 +14,6 @@ import {
   ADD_CART_BY_PROFILE,
   PAY_CART_NO_USER,
   ADD_CART_NO_USER,
-  //ADD_ORDER,
   ADD_CART_BY_PROFILE_NO_USER,
   ADD_ORDER_NO_USER,
   INCREMENT_PROJECT_NO_USER,
@@ -52,52 +51,6 @@ const useReducer  = (state = initialState, action) => {
     case ADD_CART: {
       let cartAction = user.cart
       let newUser = {}
-      // if (cartAction.length >= 0) {
-      //   const index = cartAction.findIndex(item => item.id === action.payload.id)
-      //   if (index !== -1) {
-      //     const newData = {
-      //       ...cartAction[index],
-      //       count: cartAction[index].count + 1,
-      //     }
-
-      //     cartAction.splice(index, 1 , newData)
-      //     newUser = {
-      //       ...user,
-      //       cart: cartAction
-      //     }
-
-      //     userApi.addCart(user.id, newUser)
-      //   } else {
-      //     const newData = {
-      //       id: action.payload.id,
-      //       name: action.payload.name,
-      //       img: action.payload.img,
-      //       price: action.payload.price,
-      //       count: 1,
-      //     }
-      //     cartAction.push(newData)
-      //     newUser = {
-      //       ...user,
-      //       cart: cartAction
-      //     }
-
-      //     userApi.addCart(user.id, newUser)
-      //   }
-      // } else {
-      //   const newData = {
-      //     id: action.payload.id,
-      //     name: action.payload.name,
-      //     img: action.payload.img,
-      //     price: action.payload.price,
-      //     count: 1,
-      //   }
-      //   cartAction.push(newData)
-      //   newUser = {
-      //     ...user,
-      //     cart: cartAction
-      //   }
-      //   userApi.addCart(user.id, newUser)
-      // }
       const index = cartAction.findIndex(item => item.id === action.payload.id)
       if (index !== -1) {
         const newData = {
@@ -159,9 +112,10 @@ const useReducer  = (state = initialState, action) => {
           id: action.payload.product.id,
           name: action.payload.product.name,
           img: action.payload.product.img,
+          price: action.payload.product.price,
           count: action.payload.number,
-          sale: action.payload.sale,
-          countPay: action.payload.countPay
+          sale: action.payload.product.sale,
+          countPay: action.payload.product.countPay
         }
         cartAction.push(newData)
         newUser = {
@@ -177,13 +131,17 @@ const useReducer  = (state = initialState, action) => {
     }
 
     case INCREMENT_PROJECT:{
-      const index = cart.findIndex(item => item.id === action.payload)
+      const index = cart.findIndex(item => item.id === action.payload.id)
         if (index !== -1) {
           const number = cart[index].count + 1;
-          if (number >= cart[index].countPay) {
-            cart[index].count = cart[index].countPay
+          if (number >= action.payload.max) {
+            if (action.payload.max === 0) {
+              cart[index].count = 1
+            } else {
+              cart[index].count = action.payload.max
+            }
           } else {
-            cart[index].count =number
+            cart[index].count = number
           }
         }
         userApi.addCart(user.id, user)
@@ -215,17 +173,15 @@ const useReducer  = (state = initialState, action) => {
     case NUMBER_INPUT: {
       const index = cart.findIndex(item => item.id === action.payload.id)
       if(isNaN(action.payload.value) || action.payload.value <= 0) {
-
           cart[index].count = 1
-
           userApi.addCart(user.id, user)
           return {
             ...state,
             user: user
           }
       } else {
-        if (Number(action.payload.value) > cart[index].countPay) {
-          cart[index].count = cart[index].countPay
+        if (Number(action.payload.value) > action.payload.max) {
+          cart[index].count = action.payload.max
         } else {
           cart[index].count = Number(action.payload.value)
         }
@@ -298,7 +254,6 @@ const useReducer  = (state = initialState, action) => {
     }
 
     case ADD_ORDER_NO_USER: {
-      // const listProduct = []
       let money = 0
       action.payload.listId.forEach(item => {
         user.cart.forEach(elem => {
@@ -434,36 +389,16 @@ const useReducer  = (state = initialState, action) => {
         }
     }
 
-    // case ADD_ORDER: {
-    //   // const listProduct = []
-    //   let money = 0
-    //   action.payload.forEach(item => {
-    //     cart.forEach(elem => {
-    //       if (item.id === elem.id ) {
-    //         // listProduct.push(elem)
-    //         money = money + ((Number(elem.price) * Number(elem.count)) - ((Number(elem.price) * Number(elem.count)*Number(elem.sale))/100))
-    //       }
-    //     })
-    //   })
-    //   const newOder = {
-    //     id: uuidv4(),
-    //     idUser: idUser,
-    //     listProduct: action.payload,
-    //     money: money,
-    //     status: "pending",
-    //     dateCreate: new Date(),
-    //     dateUpdate: new Date()
-    //   }
-    //   orderApi.addOrder(newOder)
-    //   return state
-    // }
-
     case INCREMENT_PROJECT_NO_USER: {
-      const index = cart.findIndex(item => item.id === action.payload)
+      const index = cart.findIndex(item => item.id === action.payload.id)
       if (index !== -1) {
         const number = cart[index].count + 1;
         if (number >= cart[index].countPay) {
-          cart[index].count = cart[index].countPay
+          if (action.payload.max === 0) {
+            cart[index].count = 1
+          } else {
+            cart[index].count = action.payload.max
+          }
         } else {
           cart[index].count = number
         }

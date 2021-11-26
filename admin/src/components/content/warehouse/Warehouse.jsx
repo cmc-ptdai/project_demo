@@ -66,7 +66,6 @@ const Warehouse = () => {
           <Button
             onClick={() => {
               handleReset(clearFilters)
-              //fetchData()
             }}
             size="small"
             style={{ width: 90 }}
@@ -229,7 +228,7 @@ const Warehouse = () => {
                         }
                       </div>
                       <div className="children-warehouse">
-                        <p>ngày nhập: {item.dateInput.slice(0,10)} </p>
+                        <p>ngày nhập: {item.dateInput.slice(0,10).split('-').reverse().join('-')}</p>
                         <p>số lượng nhâp: {item.numberProduct}</p>
                         <p>số lượng bán: {item.numberCount}</p>
                         <div className="button1">

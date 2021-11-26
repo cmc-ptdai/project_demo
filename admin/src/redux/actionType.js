@@ -17,3 +17,6 @@ export const DELETE_ORDER = 'DELETE_ORDER'
 
 export const GET_ACCOUNT = "GET_ACCOUNT"
 export const EDIT_ACCOUNT = 'EDIT_ACCOUNT'
+
+export const COUNT_PRODUCT = 'COUNT_PRODUCT'
+export const  INCREMENT_PROJECT = 'INCREMENT_PROJECT'

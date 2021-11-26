@@ -34,6 +34,17 @@ const CardItem = ({item}) => {
 
   }
 
+  const expiredProduct = () => {
+    const myDate = new Date();
+    const time = myDate.getTime();
+    const endDate = new Date(item.endDate)
+    const timeDate = endDate.getTime()
+    if (time - timeDate >  0 || item.countPay <= 0 ) {
+      return true
+    } else {
+      return false
+    }
+  }
 
   return (
     <>
@@ -45,7 +56,7 @@ const CardItem = ({item}) => {
         {
           item.sale > 0 && (<div className="item__card__sale">{item.sale}%</div>)
         }
-        <h3>{item.name}</h3>
+        <p className="item__card__name">{item.name}</p >
         <div className="item__card__groupPrice">
           {
             item.sale > 0 && (
@@ -57,13 +68,11 @@ const CardItem = ({item}) => {
         <Link to={`/products/${item.id}`}>
           <button className="item__card--seeMore">Xem thêm</button>
         </Link>
-        <Link to={`#`}>
           <button
-            className={item.countPay > 0 ? "item__card--buy" : "item__card--disabledBuy"}
-            disabled = {item.countPay > 0 ? false : true}
+            className={expiredProduct() ? "item__card--disabledBuy" : "item__card--buy"}
+            disabled = {expiredProduct()}
             onClick={addToCart}
           >Mua Ngay</button>
-        </Link>
       </Card>
     </>
   )

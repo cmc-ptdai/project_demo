@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Button, Form, Input, notification } from 'antd';
 import './login.scss'
 import apiUser from '../../../api/apiUser'
-//import { useDispatch } from 'react-redux'
-//import { getAccount } from '../../../redux/action/accLoginAction'
 import { useHistory } from "react-router-dom"
 
 const openNotification = (item) => {
@@ -16,8 +14,6 @@ const openNotification = (item) => {
 
 const Login = () => {
   const history = useHistory()
-
-  //const dispatch = useDispatch()
 
   const [listUser, setListUser] = useState(null)
 
@@ -81,7 +77,7 @@ const Login = () => {
             />
           </Form.Item>
 
-          <p>Forgot Password? Click here </p>
+          {/* <p>Forgot Password? Click here </p> */}
           <Form.Item>
             <Button className="Button-submit" type="primary" htmlType="submit">
               Submit

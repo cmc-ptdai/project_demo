@@ -6,8 +6,10 @@ import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import './orders.scss'
 import orderApi from '../../../api/apiOrders'
+import apiProduct from '../../../api/apiProduct'
 import FormEditOrder from './FormEditOrder';
 import {deleteOrder}  from '../../../redux/action/orderAction'
+import { incrementProduct } from '../../../redux/action/productAction'
 import ExportToExcel  from '../ExportToExcel';
 
 const { RangePicker } = DatePicker;
@@ -21,6 +23,7 @@ const Pending = (props) => {
   const [statusFrom, setStatusFrom] = useState(null)
   const [dataEditOrder, setDataEditOrder] = useState({})
   const [dateSearch, setDateSearch] = useState([])
+  const [listProduct, setListProduct] = useState(null)
 
   useEffect(() => {
     setTimeout(() => {
@@ -31,9 +34,11 @@ const Pending = (props) => {
 
   const fetchData = async () => {
     try {
+      const newData = await apiProduct.getAllProduct()
       const listOrder = await orderApi.getAllOrders()
       const newListOrders = listOrder.filter(item => item.status === props.statusProps)
       setDataOrder(newListOrders);
+      setListProduct(newData)
     } catch (error) {
       console.log(error);
     }
@@ -176,8 +181,7 @@ const Pending = (props) => {
       sorter: (a, b) => a.money.length - b.money.length,
       render: (text, record) => (
         <>
-          {/* <span>{text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span> */}
-          <span>{text} VND</span>
+          <span>{text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} VND</span>
         </>
       ),
     },
@@ -228,7 +232,7 @@ const Pending = (props) => {
             Edit</Button>
           <Popconfirm
               title="Bạn có muốn xóa đơn hàng này không?"
-              onConfirm={() => deleteOrderTable(record.id)}
+              onConfirm={() => deleteOrderTable(record)}
               onCancel={handleCancel}
             >
               <Button
@@ -251,8 +255,13 @@ const Pending = (props) => {
     setStatusFrom(childData)
   };
 
-  const deleteOrderTable = (id) => {
-    dispatch(deleteOrder(id))
+  const deleteOrderTable = (record) => {
+    const newData = {
+      ...record,
+      dateUpdate: new Date(),
+    }
+    dispatch(deleteOrder(record.id))
+    dispatch(incrementProduct({ dataOrder :newData, product: listProduct}))
     setTimeout(() => {
       fetchData()
     }, 500);
@@ -268,8 +277,13 @@ const Pending = (props) => {
   }
 
   const searchProductDate = () => {
-    const a =  dataOrder.filter(item => item.dateCreate > dateSearch[0] && item.dateCreate < dateSearch[1])
-    setDataOrder(a)
+    if (props.statusProps === 'pending') {
+      const newList =  dataOrder.filter(item => (item.dateCreate.slice(0,10) >= dateSearch[0] && item.dateCreate.slice(0,10) <= dateSearch[1]))
+      setDataOrder(newList)
+    } else {
+      const newList =  dataOrder.filter(item => (item.dateUpdate.slice(0,10) >= dateSearch[0] && item.dateUpdate.slice(0,10) <= dateSearch[1]))
+      setDataOrder(newList)
+    }
   }
 
   const resetSearch = () => {
@@ -311,9 +325,11 @@ const Pending = (props) => {
       </div>
     </div>
     {
-      statusFrom && <FormEditOrder data={dataEditOrder} editStatusFrom= {editStatusFrom}/>
+      statusFrom && <FormEditOrder data={dataEditOrder} editStatusFrom= {editStatusFrom} statusOrder = {props.statusProps}/>
     }
-      <Table columns={columns} scroll={{ x: 1500}} dataSource={dataOrder} rowKey="id"/>
+    {
+      dataOrder && <Table columns={columns} scroll={{ x: 1500}} dataSource={dataOrder} rowKey="id"/>
+    }
     </>
   )
 }

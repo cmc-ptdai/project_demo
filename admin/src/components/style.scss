@@ -20,9 +20,6 @@
   .site-layout .site-layout-background {
     background: #fff;
   }
-  .ant-layout-sider {
-    min-height: 80rem;
-  }
 
   .ant-layout-header {
     display:  flex;
@@ -45,7 +42,6 @@
       }
       &-logout {
         width: 140px;
-        height: 40px;
         line-height: 40px;
         margin-left: 10px;
         border: 1px solid #ccc;
@@ -54,11 +50,13 @@
         background-color: rgba(#ccc, 0.8);
         visibility: hidden;
         opacity: 0;
+        z-index: 999999;
         text-align: center;
         transform: translateY(30%);
         transition: all 0.3s ease-in-out;
         span {
           cursor: pointer;
+          display: block;
           font-weight: bold;
           text-decoration: underline;
           &:hover {
