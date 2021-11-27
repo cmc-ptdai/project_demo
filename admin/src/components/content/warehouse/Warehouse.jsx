@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from 'react';
-import { Table, Button, DatePicker,Input, Space } from 'antd';
-import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Button, DatePicker } from 'antd';
+// import Highlighter from 'react-highlight-words';
+// import { SearchOutlined } from '@ant-design/icons';
 import apiProduct from '../../../api/apiProduct'
 import apiWarehouse from '../../../api/apiWarehouse'
 import './warehouse.scss'
@@ -15,8 +15,8 @@ const Warehouse = () => {
   const [status, setStatus] = useState(false)
   const [inputSearch, setInputSearch] = useState(null)
   const [dateSearch, setDateSearch] = useState([])
-  const [searchText, setSearchText] = useState('')
-  const [searchedColumn, setSearchedColumn] = useState('')
+  // const [searchText, setSearchText] = useState('')
+  // const [searchedColumn, setSearchedColumn] = useState('')
 
   useEffect(() => {
     fetchProduct()
@@ -42,88 +42,87 @@ const Warehouse = () => {
     }
   }
 
-  const getColumnSearchProps = dataIndex => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ width: 188, marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
+  // const getColumnSearchProps = dataIndex => ({
+  //   filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+  //     <div style={{ padding: 8 }}>
+  //       <Input
+  //         placeholder={`Search ${dataIndex}`}
+  //         value={selectedKeys[0]}
+  //         onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+  //         onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+  //         style={{ width: 188, marginBottom: 8, display: 'block' }}
+  //       />
+  //       <Space>
+  //         <Button
+  //           type="primary"
+  //           onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+  //           icon={<SearchOutlined />}
+  //           size="small"
+  //           style={{ width: 90 }}
+  //         >
+  //           Search
+  //         </Button>
 
-          <Button
-            onClick={() => {
-              handleReset(clearFilters)
-            }}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
+  //         <Button
+  //           onClick={() => {
+  //             handleReset(clearFilters)
+  //           }}
+  //           size="small"
+  //           style={{ width: 90 }}
+  //         >
+  //           Reset
+  //         </Button>
 
-          {/* <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText(selectedKeys[0])
-              setSearchedColumn(dataIndex)
-            }}
-          >
-            Filter
-          </Button> */}
-        </Space>
-      </div>
-    ),
-    filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-        : '',
+  //         {/* <Button
+  //           type="link"
+  //           size="small"
+  //           onClick={() => {
+  //             confirm({ closeDropdown: false });
+  //             setSearchText(selectedKeys[0])
+  //             setSearchedColumn(dataIndex)
+  //           }}
+  //         >
+  //           Filter
+  //         </Button> */}
+  //       </Space>
+  //     </div>
+  //   ),
+  //   filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
+  //   onFilter: (value, record) =>
+  //     record[dataIndex]
+  //       ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
+  //       : '',
 
-    render: text =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
+  //   render: text =>
+  //     searchedColumn === dataIndex ? (
+  //       <Highlighter
+  //         highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+  //         searchWords={[searchText]}
+  //         autoEscape
+  //         textToHighlight={text ? text.toString() : ''}
+  //       />
+  //     ) : (
+  //       text
+  //     ),
+  // });
 
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0])
-    setSearchedColumn(dataIndex)
-  };
+  // const handleSearch = (selectedKeys, confirm, dataIndex) => {
+  //   confirm();
+  //   setSearchText(selectedKeys[0])
+  //   setSearchedColumn(dataIndex)
+  // };
 
-  const handleReset = clearFilters => {
-    clearFilters();
-    setSearchText('')
-  };
+  // const handleReset = clearFilters => {
+  //   clearFilters();
+  //   setSearchText('')
+  // };
 
   const columns = [
     {
       title: 'Id product',
       dataIndex: 'id',
       key: 'id',
-      width: 530,
-      ...getColumnSearchProps('id'),
+      width: 530
     },
     {
       title: 'Name product',

@@ -44,6 +44,8 @@ const App = () => {
         dispatch(getUserAction(user))
       } else {
         const cartLocal = JSON.parse(localStorage.getItem('cart'));
+        const newCartLocal = [ ]
+        localStorage.setItem('cart', JSON.stringify(newCartLocal))
         let user = {}
         if (cartLocal) {
           user = {

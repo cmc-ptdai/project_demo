@@ -111,7 +111,7 @@
     {
       "id": "5",
       "name": "Hành lá",
-      "countPay": 1,
+      "countPay": 0,
       "price": "50000",
       "sale": 0,
       "img": "https://i2.wp.com/thucphamtantai.com/wp-content/uploads/2019/10/hanh-la.jpg",
@@ -421,8 +421,8 @@
       "unit": "kg",
       "countPay": 55,
       "startDate": "",
-      "endDate": "2022-04-24",
-      "dateUpdate": "2021-11-02T11:48:54.768Z",
+      "endDate": "2022-07-24",
+      "dateUpdate": "2021-11-27T05:11:38.179Z",
       "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkwjpCNFwfX6wxq63fy-bjKUwy8ec7sbjkRg&usqp=CAU",
       "typeID": "cu",
       "species": "tuoi",
@@ -772,12 +772,12 @@
           "count": 1
         },
         {
-          "id": "5taodNQ",
-          "name": "Giềng",
-          "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqt60BJpEmtqmwKCeE-zWolRMEK0yAmN2bBg&usqp=CAU",
-          "price": "30000",
-          "sale": "0",
-          "countPay": 36,
+          "id": "a384c0b5-3369-40bb-8a0d-9a9d7b5f8e87",
+          "name": "Thanh Long",
+          "img": "https://image.thanhnien.vn/1200x630/Uploaded/2021/wsxrxqeiod/2020_02_11/trai-thanh-long_aotz.jpg",
+          "price": "15000",
+          "sale": "2",
+          "countPay": 47,
           "count": 1
         }
       ],
@@ -2204,6 +2204,14 @@
           "comment": "cho tôi thêm thông tin về sản phẩm này",
           "date": "2021-11-10T17:23:42.567Z",
           "children": []
+        },
+        {
+          "id": "b28686ce-4387-42c3-82f7-a0c749bc5378",
+          "idUser": "2",
+          "name": "Phùng Thế Đại 1232",
+          "comment": "w",
+          "date": "2021-11-27T07:11:15.955Z",
+          "children": []
         }
       ]
     },
@@ -2882,6 +2890,11 @@
         },
         {
           "dateInput": "2021-11-12T02:48:53.064Z",
+          "numberCount": 0,
+          "numberProduct": "0"
+        },
+        {
+          "dateInput": "2021-11-27T04:12:52.879Z",
           "numberCount": 0,
           "numberProduct": "0"
         }

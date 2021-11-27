@@ -118,7 +118,7 @@ const Dashboard = () => {
         </div>
 
         <Link
-          to='/orders'
+          to='/body/orders'
           className="dashboard-status-item"
         >
           <div className="dashboard-status-item-icon">
@@ -131,7 +131,7 @@ const Dashboard = () => {
         </Link>
 
         <Link
-          to='/users'
+          to='/body/users'
           className="dashboard-status-item"
         >
           <div className="dashboard-status-item-icon">
@@ -144,7 +144,7 @@ const Dashboard = () => {
         </Link>
 
         <Link
-          to='/vegetable'
+          to='/body/vegetable'
           className="dashboard-status-item"
         >
           <div className="dashboard-status-item-icon">
@@ -164,8 +164,7 @@ const Dashboard = () => {
           />
         </div>
         <div className="dashboard-chart-comment">
-          <Link
-            to='/users'
+          <div
             className="dashboard-chart-comment-item"
           >
             <div className="dashboard-chart-comment-item-icon">
@@ -180,7 +179,7 @@ const Dashboard = () => {
               }
 
             </div>
-          </Link>
+          </div>
           {
             (listNewComment !== null && listNewComment.length > 0 ) && (
               <div className="dashboard-chart-comment-list">

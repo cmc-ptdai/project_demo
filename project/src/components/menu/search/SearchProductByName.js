@@ -12,24 +12,122 @@ const SearchProductsByName = ({type}) => {
 
   const [products, setProducts] = useState(newArr)
   const [listSort, setListSort] = useState(newArr)
+  const [listKeySort, setListKeySort] = useState({})
 
   useEffect(() => {
+    console.log(newArr);
     setListSort(newArr)
     setProducts(newArr)
   },[newArr])
 
-  const searchByPrice1 = value => {
-    if (value.item.price1 === "") {
-      const newArr = products.filter(item => item.price < value.item.price2)
-      setListSort(newArr)
-    } else if (value.item.price2 === "") {
-      const newArr = products.filter(item => item.price > value.item.price1)
+  useEffect(() => {
+    sortListKey()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listKeySort])
+
+  const sortListKey = () => {
+    const newArr = []
+    const lengthKey = Object.keys(listKeySort)
+    if (lengthKey.length > 0) {
+      products.forEach(item => {
+        let count = 0
+        for (let key in listKeySort) {
+          if (key === 'price') {
+            if (item.price >= listKeySort[key].price1 && item.price <= listKeySort[key].price2) {
+              count = count + 1
+            }
+          }
+          if (key === 'type') {
+            if (item.typeID === listKeySort[key]) {
+              count = count + 1
+            }
+          }
+          if (key === 'country') {
+            if (listKeySort[key] === 'khac') {
+              if (item.country !== 'viet nam' && item.country !== 'uc' && item.country !== 'trung quoc') {
+                count = count + 1
+              }
+            } else {
+              if (item.country === listKeySort[key]) {
+                count = count + 1
+              }
+            }
+          }
+        }
+        if (lengthKey.length === count) {
+          newArr.push(item)
+        }
+      })
       setListSort(newArr)
     } else {
-      const newArr = products.filter(item => (item.price > value.item.price1) && (item.price < value.item.price2) )
-      setListSort(newArr)
+      setListSort(products)
     }
   }
+
+  const searchByPrice1 = value => {
+    let newList = {}
+    if (listKeySort?.price) {
+      if (listKeySort.price.price1 === value.price1 && listKeySort.price.price2 === value.price2) {
+        delete listKeySort.price;
+        newList = {...listKeySort}
+      } else {
+        newList = {
+          ...listKeySort,
+          price: value
+        }
+      }
+    } else {
+      newList = {
+        ...listKeySort,
+        price: value
+      }
+    }
+    setListKeySort(newList)
+  }
+
+  const searchByType= (type) => {
+    let newList = {}
+    if (listKeySort?.type) {
+      if (listKeySort.type === type) {
+        delete listKeySort.type;
+        newList = {...listKeySort}
+      } else {
+        newList = {
+          ...listKeySort,
+          type: type
+        }
+      }
+    } else {
+      newList = {
+        ...listKeySort,
+        type: type
+      }
+    }
+    setListKeySort(newList)
+  }
+
+  const searchByCountry= (country) => {
+    let newList = {}
+    if (listKeySort?.country) {
+      if (listKeySort.country === country) {
+        delete listKeySort.country;
+        newList = {...listKeySort}
+      } else {
+        newList = {
+          ...listKeySort,
+          country: country
+        }
+      }
+    } else {
+      newList = {
+        ...listKeySort,
+        country: country
+      }
+    }
+    setListKeySort(newList)
+  }
+
+
 
   const sortProduct1 = key => {
     if (key === "1") {
@@ -108,6 +206,8 @@ const SearchProductsByName = ({type}) => {
         <div className="col-lg-3">
           <SearchProduct
             searchByPrice={searchByPrice1}
+            searchByType={searchByType}
+            searchByCountry={searchByCountry}
           />
         </div>
 
